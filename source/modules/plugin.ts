@@ -69,6 +69,10 @@ export interface iPlugin {
 	state?: State
 }
 
+export class Plugin implements iPlugin {
+	constructor(public name: string, public pluginManager: PluginManager, public client: Discord.Client) {}
+}
+
 /** A List of settings, to be set by the admin */
 export type SetupTemplate = Array<Setting>
 
