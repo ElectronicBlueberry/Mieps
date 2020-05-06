@@ -1,0 +1,20 @@
+{
+  "name": "mieps",
+  "version": "0.0.1",
+  "description": "",
+  "main": "./js/index.js",
+  "scripts": {
+    "start": "node -r esm js/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Laila",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "esm": "^3.2.25"
+  },
+  "devDependencies": {
+    "@types/node": "^13.13.0",
+    "@types/ws": "^7.2.4"
+  }
+}
