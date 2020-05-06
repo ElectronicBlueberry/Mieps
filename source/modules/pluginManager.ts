@@ -63,7 +63,7 @@ export class PluginManager {
 
 			for (const file of files) {
 				try {
-					let plugin = (await import(file)).Plugin as Plugin;
+					let plugin = (await import(file)).plugin as Plugin;
 					this.loadPlugin(plugin);
 				} catch(e) {
 					console.error(`Failed to load Plugin ${file}`);
