@@ -294,10 +294,8 @@ export class PluginManager {
 		plugin.commands?.forEach(command => {
 			if (command.type === CommandType.Chat) this.chatCommands.delete(command.name);
 			if (command.type === CommandType.Emoji) {
-				let _command = command as EmojiCommand;
-				if (_command.emoji) {
-					this.emojiCommands.delete(_command.emoji.toString());
-				}
+				let commandKey = this.emojiCommands.findKey(c => c.name === command.name);
+				if (commandKey) this.emojiCommands.delete(commandKey);
 			}
 		});
 
