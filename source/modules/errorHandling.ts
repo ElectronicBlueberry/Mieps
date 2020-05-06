@@ -22,7 +22,9 @@ export function criticalError(errorMsg: string, error?: Error): void {
  * @param plugin the plugin that threw the error
  */
 export function criticalPluginError(logChannel: Discord.TextChannel, errorMsg: string, plugin: Plugin): void {
+	logChannel.send(`Critical Error in Plugin ${plugin.name}!`);
 	logChannel.send(errorMsg);
+	logChannel.send(`Deactivating Plugin`);
 	plugin.pluginManager.deactivatePlugin(plugin.name);
 	plugin.pluginManager.setConfigured(plugin.name, false);
 }
