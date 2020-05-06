@@ -30,8 +30,21 @@ export class PluginManager {
 		]
 	}
 
-	constructor(private client: Discord.Client, public instanceConfig: {control_channel: string}) {
+	constructor(private client: Discord.Client, private instanceConfig: {control_channel: string}) {
 		this.loadPlugin(this.permissionPlugin);
+	}
+
+	protected get guild(): Discord.Guild {
+		return this.client.guilds.cache.first() as Discord.Guild;
+	}
+
+	protected get controlChannel(): Discord.GuildChannel {
+		let c = this.guild.channels.cache.get(this.instanceConfig.control_channel);
+		if (!c) {
+			criticalError("Control Channel not found!");
+			return {} as Discord.GuildChannel;
+		}
+		return c;
 	}
 
 	public getState(): ReadOnlyState {
