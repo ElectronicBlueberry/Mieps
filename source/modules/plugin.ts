@@ -23,7 +23,7 @@ export class ChatCommand implements iCommand {
 	name: string;
 	allowNoArgs = false;
 	getHelpText() {return ""};
-	permission = Permission.Any;
+	permission = Permission.Admin;
 
 	constructor(name: string) {
 		this.name = name;
@@ -36,7 +36,7 @@ export class EmojiCommand implements iCommand {
 	type = CommandType.Emoji;
 	name: string;
 	getHelpText() {return ""};
-	permission = Permission.Any;
+	permission = Permission.Admin;
 
 	// Whether to remove uses of this Emoji for Users without the right permissions
 	removeInvalid = true;
