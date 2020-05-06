@@ -77,7 +77,7 @@ export class Plugin implements iPlugin {
 
 	state?: State;
 
-	protected async getSetting<T>(setting: string, type: InputType): Promise<T | undefined> {
+	public async getSetting<T>(setting: string, type: InputType): Promise<T | undefined> {
 		if (!this.state) {
 			criticalPluginError(this.pluginManager.controlChannel, `Tried to acess setting ${setting} while no state was set`, this);
 			return undefined;
