@@ -75,7 +75,7 @@ export class Plugin implements iPlugin {
 
 	state?: State;
 
-	protected async getSetting<T>(setting: string, type: SettingType): Promise<T | undefined> {
+	protected async getSetting<T>(setting: string, type: InputType): Promise<T | undefined> {
 		if (!this.state) {
 			criticalPluginError(this.pluginManager.controlChannel, `Tried to acess setting ${setting} while no state was set`, this);
 			return undefined;
@@ -131,11 +131,9 @@ export interface MessageStream {
 	run: (message: Discord.Message) => boolean;
 }
 
-export type SettingType = InputType;
-
 export interface Setting {
 	name: string,
-	type: SettingType,
+	type: InputType,
 	description?: string
 }
 
