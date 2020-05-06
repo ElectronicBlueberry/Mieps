@@ -40,7 +40,9 @@ export function commandList(chatCommands, emojiCommands) {
 }
 export function configHelp() {
     return `Nutze diesen Befehl, um Plugins zu konfigurieren.
-Schreibe "${command_prefix}config [plugin]" um die Konfiguration für ein Plugin zu beginnen,
+"${command_prefix}config [plugin]" konfiguriere ein Plugin,
+"${command_prefix}config all" konfiguriere alle unkonfigurierten Plugins
+
 oder "${command_prefix}plugin list" um eine Liste aller Plugins zu sehen`;
 }
 export function noConfig(plugin) {
@@ -50,5 +52,16 @@ Nutze "${command_prefix}plugin activate ${plugin}" um es zu aktivieren`;
 export function configDone(plugin) {
     return `Konfiguration für ${plugin} abgeschlossen!
 Nutze "${command_prefix}plugin activate ${plugin}" um das Plugin zu aktivieren`;
+}
+export function noUnconfigured() {
+    return `Es gibt keine unkonfigurierten Plugins.
+Nutze "${command_prefix}config [plugin]" um ein bestimmtes Plugin neu zu konfigurieren`;
+}
+export function nowConfiguring(plugin) {
+    return `Konfiguriere nun Plugin: ${plugin}`;
+}
+export function allComplete() {
+    return `Alle Plugins konfiguriert!
+Nutze "${command_prefix}plugin activate all" um alle Plugins zu aktivieren`;
 }
 //# sourceMappingURL=builtinCommands.js.map

@@ -116,17 +116,42 @@ class ConfigCommand extends ChatCommand {
         return lang.configHelp();
     }
     async run(message, args) {
-        var _a;
         let channel = message.channel;
         if (args.length === 0) {
             channel.send(this.getHelpText());
             return;
         }
-        let plugin = this.pM.plugins.get(args[0]);
-        if (!plugin) {
-            channel.send(lang.pluginNotFound(args[0]));
-            return;
+        if (args[0] === "all") {
+            let pluginState = this.pM.getState();
+            let count = 0;
+            for (const [name, plugin] of this.pM.plugins) {
+                // Only configure configurable Plugins, which are not yet configured
+                if (!plugin.setupTemplate || pluginState.read(name, "configured"))
+                    continue;
+                channel.send(lang.nowConfiguring(name));
+                await this.configurePlugin(message, plugin);
+                count++;
+            }
+            if (count === 0) {
+                channel.send(lang.noUnconfigured());
+            }
+            else {
+                channel.send(lang.allComplete());
+            }
         }
+        else {
+            let plugin = this.pM.plugins.get(args[0]);
+            if (!plugin) {
+                channel.send(lang.pluginNotFound(args[0]));
+                return;
+            }
+            await this.configurePlugin(message, plugin);
+            channel.send(lang.configDone(plugin.name));
+        }
+    }
+    async configurePlugin(message, plugin) {
+        var _a;
+        let channel = message.channel;
         if (!plugin.setupTemplate) {
             channel.send(lang.noConfig(plugin.name));
             return;
@@ -140,7 +165,6 @@ class ConfigCommand extends ChatCommand {
             (_a = plugin.state) === null || _a === void 0 ? void 0 : _a.write("config", setting.name, input);
         }
         this.pM.setConfigured(plugin.name, true);
-        channel.send(lang.configDone(plugin.name));
     }
 }
 //# sourceMappingURL=builtinCommands.js.map
