@@ -18,16 +18,16 @@ export function moveSingle(target: string): string {
 	return `Eine Nachricht wurde nach Target verschoben`;
 }
 
-export function logMessage(user: Discord.User): string {
-	return `Gelöscht von: ${user.toString()}`;
+export function logMessage(user: Discord.User | undefined): string {
+	return `Gelöscht von: ${user?.toString()}`;
 }
 
 export function deleteFailed(): string {
 	return `Löschung Fehlgeschlagen!`;
 }
 
-export function copyLog(user: Discord.User): string {
-	return `Kopiert von ${user.toString()}`;
+export function copyLog(user: Discord.User | undefined): string {
+	return `Kopiert von ${user?.toString()}`;
 }
 
 export function copyFailed(): string {
