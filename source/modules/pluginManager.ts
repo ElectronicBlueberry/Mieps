@@ -30,7 +30,7 @@ export class PluginManager {
 		]
 	}
 
-	constructor(private client: Discord.Client, private instanceConfig: {control_channel: string}) {
+	constructor(private client: Discord.Client, public instanceConfig: {control_channel: string}) {
 		this.loadPlugin(this.permissionPlugin);
 	}
 
