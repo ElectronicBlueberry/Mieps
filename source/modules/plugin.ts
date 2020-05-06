@@ -2,6 +2,7 @@ import * as Discord from "discord.js";
 import {State} from "./state.js";
 import {InputType} from "./inputCollector.js";
 import {PluginManager} from "./pluginManager";
+import { criticalPluginError } from "./errorHandling.js";
 
 export enum CommandType {
 	Chat,
@@ -70,7 +71,54 @@ export interface iPlugin {
 
 export class Plugin implements iPlugin {
 	public name = "base_plugin";
-	constructor(public pluginManager: PluginManager, public client: Discord.Client) {}
+	constructor(public pluginManager: PluginManager, public client: Discord.Client) {};
+
+	state?: State;
+
+	protected async getSetting<T>(setting: string, type: SettingType): Promise<T | undefined> {
+		if (!this.state) {
+			criticalPluginError(this.pluginManager.controlChannel, `Tried to acess setting ${setting} while no state was set`, this);
+			return undefined;
+		}
+
+		let s = this.state.read("config", setting) as string | undefined;
+		if (!s) {
+			criticalPluginError(this.pluginManager.controlChannel, `Could not acess Setting ${setting}`, this);
+			return undefined;
+		}
+
+		let guild = this.pluginManager.guild;
+		let response: any;
+
+		switch (type) {
+			case InputType.Channel: {
+				response = guild.channels.cache.get(s);
+			} break;
+
+			case InputType.Emoji: {
+				response = guild.emojis.cache.get(s);
+			} break;
+
+			case InputType.Role: {
+				response = await guild.roles.fetch(s);
+			} break;
+
+			case InputType.User: {
+				response = await guild.members.fetch(s);
+			} break;
+
+			case InputType.Text: {
+				response = s;
+			} break;
+		}
+
+		if (!response) {
+			criticalPluginError(this.pluginManager.controlChannel, `Could not find any ${type} with the id ${s} on the server. Maybee it no longer exists? Reconfigure the plugin to fix this Error`, this);
+			return undefined;
+		}
+
+		return response as T;
+	}
 }
 
 /** A List of settings, to be set by the admin */
@@ -83,9 +131,11 @@ export interface MessageStream {
 	run: (message: Discord.Message) => boolean;
 }
 
+export type SettingType = InputType;
+
 export interface Setting {
 	name: string,
-	type: InputType,
+	type: SettingType,
 	description?: string
 }
 
