@@ -10,7 +10,7 @@ export class ChatCommand {
     constructor(name) {
         this.type = CommandType.Chat;
         this.allowNoArgs = false;
-        this.permission = Permission.Any;
+        this.permission = Permission.Admin;
         this.name = name;
     }
     getHelpText() { return ""; }
@@ -21,7 +21,7 @@ export class ChatCommand {
 export class EmojiCommand {
     constructor(name) {
         this.type = CommandType.Emoji;
-        this.permission = Permission.Any;
+        this.permission = Permission.Admin;
         // Whether to remove uses of this Emoji for Users without the right permissions
         this.removeInvalid = true;
         this.name = name;

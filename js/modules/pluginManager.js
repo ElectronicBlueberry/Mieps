@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as Path from 'path';
 import { CommandType, Permission } from "./plugin.js";
 import { criticalError } from "./errorHandling.js";
 import { State } from "./state.js";
@@ -61,16 +62,16 @@ export class PluginManager {
      */
     async scanForPlugins(path, suffix) {
         try {
-            const files = fs.readdirSync(path);
-            files.filter(file => file.endsWith(suffix));
+            let files = fs.readdirSync(path);
+            files = files.filter(file => file.endsWith(suffix));
             for (const file of files) {
                 try {
-                    let _Plugin = await import(file);
-                    let pluginInstance = new _Plugin(this, this.client);
+                    let _Plugin = await import(Path.resolve(path, file));
+                    let pluginInstance = new _Plugin.default(this, this.client);
                     this.loadPlugin(pluginInstance);
                 }
                 catch (e) {
-                    console.error(`Failed to load Plugin ${file}`);
+                    console.error(`Failed to load Plugin ${file}`, e);
                 }
             }
         }
