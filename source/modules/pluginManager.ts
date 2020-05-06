@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as Path from 'path';
 
 import {iPlugin, Plugin, ChatCommand, EmojiCommand, MessageStream, CommandType, Permission} from "./plugin.js";
 import {criticalError} from "./errorHandling.js";
@@ -73,18 +74,18 @@ export class PluginManager {
 	 * Searches for Plugins on Disk, and loads all found plugins.
 	 * This does not activate the Plugins
 	 */
-	public async scanForPlugins(path: fs.PathLike, suffix: string): Promise<void> {
+	public async scanForPlugins(path: string, suffix: string): Promise<void> {
 		try {
-			const files = fs.readdirSync(path);
-			files.filter(file => file.endsWith(suffix));
+			let files = fs.readdirSync(path);
+			files = files.filter(file => file.endsWith(suffix));
 
 			for (const file of files) {
 				try {
-					let _Plugin = await import(file);
-					let pluginInstance = new _Plugin(this, this.client) as Plugin;
+					let _Plugin = await import(Path.resolve(path, file));
+					let pluginInstance = new _Plugin.default(this, this.client) as Plugin;
 					this.loadPlugin(pluginInstance);
 				} catch(e) {
-					console.error(`Failed to load Plugin ${file}`);
+					console.error(`Failed to load Plugin ${file}`, e);
 				}
 			}
 		} catch(e) {
