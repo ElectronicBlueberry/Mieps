@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import {PluginManager} from "./pluginManager.js";
+import {Plugin} from "./plugin.js";
 
 /**
  * report a critical error that keeps the program from functioning, and crash.
@@ -21,8 +21,8 @@ export function criticalError(errorMsg: string, error?: Error): void {
  * @param errorMsg the Error Message to send
  * @param plugin the plugin that threw the error
  */
-export function criticalPluginError(logChannel: Discord.TextChannel, errorMsg: string, pluginName: string, pluginManager: PluginManager): void {
+export function criticalPluginError(logChannel: Discord.TextChannel, errorMsg: string, plugin: Plugin): void {
 	logChannel.send(errorMsg);
-	pluginManager.deactivatePlugin(pluginName);
-	pluginManager.setConfigured(pluginName, false);
+	plugin.pluginManager.deactivatePlugin(plugin.name);
+	plugin.pluginManager.setConfigured(plugin.name, false);
 }
