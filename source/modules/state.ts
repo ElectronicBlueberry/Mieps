@@ -8,6 +8,11 @@ interface IDictionary<TValue> {
     [id: string]: TValue;
 }
 
+export interface ReadOnlyState {
+	/** Read a Value from this state */
+	read: (primaryKey: string, key: string) => any
+}
+
 /**
  * Manages a State which is presistent between restarts
  */
