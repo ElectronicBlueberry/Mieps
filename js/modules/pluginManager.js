@@ -9,10 +9,10 @@ export class PluginManager {
     constructor(client, instanceConfig) {
         this.client = client;
         this.instanceConfig = instanceConfig;
-        this.plugins = new Map();
-        this.chatCommands = new Map();
-        this.emojiCommands = new Map();
-        this.messageStreams = new Map();
+        this.plugins = new Discord.Collection();
+        this.chatCommands = new Discord.Collection();
+        this.emojiCommands = new Discord.Collection();
+        this.messageStreams = new Discord.Collection();
         this.pluginState = new State("plugin_manager");
         // used to setup permissions in the configurator
         this.permissionPlugin = {
@@ -27,6 +27,17 @@ export class PluginManager {
         };
         this.loadPlugin(this.permissionPlugin);
     }
+    get guild() {
+        return this.client.guilds.cache.first();
+    }
+    get controlChannel() {
+        let c = this.guild.channels.cache.get(this.instanceConfig.control_channel);
+        if (!c || c.type !== "text") {
+            criticalError("Control Channel not found!");
+            return {};
+        }
+        return c;
+    }
     getState() {
         return this.pluginState;
     }
@@ -40,7 +51,9 @@ export class PluginManager {
         this.chatCommands.set(command.name, command);
     }
     addEmojiCommand(command) {
-        this.emojiCommands.set(command.emoji.toString(), command);
+        if (command.emoji) {
+            this.emojiCommands.set(command.emoji.toString(), command);
+        }
     }
     /**
      * Searches for Plugins on Disk, and loads all found plugins.
@@ -52,8 +65,9 @@ export class PluginManager {
             files.filter(file => file.endsWith(suffix));
             for (const file of files) {
                 try {
-                    let plugin = (await import(file)).Plugin;
-                    this.loadPlugin(plugin);
+                    let _Plugin = await import(file);
+                    let pluginInstance = new _Plugin(this, this.client);
+                    this.loadPlugin(pluginInstance);
                 }
                 catch (e) {
                     console.error(`Failed to load Plugin ${file}`);
@@ -183,9 +197,9 @@ export class PluginManager {
         this.pluginState.write(name, "configured", configured);
     }
     /** Load a Plugin as a Built-In, which is required for other plugins/the bots operation, and cannot be deactivated, or configured */
-    addBuiltin(plugin) {
+    async addBuiltin(plugin) {
         var _a;
-        (_a = plugin.init) === null || _a === void 0 ? void 0 : _a.call(plugin);
+        await ((_a = plugin.init) === null || _a === void 0 ? void 0 : _a.call(plugin));
         this._loadCommands(plugin);
     }
     checkPermission(member, permission) {
@@ -239,10 +253,10 @@ export class PluginManager {
         return Permission.Any;
     }
     // ========== Private Functions ==========
-    _initiatePlugin(p) {
+    async _initiatePlugin(p) {
         var _a;
         if (this.pluginState.read(p.name, "active")) {
-            (_a = p.init) === null || _a === void 0 ? void 0 : _a.call(p);
+            await ((_a = p.init) === null || _a === void 0 ? void 0 : _a.call(p));
             this._loadCommands(p);
         }
     }
@@ -252,20 +266,27 @@ export class PluginManager {
         (_a = plugin.commands) === null || _a === void 0 ? void 0 : _a.forEach(command => {
             if (command.type === CommandType.Chat)
                 this.chatCommands.set(command.name, command);
-            if (command.type === CommandType.Emoji)
-                this.emojiCommands.set(command.emoji.toString(), command);
+            if (command.type === CommandType.Emoji) {
+                let _command = command;
+                if (_command.emoji) {
+                    this.emojiCommands.set(_command.emoji.toString(), _command);
+                }
+            }
         });
         if (plugin.messageStream)
             this.messageStreams.set(plugin.name, plugin.messageStream);
     }
-    // Remove a Plugins Commands from the Command Maps, so they wont be called again
+    // Remove a Plugins Commands from the Command Collections, so they wont be called again
     _unloadCommands(plugin) {
         var _a;
         (_a = plugin.commands) === null || _a === void 0 ? void 0 : _a.forEach(command => {
             if (command.type === CommandType.Chat)
                 this.chatCommands.delete(command.name);
-            if (command.type === CommandType.Emoji)
-                this.emojiCommands.delete(command.emoji.toString());
+            if (command.type === CommandType.Emoji) {
+                let commandKey = this.emojiCommands.findKey(c => c.name === command.name);
+                if (commandKey)
+                    this.emojiCommands.delete(commandKey);
+            }
         });
         if (plugin.messageStream)
             this.messageStreams.delete(plugin.name);

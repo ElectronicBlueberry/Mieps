@@ -1,5 +1,6 @@
 import { ChatCommand, Permission } from "./plugin.js";
 import * as lang from "../lang/builtinCommands.js";
+import * as Discord from 'discord.js';
 import * as Query from "./inputCollector.js";
 export class BuiltIn {
     constructor(client, pluginManager) {
@@ -15,7 +16,8 @@ export class BuiltIn {
 }
 class PluginCommand extends ChatCommand {
     constructor(plugin) {
-        super("plugin", plugin);
+        super("plugin");
+        this.plugin = plugin;
         this.permission = Permission.Admin;
         this.pM = plugin.pluginManager;
     }
@@ -70,7 +72,8 @@ class PluginCommand extends ChatCommand {
 }
 class HelpCommand extends ChatCommand {
     constructor(plugin) {
-        super("help", plugin);
+        super("help");
+        this.plugin = plugin;
         this.permission = Permission.Any;
         this.pM = plugin.pluginManager;
     }
@@ -81,14 +84,14 @@ class HelpCommand extends ChatCommand {
         let channel = message.channel;
         let member = message.member;
         let perm = this.pM.getHighestMemberPermission(member);
-        let cCommands = new Map();
-        let eCommands = new Map();
+        let cCommands = new Discord.Collection();
+        let eCommands = new Discord.Collection();
         this.pM.getChatCommands().forEach(c => {
             if (c.permission <= perm)
                 cCommands.set(c.name, c);
         });
         this.pM.getEmojiCommands().forEach(c => {
-            if (c.permission <= perm)
+            if (c.permission <= perm && c.emoji)
                 eCommands.set(c.emoji.toString(), c);
         });
         if (args.length > 0) {
@@ -108,7 +111,8 @@ class HelpCommand extends ChatCommand {
 }
 class ConfigCommand extends ChatCommand {
     constructor(plugin) {
-        super("config", plugin);
+        super("config");
+        this.plugin = plugin;
         this.permission = Permission.Admin;
         this.pM = plugin.pluginManager;
     }

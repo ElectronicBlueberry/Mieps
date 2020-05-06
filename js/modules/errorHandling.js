@@ -17,9 +17,14 @@ export function criticalError(errorMsg, error) {
  * @param errorMsg the Error Message to send
  * @param plugin the plugin that threw the error
  */
-export function criticalPluginError(logChannel, errorMsg, pluginName, pluginManager) {
-    logChannel.send(errorMsg);
-    pluginManager.deactivatePlugin(pluginName);
-    pluginManager.setConfigured(pluginName, false);
+export function criticalPluginError(logChannel, errorMsg, plugin) {
+    // Push Operation to End of Processing Stack, in case plugins fail during init
+    setTimeout(() => {
+        logChannel.send(`Critical Error in Plugin ${plugin.name}!`);
+        logChannel.send(errorMsg);
+        logChannel.send(`Deactivating Plugin`);
+        plugin.pluginManager.deactivatePlugin(plugin.name);
+        plugin.pluginManager.setConfigured(plugin.name, false);
+    }, 0);
 }
 //# sourceMappingURL=errorHandling.js.map

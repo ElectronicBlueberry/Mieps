@@ -1,11 +1,13 @@
+import { InputType } from "./inputCollector.js";
+import { criticalPluginError } from "./errorHandling.js";
+export { InputType } from "./inputCollector.js";
 export var CommandType;
 (function (CommandType) {
     CommandType[CommandType["Chat"] = 0] = "Chat";
     CommandType[CommandType["Emoji"] = 1] = "Emoji";
 })(CommandType || (CommandType = {}));
 export class ChatCommand {
-    constructor(name, plugin) {
-        this.plugin = plugin;
+    constructor(name) {
         this.type = CommandType.Chat;
         this.allowNoArgs = false;
         this.permission = Permission.Any;
@@ -17,19 +19,70 @@ export class ChatCommand {
     ;
 }
 export class EmojiCommand {
-    constructor(name, emoji, plugin) {
-        this.plugin = plugin;
+    constructor(name) {
         this.type = CommandType.Emoji;
         this.permission = Permission.Any;
         // Whether to remove uses of this Emoji for Users without the right permissions
         this.removeInvalid = true;
         this.name = name;
-        this.emoji = emoji;
     }
     getHelpText() { return ""; }
     ;
     async run(reaction) { }
     ;
+}
+export class Plugin {
+    constructor(pluginManager, client) {
+        this.pluginManager = pluginManager;
+        this.client = client;
+        this.name = "base_plugin";
+    }
+    ;
+    async getSetting(setting, type) {
+        if (!this.state) {
+            criticalPluginError(this.pluginManager.controlChannel, `Tried to acess setting ${setting} while no state was set`, this);
+            return undefined;
+        }
+        let s = this.state.read("config", setting);
+        if (!s) {
+            criticalPluginError(this.pluginManager.controlChannel, `Could not acess Setting ${setting}`, this);
+            return undefined;
+        }
+        let guild = this.pluginManager.guild;
+        let response;
+        switch (type) {
+            case InputType.Channel:
+                {
+                    response = guild.channels.cache.get(s);
+                }
+                break;
+            case InputType.Emoji:
+                {
+                    response = guild.emojis.cache.get(s);
+                }
+                break;
+            case InputType.Role:
+                {
+                    response = await guild.roles.fetch(s);
+                }
+                break;
+            case InputType.User:
+                {
+                    response = await guild.members.fetch(s);
+                }
+                break;
+            case InputType.Text:
+                {
+                    response = s;
+                }
+                break;
+        }
+        if (!response) {
+            criticalPluginError(this.pluginManager.controlChannel, `Could not find any ${type} with the id ${s} on the server. Maybee it no longer exists? Reconfigure the plugin to fix this Error`, this);
+            return undefined;
+        }
+        return response;
+    }
 }
 export var Permission;
 (function (Permission) {
