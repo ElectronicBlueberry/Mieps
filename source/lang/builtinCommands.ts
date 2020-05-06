@@ -1,4 +1,4 @@
-import {State} from "../modules/state.js";
+import {ReadOnlyState} from "../modules/state.js";
 import {Plugin} from "../modules/plugin.js";
 import {ChatCommand, EmojiCommand} from "../modules/plugin.js";
 
@@ -18,7 +18,7 @@ Plugins müssen konfiguriert sein, befor sie aktiviert werden können:
 "${command_prefix}config [name]" Konfiguriere ein Plugin`;
 }
 
-export function pluginList(plugins: Map<string, Plugin>, pluginState: State): string {
+export function pluginList(plugins: Map<string, Plugin>, pluginState: ReadOnlyState): string {
 	let msg = "Folgende Plugins sind installiert: \n";
 
 	plugins.forEach(p => {
@@ -55,7 +55,9 @@ export function commandList(chatCommands: Map<string, ChatCommand>, emojiCommand
 
 export function configHelp(): string {
 	return `Nutze diesen Befehl, um Plugins zu konfigurieren.
-Schreibe "${command_prefix}config [plugin]" um die Konfiguration für ein Plugin zu beginnen,
+"${command_prefix}config [plugin]" konfiguriere ein Plugin,
+"${command_prefix}config all" konfiguriere alle unkonfigurierten Plugins
+
 oder "${command_prefix}plugin list" um eine Liste aller Plugins zu sehen`;
 }
 
@@ -67,4 +69,18 @@ Nutze "${command_prefix}plugin activate ${plugin}" um es zu aktivieren`;
 export function configDone(plugin: string): string {
 	return `Konfiguration für ${plugin} abgeschlossen!
 Nutze "${command_prefix}plugin activate ${plugin}" um das Plugin zu aktivieren`;
+}
+
+export function noUnconfigured(): string {
+	return `Es gibt keine unkonfigurierten Plugins.
+Nutze "${command_prefix}config [plugin]" um ein bestimmtes Plugin neu zu konfigurieren`;
+}
+
+export function nowConfiguring(plugin: string): string {
+	return `Konfiguriere nun Plugin: ${plugin}`;
+}
+
+export function allComplete(): string {
+	return `Alle Plugins konfiguriert!
+Nutze "${command_prefix}plugin activate all" um alle Plugins zu aktivieren`;
 }

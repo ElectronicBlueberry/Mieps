@@ -153,12 +153,40 @@ class ConfigCommand extends ChatCommand {
 			return;
 		}
 
-		let plugin: Plugin | undefined = this.pM.plugins.get(args[0]);
+		if (args[0] === "all") {
+			let pluginState = this.pM.getState();
+			let count = 0;
 
-		if (!plugin) {
-			channel.send(lang.pluginNotFound(args[0]));
-			return;
+			for (const [name, plugin] of this.pM.plugins) {
+				// Only configure configurable Plugins, which are not yet configured
+				if (!plugin.setupTemplate || pluginState.read(name, "configured")) continue;
+
+				channel.send(lang.nowConfiguring(name));
+				await this.configurePlugin(message, plugin);
+				
+				count++;
+			}
+
+			if (count === 0) {
+				channel.send(lang.noUnconfigured());
+			} else {
+				channel.send(lang.allComplete());
+			}
+		} else {
+			let plugin: Plugin | undefined = this.pM.plugins.get(args[0]);
+
+			if (!plugin) {
+				channel.send(lang.pluginNotFound(args[0]));
+				return;
+			}
+
+			await this.configurePlugin(message, plugin);
+			channel.send(lang.configDone(plugin.name));
 		}
+	}
+
+	private async configurePlugin(message: Discord.Message, plugin: Plugin): Promise<void> {
+		let channel = message.channel;
 
 		if (!plugin.setupTemplate) {
 			channel.send(lang.noConfig(plugin.name));
@@ -177,6 +205,5 @@ class ConfigCommand extends ChatCommand {
 		}
 
 		this.pM.setConfigured(plugin.name, true);
-		channel.send(lang.configDone(plugin.name));
 	}
 }
