@@ -34,11 +34,11 @@ export class PluginManager {
 		this.loadPlugin(this.permissionPlugin);
 	}
 
-	protected get guild(): Discord.Guild {
+	get guild(): Discord.Guild {
 		return this.client.guilds.cache.first() as Discord.Guild;
 	}
 
-	protected get controlChannel(): Discord.GuildChannel {
+	get controlChannel(): Discord.GuildChannel {
 		let c = this.guild.channels.cache.get(this.instanceConfig.control_channel);
 		if (!c) {
 			criticalError("Control Channel not found!");
