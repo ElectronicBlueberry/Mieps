@@ -8,14 +8,14 @@ export enum CommandType {
 	Emoji
 }
 
-export interface Command {
+export interface iCommand {
 	type: CommandType,
 	permission: Permission,
 	getHelpText: () => string,
 	name: string
 }
 
-export class ChatCommand implements Command {
+export class ChatCommand implements iCommand {
 	type = CommandType.Chat;
 	name: string;
 	allowNoArgs = false;
@@ -29,7 +29,7 @@ export class ChatCommand implements Command {
 	async run(message: Discord.Message, args: Array<string>): Promise<void> {};
 }
 
-export class EmojiCommand implements Command {
+export class EmojiCommand implements iCommand {
 	type = CommandType.Emoji;
 	name: string;
 	getHelpText() {return ""};
@@ -61,7 +61,7 @@ export interface iPlugin {
 	/** Will be run on every message */
 	messageStream?: MessageStream,
 	/** All commands this plugin contains */
-	commands?: Array<Command>,
+	commands?: Array<iCommand>,
 	/** A template for settings to be set on the discord server */
 	setupTemplate?: SetupTemplate,
 	/** The Plugins State */
