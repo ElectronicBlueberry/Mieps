@@ -1,5 +1,5 @@
 import {ReadOnlyState} from "../modules/state.js";
-import {Plugin} from "../modules/plugin.js";
+import {iPlugin} from "../modules/plugin.js";
 import {ChatCommand, EmojiCommand} from "../modules/plugin.js";
 
 import {command_prefix} from "../config/server.json";
@@ -18,7 +18,7 @@ Plugins müssen konfiguriert sein, befor sie aktiviert werden können:
 "${command_prefix}config [name]" Konfiguriere ein Plugin`;
 }
 
-export function pluginList(plugins: Map<string, Plugin>, pluginState: ReadOnlyState): string {
+export function pluginList(plugins: Map<string, iPlugin>, pluginState: ReadOnlyState): string {
 	let msg = "Folgende Plugins sind installiert: \n";
 
 	plugins.forEach(p => {

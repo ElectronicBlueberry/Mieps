@@ -22,7 +22,7 @@ export class ChatCommand implements Command {
 	getHelpText() {return ""};
 	permission = Permission.Any;
 
-	constructor(name: string, private plugin: Plugin) {
+	constructor(name: string, private plugin: iPlugin) {
 		this.name = name;
 	}
 
@@ -40,7 +40,7 @@ export class EmojiCommand implements Command {
 	
 	emoji: Discord.Emoji;
 
-	constructor(name: string, emoji: Discord.Emoji, private plugin: Plugin) {
+	constructor(name: string, emoji: Discord.Emoji, private plugin: iPlugin) {
 		this.name = name;
 		this.emoji = emoji;
 	}
@@ -48,7 +48,7 @@ export class EmojiCommand implements Command {
 	async run(reaction: Discord.MessageReaction): Promise<void> {};
 }
 
-export interface Plugin {
+export interface iPlugin {
 	/** The name of the Plugin */
 	name: string,
 	/** The Plugin Manager that handles this Plugin */

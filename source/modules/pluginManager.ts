@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-import {Plugin, ChatCommand, EmojiCommand, MessageStream, CommandType, Permission} from "./plugin.js";
+import {iPlugin, ChatCommand, EmojiCommand, MessageStream, CommandType, Permission} from "./plugin.js";
 import {criticalError} from "./errorHandling.js";
 import {State, ReadOnlyState} from "./state.js";
 import * as lang from "../lang/pluginManager.js"
@@ -8,7 +8,7 @@ import * as Discord from 'discord.js';
 import * as Query from "./inputCollector.js";
 
 export class PluginManager {
-	public plugins: Map<string, Plugin> = new Map();
+	public plugins: Map<string, iPlugin> = new Map();
 
 	private chatCommands: Map<string, ChatCommand> = new Map();
 	private emojiCommands: Map<string, EmojiCommand> = new Map();
@@ -17,7 +17,7 @@ export class PluginManager {
 	private pluginState = new State("plugin_manager");
 
 	// used to setup permissions in the configurator
-	private permissionPlugin: Plugin = {
+	private permissionPlugin: iPlugin = {
 		name: "permissions",
 		pluginManager: this,
 		client: this.client,
@@ -63,8 +63,8 @@ export class PluginManager {
 
 			for (const file of files) {
 				try {
-					let plugin = (await import(file)).plugin as Plugin;
-					this.loadPlugin(plugin);
+					let _Plugin = (await import(file)) as iPlugin;
+					this.loadPlugin(_Plugin);
 				} catch(e) {
 					console.error(`Failed to load Plugin ${file}`);
 				}
@@ -78,7 +78,7 @@ export class PluginManager {
 	 * Loads a single Plugin from Memory
 	 * @param plugin Plugin to load
 	 */
-	public loadPlugin(plugin: Plugin): void {
+	public loadPlugin(plugin: iPlugin): void {
 		this.plugins.set(plugin.name, plugin);
 
 		if (!plugin.setupTemplate) {
@@ -204,7 +204,7 @@ export class PluginManager {
 	}
 
 	/** Load a Plugin as a Built-In, which is required for other plugins/the bots operation, and cannot be deactivated, or configured */
-	public addBuiltin(plugin: Plugin): void {
+	public addBuiltin(plugin: iPlugin): void {
 		plugin.init?.();
 		this._loadCommands(plugin);
 	}
@@ -262,7 +262,7 @@ export class PluginManager {
 
 	// ========== Private Functions ==========
 
-	private _initiatePlugin(p: Plugin): void {
+	private _initiatePlugin(p: iPlugin): void {
 		if (this.pluginState.read(p.name, "active")) {
 			p.init?.();
 			this._loadCommands(p);
@@ -270,7 +270,7 @@ export class PluginManager {
 	}
 
 	/** Loads a Plugins commands */
-	private _loadCommands(plugin: Plugin): void {
+	private _loadCommands(plugin: iPlugin): void {
 		plugin.commands?.forEach(command => {
 			if (command.type === CommandType.Chat) this.chatCommands.set(command.name, command as ChatCommand);
 			if (command.type === CommandType.Emoji) this.emojiCommands.set((command as EmojiCommand).emoji.toString(), command as EmojiCommand);
@@ -280,7 +280,7 @@ export class PluginManager {
 	}
 
 	// Remove a Plugins Commands from the Command Maps, so they wont be called again
-	private _unloadCommands(plugin: Plugin): void {
+	private _unloadCommands(plugin: iPlugin): void {
 		plugin.commands?.forEach(command => {
 			if (command.type === CommandType.Chat) this.chatCommands.delete(command.name);
 			if (command.type === CommandType.Emoji) this.emojiCommands.delete((command as EmojiCommand).emoji.toString());

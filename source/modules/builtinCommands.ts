@@ -1,11 +1,11 @@
-import {ChatCommand, Permission, EmojiCommand, Plugin, Command} from "./plugin.js";
+import {ChatCommand, Permission, EmojiCommand, iPlugin, Command} from "./plugin.js";
 import * as lang from "../lang/builtinCommands.js";
 import * as Discord from 'discord.js';
 import {PluginManager} from "./pluginManager.js";
 import * as Query from "./inputCollector.js";
 
 
-export class BuiltIn implements Plugin {
+export class BuiltIn implements iPlugin {
 	name = "builtin-commands";
 	commands: Array<Command>;
 	constructor(public client: Discord.Client, public pluginManager: PluginManager) {
@@ -23,7 +23,7 @@ class PluginCommand extends ChatCommand {
 	permission = Permission.Admin;
 	pM: PluginManager;
 
-	constructor(plugin: Plugin) {
+	constructor(plugin: iPlugin) {
 		super("plugin", plugin);
 
 		this.pM = plugin.pluginManager;
@@ -85,7 +85,7 @@ class HelpCommand extends ChatCommand {
 	permission = Permission.Any;
 	pM: PluginManager;
 
-	constructor(plugin: Plugin) {
+	constructor(plugin: iPlugin) {
 		super("help", plugin);
 
 		this.pM = plugin.pluginManager;
@@ -135,7 +135,7 @@ class ConfigCommand extends ChatCommand {
 	permission = Permission.Admin;
 	pM: PluginManager;
 	
-	constructor(plugin: Plugin) {
+	constructor(plugin: iPlugin) {
 		super("config", plugin);
 
 		this.pM = plugin.pluginManager;
@@ -163,7 +163,7 @@ class ConfigCommand extends ChatCommand {
 
 				channel.send(lang.nowConfiguring(name));
 				await this.configurePlugin(message, plugin);
-				
+
 				count++;
 			}
 
@@ -173,7 +173,7 @@ class ConfigCommand extends ChatCommand {
 				channel.send(lang.allComplete());
 			}
 		} else {
-			let plugin: Plugin | undefined = this.pM.plugins.get(args[0]);
+			let plugin: iPlugin | undefined = this.pM.plugins.get(args[0]);
 
 			if (!plugin) {
 				channel.send(lang.pluginNotFound(args[0]));
@@ -185,7 +185,7 @@ class ConfigCommand extends ChatCommand {
 		}
 	}
 
-	private async configurePlugin(message: Discord.Message, plugin: Plugin): Promise<void> {
+	private async configurePlugin(message: Discord.Message, plugin: iPlugin): Promise<void> {
 		let channel = message.channel;
 
 		if (!plugin.setupTemplate) {
