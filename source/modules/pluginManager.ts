@@ -2,7 +2,7 @@ import * as fs from 'fs';
 
 import {Plugin, ChatCommand, EmojiCommand, MessageStream, CommandType, Permission} from "./plugin.js";
 import {criticalError} from "./errorHandling.js";
-import {State} from "./state.js";
+import {State, ReadOnlyState} from "./state.js";
 import * as lang from "../lang/pluginManager.js"
 import * as Discord from 'discord.js';
 import * as Query from "./inputCollector.js";
@@ -32,7 +32,7 @@ export class PluginManager {
 		this.loadPlugin(this.permissionPlugin);
 	}
 
-	public getState(): State {
+	public getState(): ReadOnlyState {
 		return this.pluginState;
 	}
 
