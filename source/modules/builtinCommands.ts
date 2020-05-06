@@ -100,15 +100,15 @@ class HelpCommand extends ChatCommand {
 		let member = message.member as Discord.GuildMember;
 		let perm = this.pM.getHighestMemberPermission(member);
 
-		let cCommands: Map<string, ChatCommand> = new Map();
-		let eCommands: Map<string, EmojiCommand> = new Map();
+		let cCommands: Discord.Collection<string, ChatCommand> = new Discord.Collection();
+		let eCommands: Discord.Collection<string, EmojiCommand> = new Discord.Collection();
 
 		this.pM.getChatCommands().forEach(c => {
 			if (c.permission <= perm) cCommands.set(c.name, c);
 		});
 
 		this.pM.getEmojiCommands().forEach(c => {
-			if (c.permission <= perm) eCommands.set(c.emoji.toString(), c);
+			if (c.permission <= perm && c.emoji) eCommands.set(c.emoji.toString(), c);
 		});
 
 		if (args.length > 0) {

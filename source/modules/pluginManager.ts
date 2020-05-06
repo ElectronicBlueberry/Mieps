@@ -7,12 +7,14 @@ import * as lang from "../lang/pluginManager.js"
 import * as Discord from 'discord.js';
 import * as Query from "./inputCollector.js";
 
-export class PluginManager {
-	public plugins: Map<string, iPlugin> = new Map();
+type Collection<K,V> = Discord.Collection<K,V>;
 
-	private chatCommands: Map<string, ChatCommand> = new Map();
-	private emojiCommands: Map<string, EmojiCommand> = new Map();
-	private messageStreams: Map<string, MessageStream> = new Map();
+export class PluginManager {
+	public plugins: Collection<string, iPlugin> = new Discord.Collection();
+
+	private chatCommands: Collection<string, ChatCommand> = new Discord.Collection();
+	private emojiCommands: Collection<string, EmojiCommand> = new Discord.Collection();
+	private messageStreams: Collection<string, MessageStream> = new Discord.Collection();
 
 	private pluginState = new State("plugin_manager");
 
@@ -36,11 +38,11 @@ export class PluginManager {
 		return this.pluginState;
 	}
 
-	public getChatCommands(): Map<string, ChatCommand> {
+	public getChatCommands(): Collection<string, ChatCommand> {
 		return this.chatCommands;
 	}
 
-	public getEmojiCommands(): Map<string, EmojiCommand> {
+	public getEmojiCommands(): Collection<string, EmojiCommand> {
 		return this.emojiCommands;
 	}
 
@@ -49,7 +51,9 @@ export class PluginManager {
 	}
 
 	public addEmojiCommand(command: EmojiCommand): void {
-		this.emojiCommands.set(command.emoji.toString(), command);
+		if (command.emoji) {
+			this.emojiCommands.set(command.emoji.toString(), command);
+		}
 	}
 
 	/**
@@ -274,17 +278,27 @@ export class PluginManager {
 	private _loadCommands(plugin: iPlugin): void {
 		plugin.commands?.forEach(command => {
 			if (command.type === CommandType.Chat) this.chatCommands.set(command.name, command as ChatCommand);
-			if (command.type === CommandType.Emoji) this.emojiCommands.set((command as EmojiCommand).emoji.toString(), command as EmojiCommand);
+			if (command.type === CommandType.Emoji) {
+				let _command = command as EmojiCommand;
+				if (_command.emoji) {
+					this.emojiCommands.set(_command.emoji.toString(), _command);
+				}
+			}
 		});
 
 		if (plugin.messageStream) this.messageStreams.set(plugin.name, plugin.messageStream);
 	}
 
-	// Remove a Plugins Commands from the Command Maps, so they wont be called again
+	// Remove a Plugins Commands from the Command Collections, so they wont be called again
 	private _unloadCommands(plugin: iPlugin): void {
 		plugin.commands?.forEach(command => {
 			if (command.type === CommandType.Chat) this.chatCommands.delete(command.name);
-			if (command.type === CommandType.Emoji) this.emojiCommands.delete((command as EmojiCommand).emoji.toString());
+			if (command.type === CommandType.Emoji) {
+				let _command = command as EmojiCommand;
+				if (_command.emoji) {
+					this.emojiCommands.delete(_command.emoji.toString());
+				}
+			}
 		});
 
 		if (plugin.messageStream) this.messageStreams.delete(plugin.name);

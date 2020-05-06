@@ -38,11 +38,10 @@ export class EmojiCommand implements Command {
 	// Whether to remove uses of this Emoji for Users without the right permissions
 	removeInvalid = true;
 	
-	emoji: Discord.Emoji;
+	emoji?: Discord.Emoji;
 
-	constructor(name: string, emoji: Discord.Emoji, private plugin: iPlugin) {
+	constructor(name: string, private plugin: iPlugin) {
 		this.name = name;
-		this.emoji = emoji;
 	}
 
 	async run(reaction: Discord.MessageReaction): Promise<void> {};
