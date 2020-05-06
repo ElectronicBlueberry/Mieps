@@ -222,8 +222,8 @@ export class PluginManager {
 	}
 
 	/** Load a Plugin as a Built-In, which is required for other plugins/the bots operation, and cannot be deactivated, or configured */
-	public addBuiltin(plugin: iPlugin): void {
-		plugin.init?.();
+	public async addBuiltin(plugin: iPlugin): Promise<void> {
+		await plugin.init?.();
 		this._loadCommands(plugin);
 	}
 
@@ -280,9 +280,9 @@ export class PluginManager {
 
 	// ========== Private Functions ==========
 
-	private _initiatePlugin(p: iPlugin): void {
+	private async _initiatePlugin(p: iPlugin): Promise<void> {
 		if (this.pluginState.read(p.name, "active")) {
-			p.init?.();
+			await p.init?.();
 			this._loadCommands(p);
 		}
 	}

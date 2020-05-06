@@ -58,7 +58,7 @@ export interface iPlugin {
 	/** The Bots Client */
 	client: Discord.Client,
 	/** Called once the Bot is ready */
-	init?: () => void,
+	init?: () => Promise<void>,
 	/** A short description of what the plugin does */
 	description?: string,
 	/** Will be run on every message */
