@@ -7,6 +7,8 @@ import { embedFromMessage } from "../modules/embedMaker.js";
 
 export default class MessageMover extends Plugin.Plugin implements Plugin.iPlugin {
 	name = "message_mover";
+	description = lang.pluginDescription;
+
 	state = new State(this.name);
 
 	setupTemplate: Plugin.SetupTemplate = [
@@ -33,6 +35,12 @@ class DeleteSingle extends Plugin.EmojiCommand {
 		super("deleteSingle");
 	}
 
+	permission = Plugin.Permission.Mod;
+	
+	getHelpText() {
+		return lang.deleteSingleHelp;
+	}
+
 	async run(reaction: Discord.MessageReaction): Promise<void> {
 		let logChannel = await this.plugin.getSetting<Discord.TextChannel>("audit_log_channel", Plugin.InputType.Channel);
 
@@ -41,7 +49,7 @@ class DeleteSingle extends Plugin.EmojiCommand {
 			let embed = embedFromMessage(message);
 
 			await logChannel?.send(lang.logMessage(reaction.users.cache.first()), embed);
-			message.delete();
+			await message.delete();
 		} catch {
 			logChannel?.send(lang.deleteFailed());
 		}
