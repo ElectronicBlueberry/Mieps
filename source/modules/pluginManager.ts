@@ -38,13 +38,13 @@ export class PluginManager {
 		return this.client.guilds.cache.first() as Discord.Guild;
 	}
 
-	get controlChannel(): Discord.GuildChannel {
+	get controlChannel(): Discord.TextChannel {
 		let c = this.guild.channels.cache.get(this.instanceConfig.control_channel);
-		if (!c) {
+		if (!c || c.type !== "text") {
 			criticalError("Control Channel not found!");
-			return {} as Discord.GuildChannel;
+			return {} as Discord.TextChannel;
 		}
-		return c;
+		return c as Discord.TextChannel;
 	}
 
 	public getState(): ReadOnlyState {
