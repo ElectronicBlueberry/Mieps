@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-import {iPlugin, ChatCommand, EmojiCommand, MessageStream, CommandType, Permission} from "./plugin.js";
+import {iPlugin, Plugin, ChatCommand, EmojiCommand, MessageStream, CommandType, Permission} from "./plugin.js";
 import {criticalError} from "./errorHandling.js";
 import {State, ReadOnlyState} from "./state.js";
 import * as lang from "../lang/pluginManager.js"
@@ -63,8 +63,9 @@ export class PluginManager {
 
 			for (const file of files) {
 				try {
-					let _Plugin = (await import(file)) as iPlugin;
-					this.loadPlugin(_Plugin);
+					let _Plugin = await import(file);
+					let pluginInstance = new _Plugin(this, this.client) as Plugin;
+					this.loadPlugin(pluginInstance);
 				} catch(e) {
 					console.error(`Failed to load Plugin ${file}`);
 				}

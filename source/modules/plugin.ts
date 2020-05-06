@@ -70,7 +70,8 @@ export interface iPlugin {
 }
 
 export class Plugin implements iPlugin {
-	constructor(public name: string, public pluginManager: PluginManager, public client: Discord.Client) {}
+	public name = "base_plugin";
+	constructor(public pluginManager: PluginManager, public client: Discord.Client) {}
 }
 
 /** A List of settings, to be set by the admin */
