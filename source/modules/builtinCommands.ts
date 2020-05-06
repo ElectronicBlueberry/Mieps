@@ -23,8 +23,8 @@ class PluginCommand extends ChatCommand {
 	permission = Permission.Admin;
 	pM: PluginManager;
 
-	constructor(plugin: iPlugin) {
-		super("plugin", plugin);
+	constructor(private plugin: iPlugin) {
+		super("plugin");
 
 		this.pM = plugin.pluginManager;
 	}
@@ -85,8 +85,8 @@ class HelpCommand extends ChatCommand {
 	permission = Permission.Any;
 	pM: PluginManager;
 
-	constructor(plugin: iPlugin) {
-		super("help", plugin);
+	constructor(private plugin: iPlugin) {
+		super("help");
 
 		this.pM = plugin.pluginManager;
 	}
@@ -135,8 +135,8 @@ class ConfigCommand extends ChatCommand {
 	permission = Permission.Admin;
 	pM: PluginManager;
 	
-	constructor(plugin: iPlugin) {
-		super("config", plugin);
+	constructor(private plugin: iPlugin) {
+		super("config");
 
 		this.pM = plugin.pluginManager;
 	}
