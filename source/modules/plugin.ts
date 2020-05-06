@@ -4,6 +4,8 @@ import {InputType} from "./inputCollector.js";
 import {PluginManager} from "./pluginManager";
 import { criticalPluginError } from "./errorHandling.js";
 
+export {InputType} from "./inputCollector.js";
+
 export enum CommandType {
 	Chat,
 	Emoji
