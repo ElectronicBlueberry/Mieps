@@ -1,4 +1,4 @@
-import {ChatCommand, Permission, EmojiCommand, iPlugin, Command} from "./plugin.js";
+import {ChatCommand, Permission, EmojiCommand, iPlugin, iCommand} from "./plugin.js";
 import * as lang from "../lang/builtinCommands.js";
 import * as Discord from 'discord.js';
 import {PluginManager} from "./pluginManager.js";
@@ -7,7 +7,7 @@ import * as Query from "./inputCollector.js";
 
 export class BuiltIn implements iPlugin {
 	name = "builtin-commands";
-	commands: Array<Command>;
+	commands: Array<iCommand>;
 	constructor(public client: Discord.Client, public pluginManager: PluginManager) {
 
 		this.commands = [
