@@ -154,7 +154,7 @@ class ConfigCommand extends ChatCommand {
         }
     }
     async configurePlugin(message, plugin) {
-        var _a;
+        var _a, _b;
         let channel = message.channel;
         if (!plugin.setupTemplate) {
             channel.send(lang.noConfig(plugin.name));
@@ -166,7 +166,12 @@ class ConfigCommand extends ChatCommand {
             input = await Query.queryInput(channel, message.author, setting.description || setting.name, setting.type);
             if (input === Query.InputReturns.Canceled || input === Query.InputReturns.TimedOut)
                 return;
-            (_a = plugin.state) === null || _a === void 0 ? void 0 : _a.write("config", setting.name, input);
+            if (setting.type === Query.InputType.Message) {
+                (_a = plugin.state) === null || _a === void 0 ? void 0 : _a.write("config", setting.name, [channel.id, input]);
+            }
+            else {
+                (_b = plugin.state) === null || _b === void 0 ? void 0 : _b.write("config", setting.name, input);
+            }
         }
         this.pM.setConfigured(plugin.name, true);
     }

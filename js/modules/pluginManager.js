@@ -126,16 +126,19 @@ export class PluginManager {
             commannd.run(message, args);
     }
     /** Run a reaction as a emoji command */
-    async runEmojiCommand(reaction, member) {
+    async runEmojiCommand(reaction, user) {
         // Find command
         let command = this.emojiCommands.get(reaction.emoji.toString());
         if (!command)
+            return;
+        let member = await this.guild.members.fetch(user);
+        if (!member)
             return;
         // Check for permissons
         let memberPerm = this.getHighestMemberPermission(member);
         let perm = memberPerm >= command.permission;
         if (perm) {
-            command.run(reaction);
+            command.run(reaction, member);
         }
         else if (command.removeInvalid) {
             reaction.users.remove(member);

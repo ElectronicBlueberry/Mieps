@@ -28,7 +28,7 @@ export class EmojiCommand {
     }
     getHelpText() { return ""; }
     ;
-    async run(reaction) { }
+    async run(reaction, member) { }
     ;
 }
 export class Plugin {
@@ -39,6 +39,7 @@ export class Plugin {
     }
     ;
     async getSetting(setting, type) {
+        var _a, _b;
         if (!this.state) {
             criticalPluginError(this.pluginManager.controlChannel, `Tried to acess setting ${setting} while no state was set`, this);
             return undefined;
@@ -71,6 +72,12 @@ export class Plugin {
                     response = await guild.members.fetch(s);
                 }
                 break;
+            case InputType.Message: {
+                try {
+                    response = await ((_b = (_a = (await guild.channels.cache.get(s[0]))) === null || _a === void 0 ? void 0 : _a.messages) === null || _b === void 0 ? void 0 : _b.fetch(s[1]));
+                }
+                catch { }
+            }
             case InputType.Text:
                 {
                     response = s;

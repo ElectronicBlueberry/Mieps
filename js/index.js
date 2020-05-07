@@ -50,10 +50,10 @@ client.on("message", async (message) => {
         }
     }
 });
-client.on("messageReactionAdd", async (reaction) => {
-    if (reaction.message.channel.type !== "text" || reaction.me)
+client.on("messageReactionAdd", async (reaction, user) => {
+    if (reaction.message.channel.type !== "text" || user.bot)
         return;
-    pluginManager.runEmojiCommand(reaction, reaction.message.member);
+    pluginManager.runEmojiCommand(reaction, user);
 });
 // Trigger Reactions for uncached messages
 // @ts-ignore: Argument type error
