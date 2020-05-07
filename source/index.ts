@@ -61,10 +61,10 @@ client.on("message", async (message) => {
 	}
 });
 
-client.on("messageReactionAdd", async (reaction) => {
+client.on("messageReactionAdd", async (reaction, user) => {
 	if (reaction.message.channel.type !== "text" || reaction.me) return;
 
-	pluginManager.runEmojiCommand(reaction, reaction.message.member as Discord.GuildMember);
+	pluginManager.runEmojiCommand(reaction, user as Discord.User);
 });
 
 // Trigger Reactions for uncached messages

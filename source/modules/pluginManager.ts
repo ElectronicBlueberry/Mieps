@@ -142,10 +142,13 @@ export class PluginManager {
 	}
 
 	/** Run a reaction as a emoji command */
-	public async runEmojiCommand(reaction: Discord.MessageReaction, member: Discord.GuildMember): Promise<void> {
+	public async runEmojiCommand(reaction: Discord.MessageReaction, user: Discord.User): Promise<void> {
 		// Find command
 		let command = this.emojiCommands.get(reaction.emoji.toString());
 		if (!command) return;
+
+		let member = await this.guild.members.fetch(user);
+		if (!member) return;
 
 		// Check for permissons
 		let memberPerm = this.getHighestMemberPermission(member);
