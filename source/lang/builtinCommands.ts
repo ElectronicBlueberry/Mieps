@@ -4,6 +4,10 @@ import {ChatCommand, EmojiCommand} from "../modules/plugin.js";
 
 import {command_prefix} from "../config/server.json";
 
+export function pluginActivated(pluginName: string): string {
+	return `Plugin ${pluginName} aktiviert!`;
+}
+
 export function pluginNotConfigured(pluginName: string): string {
 	return `Kann das Plugin ${pluginName} nicht aktivieren, da es nicht kongifuriert ist.
 	Nutze "${command_prefix}config ${pluginName} um das Plugin zu konfigurieren`;

@@ -56,6 +56,8 @@ class PluginCommand extends ChatCommand {
 				let found = this.pM.activatePlugin(args[1]);
 				if (!found) {
 					channel.send(lang.pluginNotFound(args[1]));
+				} else {
+					channel.send(lang.pluginActivated(args[1]));
 				}
 			} break;
 
