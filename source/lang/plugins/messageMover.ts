@@ -9,6 +9,7 @@ export const deleteEmoji = `Das Emoji um eine Nachricht zu löschen`;
 export const copyEmoji = `Das Emoji um eine Nachricht zu kopieren`;
 
 export const deleteSingleHelp = `Reagiere mit diesem Emoji auf eine Nachricht um sie zu löschen`;
+export const copySingleHelp = `Reagiere mit diesem Emoji auf eine Nachricht um sie zu dokumentieren`;
 
 export function failMessage(): string {
 	return `Ich konnte leider keine Nachrichten verschieben`;
@@ -22,16 +23,16 @@ export function moveSingle(target: string): string {
 	return `Eine Nachricht wurde nach Target verschoben`;
 }
 
-export function logMessage(user: Discord.User | undefined): string {
-	return `Gelöscht von: ${user?.toString()}`;
+export function logMessage(user: Discord.GuildMember): string {
+	return `Gelöscht von: ${user.toString()}`;
 }
 
 export function deleteFailed(): string {
 	return `Löschung Fehlgeschlagen!`;
 }
 
-export function copyLog(user: Discord.User | undefined): string {
-	return `Kopiert von ${user?.toString()}`;
+export function copyLog(user: Discord.GuildMember): string {
+	return `Kopiert von ${user.toString()}`;
 }
 
 export function copyFailed(): string {
