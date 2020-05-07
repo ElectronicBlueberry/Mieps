@@ -109,6 +109,12 @@ export class Plugin implements iPlugin {
 				response = await guild.members.fetch(s);
 			} break;
 
+			case InputType.Message: {
+				try {
+					response = await (await guild.channels.cache.get(s[0]) as Discord.TextChannel)?.messages?.fetch(s[1]);
+				} catch {}
+			}
+			
 			case InputType.Text: {
 				response = s;
 			} break;

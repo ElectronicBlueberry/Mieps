@@ -201,7 +201,11 @@ class ConfigCommand extends ChatCommand {
 			input = await Query.queryInput(channel as Discord.TextChannel, message.author, setting.description || setting.name, setting.type);
 			if (input === Query.InputReturns.Canceled || input === Query.InputReturns.TimedOut) return;
 
-			plugin.state?.write("config", setting.name, input);
+			if (setting.type === Query.InputType.Message) {
+				plugin.state?.write("config", setting.name, [channel.id, input]);
+			} else {
+				plugin.state?.write("config", setting.name, input);
+			}
 		}
 
 		this.pM.setConfigured(plugin.name, true);
