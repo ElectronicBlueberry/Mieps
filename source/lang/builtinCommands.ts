@@ -12,6 +12,21 @@ export function pluginDeactivated(pluginName: string): string {
 	return `Plugin ${pluginName} deaktiviert!`;
 }
 
+export function pluginCommandList(pluginName: string, chatCommands?: ChatCommand[], emojiCommands?: EmojiCommand[]): string {
+	let list = `Folgende Befehle sind Teil von dem Plugin "${pluginName}":\n`
+	chatCommands?.forEach(c => {
+		list += `\n${command_prefix}${c.name}`;
+	});
+
+	emojiCommands?.forEach(c => {
+		list += `\n${c.emoji}`;
+	});
+
+	list += `\n\nNutze "${command_prefix}help [befehl]" um mehr über den Befehl zu erfahren`
+
+	return list;
+}
+
 export function pluginNotConfigured(pluginName: string): string {
 	return `Kann das Plugin ${pluginName} nicht aktivieren, da es nicht kongifuriert ist.
 	Nutze "${command_prefix}config ${pluginName} um das Plugin zu konfigurieren`;
@@ -22,6 +37,8 @@ export function pluginCommandHelp(): string {
 "${command_prefix}plugin activate [name]" Aktiviere ein Plugin
 "${command_prefix}plugin deactivate [name]" Deaktiviere ein Plugin
 "${command_prefix}plugin activate all" Aktiviere alle Plugins
+"${command_prefix}plugin commands [name]" Zeige alle Befehle die zu diesem Plugin gehören 
+
 Plugins müssen konfiguriert sein, befor sie aktiviert werden können:
 "${command_prefix}config [name]" Konfiguriere ein Plugin`;
 }

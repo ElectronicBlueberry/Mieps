@@ -1,4 +1,4 @@
-import {ChatCommand, Permission, EmojiCommand, iPlugin, iCommand} from "./plugin.js";
+import {ChatCommand, Permission, EmojiCommand, iPlugin, iCommand, CommandType} from "./plugin.js";
 import * as lang from "../lang/builtinCommands.js";
 import * as Discord from 'discord.js';
 import {PluginManager} from "./pluginManager.js";
@@ -77,6 +77,17 @@ class PluginCommand extends ChatCommand {
 
 			case "list": {
 				channel.send(lang.pluginList(this.pM.plugins, this.pM.getState()));
+			} break;
+
+			case "commands": {
+				let plugin = this.pM.plugins.get(args[1]);
+				if (!plugin) {
+					channel.send(lang.pluginNotFound(args[1]));
+				} else {
+					let cCommands = plugin.commands?.filter(p => p.type === CommandType.Chat) as ChatCommand[] | undefined;
+					let eCommands = plugin.commands?.filter(p => p.type === CommandType.Emoji) as EmojiCommand[] | undefined;
+					channel.send(lang.pluginCommandList(args[1], cCommands, eCommands));
+				}
 			} break;
 
 			default:
