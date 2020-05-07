@@ -44,7 +44,9 @@ export default class MessageMover extends Plugin.Plugin implements Plugin.iPlugi
 		this.copySingle,
 		this.startSelection,
 		this.endSelection,
-		new MoveMessages(this)
+		new MoveMessages(this),
+		new DeleteMessages(this),
+		new CopyMessages(this)
 	]
 }
 
@@ -124,7 +126,7 @@ class DeleteSingle extends Plugin.EmojiCommand {
 			let message = reaction.message;
 			let embed = embedFromMessage(message);
 
-			await logChannel?.send(lang.logMessage(member), embed);
+			await (logChannel as Discord.TextChannel).send(lang.logMessage(member), embed);
 			await message.delete();
 		} catch {
 			logChannel?.send(lang.deleteFailed());
@@ -238,6 +240,85 @@ class MoveMessages extends Plugin.ChatCommand {
 			message.delete();
 		} catch {
 			message.channel.send(lang.failMessage());
+		}
+	}
+}
+
+class CopyMessages extends Plugin.ChatCommand {
+	constructor(private plugin: MessageMover) {
+		super("copy");
+	}
+
+	permission = Plugin.Permission.Mod;
+
+	async run(message: Discord.Message, args: Array<string>): Promise<void> {
+		let member = message.member as Discord.GuildMember;
+
+		try {
+			let messages = await fetchSelected(member, this.plugin.state);
+
+			if (!messages) {
+				message.channel.send(lang.copyFailed());
+				return;
+			}
+
+			let embeds = messages.map(m => {
+				return embedFromMessage(m);
+			});
+
+			// Send Messages to new Channel
+			for (const embed of embeds) {
+				await message.channel.send("", embed);
+			}
+
+			// Delete Command
+			await message.delete();
+		} catch {
+			message.channel.send(lang.copyFailed());
+		}
+	}
+}
+
+class DeleteMessages extends Plugin.ChatCommand {
+	constructor(private plugin: MessageMover) {
+		super("delete");
+	}
+
+	permission = Plugin.Permission.Mod;
+
+	async run(message: Discord.Message, args: Array<string>): Promise<void> {
+		let member = message.member as Discord.GuildMember;
+		let logChannel = await this.plugin.getLogChannel();
+
+		try {
+			let messages = await fetchSelected(member, this.plugin.state);
+
+			if (!messages) {
+				message.channel.send(lang.deleteFailed());
+				return;
+			}
+
+			let embeds = messages.map(m => {
+				return embedFromMessage(m);
+			});
+
+			// Log Message
+			await (logChannel as Discord.TextChannel).send(lang.logMessage(member));
+
+			// Send Messages to log-Channel
+			for (const embed of embeds) {
+				await (logChannel as Discord.TextChannel).send("", embed);
+			}
+
+			// Delete old Messages
+			messages.forEach(m => {
+				m.delete();
+			});
+
+			// Delete Command
+			await message.delete();
+		} catch {
+			message.channel.send(lang.deleteFailed());
 		}
 	}
 }
