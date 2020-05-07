@@ -155,7 +155,7 @@ export class PluginManager {
 		let perm = memberPerm >= command.permission;
 
 		if (perm) {
-			command.run(reaction);
+			command.run(reaction, member);
 		} else if (command.removeInvalid) {
 			reaction.users.remove(member);
 		}

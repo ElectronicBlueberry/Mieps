@@ -47,7 +47,7 @@ export class EmojiCommand implements iCommand {
 		this.name = name;
 	}
 
-	async run(reaction: Discord.MessageReaction): Promise<void> {};
+	async run(reaction: Discord.MessageReaction, member: Discord.GuildMember): Promise<void> {};
 }
 
 export interface iPlugin {
