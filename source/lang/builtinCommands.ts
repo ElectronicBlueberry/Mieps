@@ -8,6 +8,10 @@ export function pluginActivated(pluginName: string): string {
 	return `Plugin ${pluginName} aktiviert!`;
 }
 
+export function pluginDeactivated(pluginName: string): string {
+	return `Plugin ${pluginName} deaktiviert!`;
+}
+
 export function pluginNotConfigured(pluginName: string): string {
 	return `Kann das Plugin ${pluginName} nicht aktivieren, da es nicht kongifuriert ist.
 	Nutze "${command_prefix}config ${pluginName} um das Plugin zu konfigurieren`;
