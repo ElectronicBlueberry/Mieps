@@ -4,8 +4,6 @@ import { State } from "../modules/state.js";
 
 import * as Discord from "discord.js";
 import { embedFromMessage } from "../modules/embedMaker.js";
-import { stat } from "fs";
-import { stringify } from "querystring";
 
 // ========== Plugin ==========
 
