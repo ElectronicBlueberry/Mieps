@@ -115,7 +115,7 @@ export class Plugin implements iPlugin {
 				} catch {}
 			}
 			
-			case InputType.Text: {
+			case InputType.Text: case InputType.Number: {
 				response = s;
 			} break;
 		}

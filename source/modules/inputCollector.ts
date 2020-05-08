@@ -9,7 +9,8 @@ export enum InputType {
 	Role,
 	Channel,
 	Message,
-	Text
+	Text,
+	Number
 }
 
 export enum InputReturns {
@@ -122,6 +123,10 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 
 			case InputType.Text: {
 				return msg.content;
+			} break;
+
+			case InputType.Number: {
+				return parseInt(msg.content, 10);
 			} break;
 		}
 	}
