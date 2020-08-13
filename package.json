@@ -11,6 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "discord.js": "^12.2.0",
+    "emoji-regex": "^9.0.0",
     "esm": "^3.2.25"
   },
   "devDependencies": {
