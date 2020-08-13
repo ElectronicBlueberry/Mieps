@@ -6,6 +6,9 @@ import { criticalPluginError } from "./errorHandling.js";
 
 export {InputType} from "./inputCollector.js";
 
+// Matches discord IDs only
+const idRegex = /^[0-9]*$/;
+
 export enum CommandType {
 	Chat,
 	Emoji
@@ -98,7 +101,14 @@ export class Plugin implements iPlugin {
 			} break;
 
 			case InputType.Emoji: {
-				response = guild.emojis.cache.get(s);
+				if (s.match(idRegex)) {
+					response = guild.emojis.cache.get(s);
+				} /*else {
+					let emoji: Discord.Emoji = {
+						animated: false,
+
+					};
+				}*/
 			} break;
 
 			case InputType.Role: {
@@ -113,7 +123,7 @@ export class Plugin implements iPlugin {
 				try {
 					response = await (await guild.channels.cache.get(s[0]) as Discord.TextChannel | undefined)?.messages?.fetch(s[1]);
 				} catch {}
-			}
+			} break;
 			
 			case InputType.Text: case InputType.Number: {
 				response = s;
@@ -121,7 +131,7 @@ export class Plugin implements iPlugin {
 		}
 
 		if (!response) {
-			criticalPluginError(this.pluginManager.controlChannel, `Could not find any ${type} with the id ${s} on the server. Maybee it no longer exists? Reconfigure the plugin to fix this Error`, this);
+			criticalPluginError(this.pluginManager.controlChannel, `Could not find any ${InputType[type]} with the id ${s} on the server. Maybee it no longer exists? Reconfigure the plugin to fix this Error`, this);
 			return undefined;
 		}
 
