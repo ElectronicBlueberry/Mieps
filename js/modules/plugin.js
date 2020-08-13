@@ -1,6 +1,9 @@
+import * as Discord from "discord.js";
 import { InputType } from "./inputCollector.js";
 import { criticalPluginError } from "./errorHandling.js";
 export { InputType } from "./inputCollector.js";
+// Matches discord IDs only
+const idRegex = /^[0-9]*$/;
 export var CommandType;
 (function (CommandType) {
     CommandType[CommandType["Chat"] = 0] = "Chat";
@@ -59,7 +62,14 @@ export class Plugin {
                 break;
             case InputType.Emoji:
                 {
-                    response = guild.emojis.cache.get(s);
+                    if (s.match(idRegex)) {
+                        // custom Emoji
+                        response = guild.emojis.cache.get(s);
+                    }
+                    else {
+                        // unicode Emoji
+                        response = new Discord.Emoji(this.client, { id: null, name: s });
+                    }
                 }
                 break;
             case InputType.Role:
@@ -72,20 +82,23 @@ export class Plugin {
                     response = await guild.members.fetch(s);
                 }
                 break;
-            case InputType.Message: {
-                try {
-                    response = await ((_b = (_a = (await guild.channels.cache.get(s[0]))) === null || _a === void 0 ? void 0 : _a.messages) === null || _b === void 0 ? void 0 : _b.fetch(s[1]));
+            case InputType.Message:
+                {
+                    try {
+                        response = await ((_b = (_a = (await guild.channels.cache.get(s[0]))) === null || _a === void 0 ? void 0 : _a.messages) === null || _b === void 0 ? void 0 : _b.fetch(s[1]));
+                    }
+                    catch { }
                 }
-                catch { }
-            }
+                break;
             case InputType.Text:
+            case InputType.Number:
                 {
                     response = s;
                 }
                 break;
         }
         if (!response) {
-            criticalPluginError(this.pluginManager.controlChannel, `Could not find any ${type} with the id ${s} on the server. Maybee it no longer exists? Reconfigure the plugin to fix this Error`, this);
+            criticalPluginError(this.pluginManager.controlChannel, `Could not find any ${InputType[type]} with the id ${s} on the server. Maybee it no longer exists? Reconfigure the plugin to fix this Error`, this);
             return undefined;
         }
         return response;

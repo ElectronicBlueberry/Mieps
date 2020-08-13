@@ -26,7 +26,9 @@ export default class MessageMover extends Plugin.Plugin {
             this.copySingle,
             this.startSelection,
             this.endSelection,
-            new MoveMessages(this)
+            new MoveMessages(this),
+            new DeleteMessages(this),
+            new CopyMessages(this)
         ];
     }
     async init() {
@@ -93,7 +95,7 @@ class DeleteSingle extends Plugin.EmojiCommand {
         try {
             let message = reaction.message;
             let embed = embedFromMessage(message);
-            await (logChannel === null || logChannel === void 0 ? void 0 : logChannel.send(lang.logMessage(member), embed));
+            await logChannel.send(lang.logMessage(member), embed);
             await message.delete();
         }
         catch {
@@ -142,14 +144,15 @@ class Selection extends Plugin.EmojiCommand {
                 let channel = guild.channels.cache.get(oldR.channel);
                 let oldRMessage = await (channel === null || channel === void 0 ? void 0 : channel.messages.fetch(oldR.message));
                 if (!(oldRMessage.id === reaction.message.id && oldRMessage.channel.id === reaction.message.channel.id))
-                    await ((_b = (await ((_a = oldRMessage.reactions.cache.get(oldR.id)) === null || _a === void 0 ? void 0 : _a.fetch()))) === null || _b === void 0 ? void 0 : _b.users.remove(member.id));
+                    await ((_b = (await ((_a = oldRMessage.reactions.cache.get(oldR.id || oldR.name)) === null || _a === void 0 ? void 0 : _a.fetch()))) === null || _b === void 0 ? void 0 : _b.users.remove(member.id));
             }
             catch { }
         }
         this.plugin.state.write(member.id, this.position, {
             channel: reaction.message.channel.id,
             message: reaction.message.id,
-            id: reaction.emoji.id
+            id: reaction.emoji.id,
+            name: reaction.emoji.name
         });
     }
 }
@@ -192,6 +195,71 @@ class MoveMessages extends Plugin.ChatCommand {
         }
         catch {
             message.channel.send(lang.failMessage());
+        }
+    }
+}
+class CopyMessages extends Plugin.ChatCommand {
+    constructor(plugin) {
+        super("copy");
+        this.plugin = plugin;
+        this.permission = Plugin.Permission.Mod;
+    }
+    async run(message, args) {
+        let member = message.member;
+        try {
+            let messages = await fetchSelected(member, this.plugin.state);
+            if (!messages) {
+                message.channel.send(lang.copyFailed());
+                return;
+            }
+            let embeds = messages.map(m => {
+                return embedFromMessage(m);
+            });
+            // Send Messages to new Channel
+            for (const embed of embeds) {
+                await message.channel.send("", embed);
+            }
+            // Delete Command
+            await message.delete();
+        }
+        catch {
+            message.channel.send(lang.copyFailed());
+        }
+    }
+}
+class DeleteMessages extends Plugin.ChatCommand {
+    constructor(plugin) {
+        super("delete");
+        this.plugin = plugin;
+        this.permission = Plugin.Permission.Mod;
+    }
+    async run(message, args) {
+        let member = message.member;
+        let logChannel = await this.plugin.getLogChannel();
+        try {
+            let messages = await fetchSelected(member, this.plugin.state);
+            if (!messages) {
+                message.channel.send(lang.deleteFailed());
+                return;
+            }
+            let embeds = messages.map(m => {
+                return embedFromMessage(m);
+            });
+            // Log Message
+            await logChannel.send(lang.logMessage(member));
+            // Send Messages to log-Channel
+            for (const embed of embeds) {
+                await logChannel.send("", embed);
+            }
+            // Delete old Messages
+            messages.forEach(m => {
+                m.delete();
+            });
+            // Delete Command
+            await message.delete();
+        }
+        catch {
+            message.channel.send(lang.deleteFailed());
         }
     }
 }

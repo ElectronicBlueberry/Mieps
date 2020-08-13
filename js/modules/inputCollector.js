@@ -1,5 +1,7 @@
 import * as lang from "../lang/inputCollector.js";
 import { command_prefix } from "../config/server.json";
+import EmojiRegex from "emoji-regex";
+const emojiRegex = EmojiRegex();
 export var InputType;
 (function (InputType) {
     InputType[InputType["User"] = 0] = "User";
@@ -8,6 +10,7 @@ export var InputType;
     InputType[InputType["Channel"] = 3] = "Channel";
     InputType[InputType["Message"] = 4] = "Message";
     InputType[InputType["Text"] = 5] = "Text";
+    InputType[InputType["Number"] = 6] = "Number";
 })(InputType || (InputType = {}));
 export var InputReturns;
 (function (InputReturns) {
@@ -60,11 +63,19 @@ async function _queryInput(channel, user, query, type) {
                 break;
             case InputType.Emoji:
                 {
+                    // Catch custom emojis
                     let emojis = msg.content.match(/(?<=:)[0-9]+(?=>)/);
                     if (emojis) {
+                        // Find the custom emoji, and return its id
                         let emojiId = (_b = guild.emojis.cache.get(emojis[0])) === null || _b === void 0 ? void 0 : _b.id;
                         if (emojiId)
                             return emojiId;
+                    }
+                    else {
+                        // If no custom emoji was counf, catch unicode emojis
+                        let emojisTxt = msg.content.match(emojiRegex);
+                        if (emojisTxt)
+                            return emojisTxt[0];
                     }
                     channel.send(lang.wrongInputEmoji());
                 }
@@ -103,6 +114,11 @@ async function _queryInput(channel, user, query, type) {
             case InputType.Text:
                 {
                     return msg.content;
+                }
+                break;
+            case InputType.Number:
+                {
+                    return parseInt(msg.content, 10);
                 }
                 break;
         }

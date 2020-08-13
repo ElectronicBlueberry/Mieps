@@ -1,13 +1,32 @@
 import { command_prefix } from "../config/server.json";
+export function pluginActivated(pluginName) {
+    return `Plugin ${pluginName} aktiviert!`;
+}
+export function pluginDeactivated(pluginName) {
+    return `Plugin ${pluginName} deaktiviert!`;
+}
+export function pluginCommandList(pluginName, chatCommands, emojiCommands) {
+    let list = `Folgende Befehle sind Teil von dem Plugin "${pluginName}":\n`;
+    chatCommands === null || chatCommands === void 0 ? void 0 : chatCommands.forEach(c => {
+        list += `\n${command_prefix}${c.name}`;
+    });
+    emojiCommands === null || emojiCommands === void 0 ? void 0 : emojiCommands.forEach(c => {
+        list += `\n${c.emoji}`;
+    });
+    list += `\n\nNutze "${command_prefix}help [befehl]" um mehr über den Befehl zu erfahren`;
+    return list;
+}
 export function pluginNotConfigured(pluginName) {
     return `Kann das Plugin ${pluginName} nicht aktivieren, da es nicht kongifuriert ist.
-	Nutze "${command_prefix}config ${pluginName} um das Plugin zu konfigurieren`;
+Nutze "${command_prefix}config ${pluginName}" um das Plugin zu konfigurieren`;
 }
 export function pluginCommandHelp() {
     return `"${command_prefix}plugin list" Eine Liste aller installierten Plugins
 "${command_prefix}plugin activate [name]" Aktiviere ein Plugin
 "${command_prefix}plugin deactivate [name]" Deaktiviere ein Plugin
 "${command_prefix}plugin activate all" Aktiviere alle Plugins
+"${command_prefix}plugin commands [name]" Zeige alle Befehle die zu diesem Plugin gehören 
+
 Plugins müssen konfiguriert sein, befor sie aktiviert werden können:
 "${command_prefix}config [name]" Konfiguriere ein Plugin`;
 }

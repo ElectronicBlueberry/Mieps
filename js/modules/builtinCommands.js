@@ -1,4 +1,4 @@
-import { ChatCommand, Permission } from "./plugin.js";
+import { ChatCommand, Permission, CommandType } from "./plugin.js";
 import * as lang from "../lang/builtinCommands.js";
 import * as Discord from 'discord.js';
 import * as Query from "./inputCollector.js";
@@ -25,6 +25,7 @@ class PluginCommand extends ChatCommand {
         return lang.pluginCommandHelp();
     }
     async run(message, args) {
+        var _a, _b;
         let channel = message.channel;
         if (args.length === 0) {
             channel.send(this.getHelpText());
@@ -43,8 +44,14 @@ class PluginCommand extends ChatCommand {
                         return;
                     }
                     let found = this.pM.activatePlugin(args[1]);
-                    if (!found) {
+                    if (typeof (found) === undefined) {
                         channel.send(lang.pluginNotFound(args[1]));
+                    }
+                    else if (!found) {
+                        channel.send(lang.pluginNotConfigured(args[1]));
+                    }
+                    else {
+                        channel.send(lang.pluginActivated(args[1]));
                     }
                 }
                 break;
@@ -58,11 +65,27 @@ class PluginCommand extends ChatCommand {
                     if (!found) {
                         channel.send(lang.pluginNotFound(args[1]));
                     }
+                    else {
+                        channel.send(lang.pluginDeactivated(args[1]));
+                    }
                 }
                 break;
             case "list":
                 {
                     channel.send(lang.pluginList(this.pM.plugins, this.pM.getState()));
+                }
+                break;
+            case "commands":
+                {
+                    let plugin = this.pM.plugins.get(args[1]);
+                    if (!plugin) {
+                        channel.send(lang.pluginNotFound(args[1]));
+                    }
+                    else {
+                        let cCommands = (_a = plugin.commands) === null || _a === void 0 ? void 0 : _a.filter(p => p.type === CommandType.Chat);
+                        let eCommands = (_b = plugin.commands) === null || _b === void 0 ? void 0 : _b.filter(p => p.type === CommandType.Emoji);
+                        channel.send(lang.pluginCommandList(args[1], cCommands, eCommands));
+                    }
                 }
                 break;
             default:

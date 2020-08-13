@@ -172,10 +172,13 @@ export class PluginManager {
             this.activatePlugin(plugin.name);
         });
     }
-    /** Load a Plugins commands, and set it to active. Returns false, if the Plugin was not found */
+    /** Load a Plugins commands, and set it to active. Returns undefined, if the Plugin was not found. Returns false, if the Plugin needs to be configured */
     activatePlugin(name) {
         let plugin = this.plugins.get(name);
-        if (plugin && this.pluginState.read(plugin.name, "configured")) {
+        if (!plugin) {
+            return;
+        }
+        if (this.pluginState.read(plugin.name, "configured")) {
             this.pluginState.write(plugin.name, "active", true);
             this._initiatePlugin(plugin);
             return true;

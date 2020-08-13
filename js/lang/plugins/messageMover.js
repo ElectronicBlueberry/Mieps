@@ -18,6 +18,8 @@ Dann kannst du folgende Befehle nutzen um etwas mit dieser Selektion zu machen:
 "${command_prefix}copy" kopiert die Selektion in einen anderen Kanal
 "${command_prefix}delete" löscht die Selektion`;
 export const moveHelp = `Nutze diesen Befehl in einem Kanal, um die selektierten Nachrichten dort hin zu schieben`;
+export const copyHelp = `Nutze diesen Befehl in einem Kanal, um die selektierten Nachrichten dort hin zu kopieren`;
+export const deleHelp = `Nutze diesen Befehl, um die selektierten Nachrichten zu löschen`;
 export function moved(count, channel) {
     if (count === 1)
         return `Eine Nachricht wurde nach ${channel} verschoben`;
