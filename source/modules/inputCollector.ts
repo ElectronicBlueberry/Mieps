@@ -2,6 +2,9 @@ import * as lang from "../lang/inputCollector.js"
 import * as Discord from 'discord.js';
 
 import {command_prefix} from "../config/server.json";
+import EmojiRegex from "emoji-regex";
+
+const emojiRegex = EmojiRegex();
 
 export enum InputType {
 	User,
@@ -79,11 +82,18 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 
 			case InputType.Emoji: {
 
+				// Catch custom emojis
 				let emojis = msg.content.match( /(?<=:)[0-9]+(?=>)/ );
 				if (emojis) {
+					// Find the custom emoji, and return its id
 					let emojiId = guild.emojis.cache.get(emojis[0])?.id;
 					if (emojiId) return emojiId;
+				} else {
+					// If no custom emoji was counf, catch unicode emojis
+					let emojisTxt = msg.content.match(emojiRegex);
+					if (emojisTxt) return emojisTxt[0];
 				}
+
 				channel.send(lang.wrongInputEmoji());
 			} break;
 
