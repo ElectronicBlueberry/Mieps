@@ -29,7 +29,7 @@ export function pluginCommandList(pluginName: string, chatCommands?: ChatCommand
 
 export function pluginNotConfigured(pluginName: string): string {
 	return `Kann das Plugin ${pluginName} nicht aktivieren, da es nicht kongifuriert ist.
-Nutze "${command_prefix}config ${pluginName} um das Plugin zu konfigurieren`;
+Nutze "${command_prefix}config ${pluginName}" um das Plugin zu konfigurieren`;
 }
 
 export function pluginCommandHelp(): string {
