@@ -102,13 +102,12 @@ export class Plugin implements iPlugin {
 
 			case InputType.Emoji: {
 				if (s.match(idRegex)) {
+					// custom Emoji
 					response = guild.emojis.cache.get(s);
-				} /*else {
-					let emoji: Discord.Emoji = {
-						animated: false,
-
-					};
-				}*/
+				} else {
+					// unicode Emoji
+					response = new Discord.Emoji(this.client, {id: null, name: s})
+				}
 			} break;
 
 			case InputType.Role: {
