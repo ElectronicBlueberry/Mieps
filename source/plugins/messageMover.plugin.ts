@@ -53,7 +53,8 @@ export default class MessageMover extends Plugin.Plugin implements Plugin.iPlugi
 interface SelectionMark {
 	channel: string,
 	message: string,
-	id: string
+	id: string | null,
+	name: string
 }
 
 // ========== Functions ==========
@@ -178,14 +179,15 @@ class Selection extends Plugin.EmojiCommand {
 				let oldRMessage = await channel?.messages.fetch(oldR.message);
 
 				if (!(oldRMessage.id === reaction.message.id && oldRMessage.channel.id === reaction.message.channel.id))
-					await (await oldRMessage.reactions.cache.get(oldR.id)?.fetch())?.users.remove(member.id);
+					await (await oldRMessage.reactions.cache.get(oldR.id || oldR.name)?.fetch())?.users.remove(member.id);
 			} catch {}
 		}
 
 		this.plugin.state.write(member.id, this.position, {
 			channel: reaction.message.channel.id,
 			message: reaction.message.id,
-			id: reaction.emoji.id
+			id: reaction.emoji.id,
+			name: reaction.emoji.name
 		} as SelectionMark);
 	}
 }
