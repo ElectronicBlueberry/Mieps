@@ -129,7 +129,7 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 			} break;
 		
 			case InputType.Message: {
-				return [msg, InputReturns.Answered];
+				return [msg.id, InputReturns.Answered];
 			} break;
 
 			case InputType.Text: {
