@@ -114,7 +114,7 @@ class DeleteSingle extends Plugin.EmojiCommand {
 
 	permission = Plugin.Permission.Mod;
 	
-	async getHelpText() {
+	getHelpText() {
 		return lang.deleteSingleHelp;
 	}
 
@@ -140,7 +140,7 @@ class CopySingle extends Plugin.EmojiCommand {
 
 	permission = Plugin.Permission.Mod;
 
-	async getHelpText() {
+	getHelpText() {
 		return lang.copySingleHelp;
 	}
 
@@ -165,7 +165,7 @@ class Selection extends Plugin.EmojiCommand {
 
 	permission = Plugin.Permission.Mod;
 
-	async getHelpText() {
+	getHelpText() {
 		return lang.startCutHelp;
 	}
 
@@ -201,7 +201,7 @@ class MoveMessages extends Plugin.ChatCommand {
 
 	permission = Plugin.Permission.Mod;
 
-	async getHelpText() {
+	getHelpText() {
 		return lang.moveHelp;
 	}
 
@@ -251,7 +251,7 @@ class CopyMessages extends Plugin.ChatCommand {
 
 	permission = Plugin.Permission.Mod;
 
-	async getHelpText() {
+	getHelpText() {
 		return lang.copyHelp;
 	}
 
@@ -290,7 +290,7 @@ class DeleteMessages extends Plugin.ChatCommand {
 
 	permission = Plugin.Permission.Mod;
 
-	async getHelpText() {
+	getHelpText() {
 		return lang.deleteHelp;
 	}
 

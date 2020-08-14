@@ -29,21 +29,21 @@ class PluginCommand extends ChatCommand {
 		this.pM = plugin.pluginManager;
 	}
 
-	async getHelpText() {
+	getHelpText() {
 		return lang.pluginCommandHelp();
 	}
 
 	async run(message: Discord.Message, args: Array<string>): Promise<void> {
 		let channel = message.channel;
 		if (args.length === 0) {
-			channel.send(await this.getHelpText());
+			channel.send(this.getHelpText());
 			return;
 		}
 
 		switch (args[0]) {
 			case "activate": {
 				if (args.length < 2) {
-					channel.send(await this.getHelpText());
+					channel.send(this.getHelpText());
 					return;
 				}
 
@@ -65,7 +65,7 @@ class PluginCommand extends ChatCommand {
 
 			case "deactivate": {
 				if (args.length < 2) {
-					channel.send(await this.getHelpText());
+					channel.send(this.getHelpText());
 					return;
 				}
 
@@ -93,7 +93,7 @@ class PluginCommand extends ChatCommand {
 			} break;
 
 			default:
-				channel.send(await this.getHelpText());
+				channel.send(this.getHelpText());
 		}
 	}
 }
@@ -108,7 +108,7 @@ class HelpCommand extends ChatCommand {
 		this.pM = plugin.pluginManager;
 	}
 
-	async getHelpText() {
+	getHelpText() {
 		return "I heard you like help, so I got you some help for your help";
 	}
 
@@ -132,14 +132,14 @@ class HelpCommand extends ChatCommand {
 			let command = cCommands.get(args[0]);
 
 			if (command) {
-				channel.send(await command.getHelpText());
+				channel.send(command.getHelpText());
 				return;
 			}
 
 			let reaction = eCommands.get(args[0]);
 
 			if (reaction) {
-				channel.send(await reaction.getHelpText());
+				channel.send(reaction.getHelpText());
 				return;
 			}
 		}
@@ -158,7 +158,7 @@ class ConfigCommand extends ChatCommand {
 		this.pM = plugin.pluginManager;
 	}
 
-	async getHelpText() {
+	getHelpText() {
 		return lang.configHelp();
 	}
 
@@ -166,7 +166,7 @@ class ConfigCommand extends ChatCommand {
 		let channel = message.channel;
 
 		if (args.length === 0) {
-			channel.send(await this.getHelpText());
+			channel.send(this.getHelpText());
 			return;
 		}
 
