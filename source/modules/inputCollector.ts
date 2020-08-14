@@ -39,14 +39,14 @@ var _usersInQuery: Map<string, Discord.User> = new Map();
  * @param type The expected type of the queries answer
  * @param timeout Time in Milliseconds to wait for a response. 5 min by default
  */
-export async function queryInput(channel: Discord.TextChannel, user: Discord.User, query: string, type: InputType, timeout?: number): Promise<[string | number, InputReturns]> {
+export async function queryInput(channel: Discord.TextChannel, user: Discord.User, query: string, type: InputType, timeout?: number): Promise<[any, InputReturns]> {
 	_usersInQuery.set(user.id, user);
 	let answer = await _queryInput(channel, user, query, type, timeout);
 	_usersInQuery.delete(user.id);
 	return answer;
 }
 
-async function _queryInput(channel: Discord.TextChannel, user: Discord.User, query: string, type: InputType, timeout?: number): Promise<[string | number, InputReturns]> {
+async function _queryInput(channel: Discord.TextChannel, user: Discord.User, query: string, type: InputType, timeout?: number): Promise<[any, InputReturns]> {
 	channel.send(query);
 
 	while (true) {
@@ -71,11 +71,11 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 
 				let usr = msg.mentions.users?.first();
 				if (usr) {
-					return [usr.id, InputReturns.Answered];
+					return [usr, InputReturns.Answered];
 				}
 
 				try {
-					return [(await guild.members.fetch(msg.content.trim())).id, InputReturns.Answered];
+					return [(await guild.members.fetch(msg.content.trim())), InputReturns.Answered];
 				} catch {}
 				
 				channel.send(lang.wrongInputUser(msg.content.trim()));
