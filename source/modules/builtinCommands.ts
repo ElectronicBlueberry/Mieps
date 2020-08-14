@@ -221,8 +221,6 @@ class ConfigCommand extends ChatCommand {
 
 			if (setting.type === Query.InputType.Message) {
 				plugin.state?.write("config", setting.name, [channel.id, input]);
-			} else if (setting.type === Query.InputType.User) {
-				plugin.state?.write("config", setting.name, (input as Discord.User).id);
 			} else {
 				plugin.state?.write("config", setting.name, input);
 			}
