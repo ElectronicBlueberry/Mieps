@@ -32,24 +32,25 @@ export interface Respone {
 var _usersInQuery: Map<string, Discord.User> = new Map();
 
 /**
- * Queries the user for an Input, and waits up to 5 Minuets for a response
+ * Queries the user for an Input
  * @param channel Channel the query is taking place in
  * @param user The User to Query
  * @param query The Query to ask
  * @param type The expected type of the queries answer
+ * @param timeout Time in Milliseconds to wait for a response. 5 min by default
  */
-export async function queryInput(channel: Discord.TextChannel, user: Discord.User, query: string, type: InputType): Promise<[string | number, InputReturns]> {
+export async function queryInput(channel: Discord.TextChannel, user: Discord.User, query: string, type: InputType, timeout?: number): Promise<[string | number, InputReturns]> {
 	_usersInQuery.set(user.id, user);
-	let answer = await _queryInput(channel, user, query, type);
+	let answer = await _queryInput(channel, user, query, type, timeout);
 	_usersInQuery.delete(user.id);
 	return answer;
 }
 
-async function _queryInput(channel: Discord.TextChannel, user: Discord.User, query: string, type: InputType): Promise<[string | number, InputReturns]> {
+async function _queryInput(channel: Discord.TextChannel, user: Discord.User, query: string, type: InputType, timeout?: number): Promise<[string | number, InputReturns]> {
 	channel.send(query);
 
 	while (true) {
-		let msgArr = await channel.awaitMessages((m: Discord.Message) => m.author == user, {max: 1, time: 300000});
+		let msgArr = await channel.awaitMessages((m: Discord.Message) => m.author == user, {max: 1, time: timeout || 300000});
 
 		if (msgArr.size === 0) {
 			channel.send(lang.timeOut());
