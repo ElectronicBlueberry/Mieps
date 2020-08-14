@@ -213,10 +213,11 @@ class ConfigCommand extends ChatCommand {
 		// Loop through all Settings, and save their values in the Plugins State
 		for (const setting of plugin.setupTemplate) {
 
-			let input: string | Query.InputReturns = "";
+			let input: string | number = "";
+			let ans: Query.InputReturns = Query.InputReturns.TimedOut;
 			
-			input = await Query.queryInput(channel as Discord.TextChannel, message.author, setting.description || setting.name, setting.type);
-			if (input === Query.InputReturns.Canceled || input === Query.InputReturns.TimedOut) return;
+			[input, ans] = await Query.queryInput(channel as Discord.TextChannel, message.author, setting.description || setting.name, setting.type);
+			if (ans === Query.InputReturns.Canceled || ans === Query.InputReturns.TimedOut) return;
 
 			if (setting.type === Query.InputType.Message) {
 				plugin.state?.write("config", setting.name, [channel.id, input]);

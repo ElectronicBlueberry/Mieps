@@ -38,14 +38,14 @@ var _usersInQuery: Map<string, Discord.User> = new Map();
  * @param query The Query to ask
  * @param type The expected type of the queries answer
  */
-export async function queryInput(channel: Discord.TextChannel, user: Discord.User, query: string, type: InputType): Promise<string | InputReturns> {
+export async function queryInput(channel: Discord.TextChannel, user: Discord.User, query: string, type: InputType): Promise<[string | number, InputReturns]> {
 	_usersInQuery.set(user.id, user);
 	let answer = await _queryInput(channel, user, query, type);
 	_usersInQuery.delete(user.id);
 	return answer;
 }
 
-async function _queryInput(channel: Discord.TextChannel, user: Discord.User, query: string, type: InputType): Promise<string | InputReturns> {
+async function _queryInput(channel: Discord.TextChannel, user: Discord.User, query: string, type: InputType): Promise<[string | number, InputReturns]> {
 	channel.send(query);
 
 	while (true) {
@@ -53,14 +53,14 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 
 		if (msgArr.size === 0) {
 			channel.send(lang.timeOut());
-			return InputReturns.TimedOut;
+			return ["", InputReturns.TimedOut];
 		}
 
 		let msg = msgArr.first() as Discord.Message;
 
 		if (msg.content.toLowerCase().trimEnd() === `${command_prefix}cancel`) {
 			channel.send(lang.canceled());
-			return InputReturns.Canceled;
+			return ["", InputReturns.Canceled];
 		}
 
 		let guild = channel.guild;
@@ -70,11 +70,11 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 
 				let usr = msg.mentions.users?.first();
 				if (usr) {
-					return usr.id;
+					return [usr.id, InputReturns.Answered];
 				}
 
 				try {
-					return (await guild.members.fetch(msg.content.trim())).id;
+					return [(await guild.members.fetch(msg.content.trim())).id, InputReturns.Answered];
 				} catch {}
 				
 				channel.send(lang.wrongInputUser(msg.content.trim()));
@@ -87,11 +87,11 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 				if (emojis) {
 					// Find the custom emoji, and return its id
 					let emojiId = guild.emojis.cache.get(emojis[0])?.id;
-					if (emojiId) return emojiId;
+					if (emojiId) return [emojiId, InputReturns.Answered];
 				} else {
 					// If no custom emoji was counf, catch unicode emojis
 					let emojisTxt = msg.content.match(emojiRegex);
-					if (emojisTxt) return emojisTxt[0];
+					if (emojisTxt) return [emojisTxt[0], InputReturns.Answered];
 				}
 
 				channel.send(lang.wrongInputEmoji());
@@ -101,12 +101,12 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 
 				let role: Discord.Role | undefined | null = msg.mentions.roles?.first();
 				if (role) {
-					return role.id;
+					return [role.id, InputReturns.Answered];
 				}
 
 				role = await guild.roles.fetch(msg.content.trim());
 				if (role) {
-					return role.id;
+					return [role.id, InputReturns.Answered];
 				}
 
 				channel.send(lang.wrongInputRole(msg.content.trim()));
@@ -116,27 +116,27 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 
 				let chnl: Discord.TextChannel | Discord.GuildChannel | undefined = msg.mentions.channels?.first();
 				if (chnl) {
-					return chnl.id;
+					return [chnl.id, InputReturns.Answered];
 				}
 
 				chnl = guild.channels.cache.get(msg.content.trim());
 				if (chnl) {
-					return chnl.id;
+					return [chnl.id, InputReturns.Answered];
 				}
 
 				channel.send(lang.wrongInputChannel(msg.content.trim()));
 			} break;
 		
 			case InputType.Message: {
-				return msg.id;
+				return [msg.id, InputReturns.Answered];
 			} break;
 
 			case InputType.Text: {
-				return msg.content;
+				return [msg.content, InputReturns.Answered];
 			} break;
 
 			case InputType.Number: {
-				return parseInt(msg.content, 10);
+				return [parseInt(msg.content, 10), InputReturns.Answered];
 			} break;
 		}
 	}
