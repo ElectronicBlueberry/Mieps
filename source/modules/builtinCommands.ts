@@ -217,7 +217,7 @@ class ConfigCommand extends ChatCommand {
 			let ans: Query.InputReturns = Query.InputReturns.TimedOut;
 			
 			[input, ans] = await Query.queryInput(channel as Discord.TextChannel, message.author, setting.description || setting.name, setting.type);
-			if (ans === Query.InputReturns.Canceled || ans === Query.InputReturns.TimedOut) return;
+			if (ans !== Query.InputReturns.Answered) return;
 
 			if (setting.type === Query.InputType.Message) {
 				plugin.state?.write("config", setting.name, [channel.id, input]);
