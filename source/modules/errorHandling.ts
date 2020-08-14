@@ -39,10 +39,10 @@ export function criticalPluginError(logChannel: Discord.TextChannel, errorMsg: s
  * @param error 
  * @param command 
  */
-export function uncaughtPluginError(logChannel: Discord.TextChannel, plugin: Plugin, error?: Error, command?: string): void {
-	let msg = `Uncaught Error in Plugin ${plugin.name}!`;
+export function uncaughtError(logChannel: Discord.TextChannel, name: string, error?: Error, command?: string): void {
+	let msg = `Uncaught Error while running ${name}!`;
 	if (command) {
-		logChannel.send(`${msg} While running command ${command}`)
+		logChannel.send(`${msg} Exact command: ${command}`)
 		
 	} else {
 		logChannel.send(msg);
