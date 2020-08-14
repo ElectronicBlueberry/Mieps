@@ -26,7 +26,7 @@ Dann kannst du folgende Befehle nutzen um etwas mit dieser Selektion zu machen:
 
 export const moveHelp = `Nutze diesen Befehl in einem Kanal, um die selektierten Nachrichten dort hin zu schieben`;
 export const copyHelp = `Nutze diesen Befehl in einem Kanal, um die selektierten Nachrichten dort hin zu kopieren`;
-export const deleHelp = `Nutze diesen Befehl, um die selektierten Nachrichten zu löschen`;
+export const deleteHelp = `Nutze diesen Befehl, um die selektierten Nachrichten zu löschen`;
 
 export function moved(count: number, channel: Discord.TextChannel): string {
 	if (count === 1) return `Eine Nachricht wurde nach ${channel} verschoben`;
