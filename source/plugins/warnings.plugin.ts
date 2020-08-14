@@ -4,7 +4,6 @@ import { State } from "../modules/state.js";
 import * as Query from "../modules/inputCollector.js";
 
 import * as Discord from "discord.js";
-import { stringify } from "querystring";
 
 // ========== Plugin ==========
 
