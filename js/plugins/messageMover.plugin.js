@@ -204,6 +204,9 @@ class CopyMessages extends Plugin.ChatCommand {
         this.plugin = plugin;
         this.permission = Plugin.Permission.Mod;
     }
+    getHelpText() {
+        return lang.copyHelp;
+    }
     async run(message, args) {
         let member = message.member;
         try {
@@ -232,6 +235,9 @@ class DeleteMessages extends Plugin.ChatCommand {
         super("delete");
         this.plugin = plugin;
         this.permission = Plugin.Permission.Mod;
+    }
+    getHelpText() {
+        return lang.deleteHelp;
     }
     async run(message, args) {
         let member = message.member;

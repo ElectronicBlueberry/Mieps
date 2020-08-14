@@ -27,4 +27,24 @@ export function criticalPluginError(logChannel, errorMsg, plugin) {
         plugin.pluginManager.setConfigured(plugin.name, false);
     }, 0);
 }
+/**
+ * report an error that happend while executing a plugin
+ * @param logChannel
+ * @param plugin
+ * @param error
+ * @param command
+ */
+export function uncaughtError(logChannel, name, error, command) {
+    let msg = `Uncaught Error while running ${name}!`;
+    if (command) {
+        logChannel.send(`${msg} Exact command: ${command}`);
+    }
+    else {
+        logChannel.send(msg);
+    }
+    console.log(msg);
+    if (error) {
+        console.error(error.message);
+    }
+}
 //# sourceMappingURL=errorHandling.js.map

@@ -20,31 +20,33 @@ export var InputReturns;
 })(InputReturns || (InputReturns = {}));
 var _usersInQuery = new Map();
 /**
- * Queries the user for an Input, and waits up to 5 Minuets for a response
+ * Queries the user for an Input
  * @param channel Channel the query is taking place in
  * @param user The User to Query
  * @param query The Query to ask
  * @param type The expected type of the queries answer
+ * @param queryID If the Query should return only the ID, instead of the entire object. Does nothing for "Emoji"
+ * @param timeout Time in Milliseconds to wait for a response. 5 min by default
  */
-export async function queryInput(channel, user, query, type) {
+export async function queryInput(channel, user, query, type, queryID = true, timeout = 300000) {
     _usersInQuery.set(user.id, user);
-    let answer = await _queryInput(channel, user, query, type);
+    let answer = await _queryInput(channel, user, query, type, queryID, timeout);
     _usersInQuery.delete(user.id);
     return answer;
 }
-async function _queryInput(channel, user, query, type) {
-    var _a, _b, _c, _d;
+async function _queryInput(channel, user, query, type, queryID, timeout) {
+    var _a, _b, _c;
     channel.send(query);
     while (true) {
-        let msgArr = await channel.awaitMessages((m) => m.author == user, { max: 1, time: 300000 });
+        let msgArr = await channel.awaitMessages((m) => m.author == user, { max: 1, time: timeout });
         if (msgArr.size === 0) {
             channel.send(lang.timeOut());
-            return InputReturns.TimedOut;
+            return ["", InputReturns.TimedOut];
         }
         let msg = msgArr.first();
         if (msg.content.toLowerCase().trimEnd() === `${command_prefix}cancel`) {
             channel.send(lang.canceled());
-            return InputReturns.Canceled;
+            return ["", InputReturns.Canceled];
         }
         let guild = channel.guild;
         switch (type) {
@@ -52,10 +54,11 @@ async function _queryInput(channel, user, query, type) {
                 {
                     let usr = (_a = msg.mentions.users) === null || _a === void 0 ? void 0 : _a.first();
                     if (usr) {
-                        return usr.id;
+                        return [(queryID) ? usr.id : usr, InputReturns.Answered];
                     }
                     try {
-                        return (await guild.members.fetch(msg.content.trim())).id;
+                        let memb = await guild.members.fetch(msg.content.trim());
+                        return [(queryID) ? memb.id : memb, InputReturns.Answered];
                     }
                     catch { }
                     channel.send(lang.wrongInputUser(msg.content.trim()));
@@ -67,58 +70,58 @@ async function _queryInput(channel, user, query, type) {
                     let emojis = msg.content.match(/(?<=:)[0-9]+(?=>)/);
                     if (emojis) {
                         // Find the custom emoji, and return its id
-                        let emojiId = (_b = guild.emojis.cache.get(emojis[0])) === null || _b === void 0 ? void 0 : _b.id;
-                        if (emojiId)
-                            return emojiId;
+                        let emoji = guild.emojis.cache.get(emojis[0]);
+                        if (emoji)
+                            return [emoji.id, InputReturns.Answered];
                     }
                     else {
                         // If no custom emoji was counf, catch unicode emojis
                         let emojisTxt = msg.content.match(emojiRegex);
                         if (emojisTxt)
-                            return emojisTxt[0];
+                            return [emojisTxt, InputReturns.Answered];
                     }
                     channel.send(lang.wrongInputEmoji());
                 }
                 break;
             case InputType.Role:
                 {
-                    let role = (_c = msg.mentions.roles) === null || _c === void 0 ? void 0 : _c.first();
+                    let role = (_b = msg.mentions.roles) === null || _b === void 0 ? void 0 : _b.first();
                     if (role) {
-                        return role.id;
+                        return [(queryID) ? role.id : role, InputReturns.Answered];
                     }
                     role = await guild.roles.fetch(msg.content.trim());
                     if (role) {
-                        return role.id;
+                        return [(queryID) ? role.id : role, InputReturns.Answered];
                     }
                     channel.send(lang.wrongInputRole(msg.content.trim()));
                 }
                 break;
             case InputType.Channel:
                 {
-                    let chnl = (_d = msg.mentions.channels) === null || _d === void 0 ? void 0 : _d.first();
+                    let chnl = (_c = msg.mentions.channels) === null || _c === void 0 ? void 0 : _c.first();
                     if (chnl) {
-                        return chnl.id;
+                        return [(queryID) ? chnl.id : chnl, InputReturns.Answered];
                     }
                     chnl = guild.channels.cache.get(msg.content.trim());
                     if (chnl) {
-                        return chnl.id;
+                        return [(queryID) ? chnl.id : chnl, InputReturns.Answered];
                     }
                     channel.send(lang.wrongInputChannel(msg.content.trim()));
                 }
                 break;
             case InputType.Message:
                 {
-                    return msg.id;
+                    return [(queryID) ? msg.id : msg, InputReturns.Answered];
                 }
                 break;
             case InputType.Text:
                 {
-                    return msg.content;
+                    return [msg.content, InputReturns.Answered];
                 }
                 break;
             case InputType.Number:
                 {
-                    return parseInt(msg.content, 10);
+                    return [parseInt(msg.content, 10), InputReturns.Answered];
                 }
                 break;
         }
