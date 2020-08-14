@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as Path from 'path';
 
 import {iPlugin, Plugin, ChatCommand, EmojiCommand, MessageStream, CommandType, Permission} from "./plugin.js";
-import {criticalError} from "./errorHandling.js";
+import {criticalError, uncaughtError} from "./errorHandling.js";
 import {State, ReadOnlyState} from "./state.js";
 import * as lang from "../lang/pluginManager.js"
 import * as Discord from 'discord.js';
@@ -138,7 +138,12 @@ export class PluginManager {
 		}
 
 		// Run the command
-		if (perm) commannd.run(message, args);
+		try {
+			if (perm) commannd.run(message, args);
+		} catch(e) {
+			uncaughtError(this.controlChannel, commannd.name, e, message.content);
+		}
+
 	}
 
 	/** Run a reaction as a emoji command */
@@ -155,7 +160,11 @@ export class PluginManager {
 		let perm = memberPerm >= command.permission;
 
 		if (perm) {
-			command.run(reaction, member);
+			try {
+				command.run(reaction, member);
+			} catch (e) {
+				uncaughtError(this.controlChannel, command.name, e);
+			}
 		} else if (command.removeInvalid) {
 			reaction.users.remove(member);
 		}
@@ -169,7 +178,13 @@ export class PluginManager {
 			// If channel is not whitelisted, skip it
 			if (stream.channels && !stream.channels.includes(message.channel as Discord.TextChannel)) continue;
 
-			let p = await stream.run(message);
+			let p = true;
+
+			try {
+				p = await stream.run(message);
+			} catch(e) {
+				uncaughtError(this.controlChannel, stream.name, e);
+			}
 			proceed = p && proceed;
 		}
 
