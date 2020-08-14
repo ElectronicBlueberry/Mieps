@@ -17,7 +17,7 @@ export enum CommandType {
 export interface iCommand {
 	type: CommandType,
 	permission: Permission,
-	getHelpText: () => string,
+	getHelpText: () => Promise<string>,
 	name: string
 }
 
@@ -25,7 +25,7 @@ export class ChatCommand implements iCommand {
 	type = CommandType.Chat;
 	name: string;
 	allowNoArgs = false;
-	getHelpText() {return ""};
+	async getHelpText() {return ""};
 	permission = Permission.Admin;
 
 	constructor(name: string) {
@@ -38,7 +38,7 @@ export class ChatCommand implements iCommand {
 export class EmojiCommand implements iCommand {
 	type = CommandType.Emoji;
 	name: string;
-	getHelpText() {return ""};
+	async getHelpText() {return ""};
 	permission = Permission.Admin;
 
 	// Whether to remove uses of this Emoji for Users without the right permissions
