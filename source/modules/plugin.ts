@@ -144,6 +144,7 @@ export type SetupTemplate = Array<Setting>
 export interface MessageStream {
 	/** What Channels to run on */
 	channels?: Array<Discord.TextChannel>,
+	name: string,
 	/** Return boolean indicates if message should be passed on to the command processing stage */
 	run: (message: Discord.Message) => boolean;
 }
