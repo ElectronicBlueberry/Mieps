@@ -251,6 +251,10 @@ class CopyMessages extends Plugin.ChatCommand {
 
 	permission = Plugin.Permission.Mod;
 
+	getHelpText() {
+		return lang.copyHelp;
+	}
+
 	async run(message: Discord.Message, args: Array<string>): Promise<void> {
 		let member = message.member as Discord.GuildMember;
 
@@ -285,6 +289,10 @@ class DeleteMessages extends Plugin.ChatCommand {
 	}
 
 	permission = Plugin.Permission.Mod;
+
+	getHelpText() {
+		return lang.deleteHelp;
+	}
 
 	async run(message: Discord.Message, args: Array<string>): Promise<void> {
 		let member = message.member as Discord.GuildMember;
