@@ -31,3 +31,25 @@ export function criticalPluginError(logChannel: Discord.TextChannel, errorMsg: s
 		plugin.pluginManager.setConfigured(plugin.name, false);
 	}, 0);
 }
+
+/**
+ * report an error that happend while executing a plugin
+ * @param logChannel 
+ * @param plugin 
+ * @param error 
+ * @param command 
+ */
+export function uncaughtPluginError(logChannel: Discord.TextChannel, plugin: Plugin, error?: Error, command?: string): void {
+	let msg = `Uncaught Error in Plugin ${plugin.name}!`;
+	if (command) {
+		logChannel.send(`${msg} While running command ${command}`)
+		
+	} else {
+		logChannel.send(msg);
+	}
+
+	console.log(msg);
+	if (error) {
+		console.error(error.message);
+	}
+}
