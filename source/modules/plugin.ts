@@ -86,7 +86,7 @@ export class Plugin implements iPlugin {
 			return undefined;
 		}
 
-		let s = this.state.read("config", setting) as string | undefined;
+		let s = this.state.read("config", setting) as any;
 		if (!s) {
 			criticalPluginError(this.pluginManager.controlChannel, `Could not acess Setting ${setting}`, this);
 			return undefined;
@@ -124,7 +124,7 @@ export class Plugin implements iPlugin {
 				} catch {}
 			} break;
 			
-			case InputType.Text: case InputType.Number: {
+			default: {
 				response = s;
 			} break;
 		}
