@@ -17,7 +17,7 @@ export function cantLeave(channel: string): string {
 	return `Du bist nicht in diesem Channel! Nutze "${command_prefix}join ${channel}" um ihn zu betreten`;
 }
 
-export function wrongArguments(channelList: Array<string>, join: boolean): string {
+export function help(channelList: Array<string>, join: boolean): string {
 	return `Nenne einen der folgenen Channel direkt hinter dem Befehl, um ihn zu ${(join) ? 'betreten': 'verlassen'}:
 
 ${channelList}`;
@@ -25,7 +25,7 @@ ${channelList}`;
 
 export function channelNotFound(channelList: Array<string>, join: boolean): string {
 	return `Channel nicht gefunden.
-${wrongArguments(channelList, join)}`;
+${help(channelList, join)}`;
 }
 
 export const joined = `Channel beigetreten`;
