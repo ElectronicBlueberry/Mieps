@@ -151,20 +151,16 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 
 			case InputType.ChannelList:
 				
-				let channels: Array<string | Discord.TextChannel> = [];
-				msg.mentions.channels.forEach(channel => {
-					channels.push((queryID) ? channel.id : channel);
-				});
+				let cContent = msg.content.replace(/<@|>/gm, '');
+				let channels: Array<string> = cContent.split('\n');
 
 				return [channels, InputReturns.Answered];
 				break;
 
 			case InputType.RoleList:
 				
-				let roles: Array<string | Discord.Role> = [];
-				msg.mentions.roles.forEach(role => {
-					roles.push((queryID) ? role.id : role);
-				});
+				let rContent = msg.content.replace(/<@|>/gm, '');
+				let roles: Array<string> = rContent.split('\n');
 
 				return [roles, InputReturns.Answered];
 				break;
