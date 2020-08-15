@@ -301,6 +301,16 @@ export class PluginManager {
 		return Permission.Any;
 	}
 
+	public getPermissionRole(permission: Permission, guild: Discord.Guild): Discord.Role | undefined {
+		let role = this.permissionPlugin.state?.read("config", Permission[permission]) as string | undefined;
+		if (role) {
+			return guild.roles.cache.get(role);
+		} else {
+			return;
+		}
+		
+	}
+
 	// ========== Private Functions ==========
 
 	private async _initiatePlugin(p: iPlugin): Promise<void> {
