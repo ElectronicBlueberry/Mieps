@@ -4,6 +4,7 @@ import { State } from "../modules/state.js";
 
 import * as Discord from "discord.js";
 import { types } from "util";
+import { uncaughtError } from "../modules/errorHandling.js";
 
 // ========== Plugin ==========
 
@@ -127,11 +128,13 @@ class JoinLeave extends Plugin.ChatCommand {
 		if (this.join) {
 			r = joinChannel(message.member, channelObj);
 		} else {
-			r =leaveChannel(message.member, channelObj);
+			r = leaveChannel(message.member, channelObj);
 		}
 
 		if (r !== Returns.Failed) {
 			channel.send((this.join) ? lang.joined : lang.left);
+		} else {
+			uncaughtError(this.plugin.pluginManager.controlChannel, (this.join) ? "join" : "leave", undefined, message.content);
 		}
 	}
 }
