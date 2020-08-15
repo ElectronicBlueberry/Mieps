@@ -2,6 +2,8 @@ import * as Plugin from "../modules/plugin.js";
 import Settings from "./selfAssignRoles/settings.json"
 import * as Discord from "discord.js";
 
+// ========== Plugin ==========
+
 export default class selfAssignRoles extends Plugin.Plugin {
 	name = "self_assign_roles";
 
@@ -16,6 +18,8 @@ export default class selfAssignRoles extends Plugin.Plugin {
 	}
 }
 
+// ========== Interfaces ==========
+
 interface Role {
 	name: string,
 	role: string
@@ -28,6 +32,8 @@ interface Topic {
 	help: string,
 	roles: Array<Role>
 }
+
+// ========== Commands ==========
 
 class SetRole extends Plugin.ChatCommand {
 	topic: Topic;
@@ -86,6 +92,8 @@ class SetRole extends Plugin.ChatCommand {
 		}
 	}
 }
+
+// ========== Functions ==========
 
 /**
  * Constructs a string of avalible roles, excluding aliases
