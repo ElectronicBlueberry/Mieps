@@ -144,6 +144,30 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 			case InputType.Number:
 				return [parseInt(msg.content, 10), InputReturns.Answered];
 				break;
+
+			case InputType.TextList:
+				return [msg.content.split('\n'), InputReturns.Answered];
+				break;
+
+			case InputType.ChannelList:
+				
+				let channels: Array<string | Discord.TextChannel> = [];
+				msg.mentions.channels.forEach(channel => {
+					channels.push((queryID) ? channel.id : channel);
+				});
+
+				return [channels, InputReturns.Answered];
+				break;
+
+			case InputType.RoleList:
+				
+				let roles: Array<string | Discord.Role> = [];
+				msg.mentions.roles.forEach(role => {
+					roles.push((queryID) ? role.id : role);
+				});
+
+				return [roles, InputReturns.Answered];
+				break;
 		}
 	}
 	
