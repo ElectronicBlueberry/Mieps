@@ -9,18 +9,13 @@ export const optInRole = `Eine Liste der Rollen für die opt-In Kanäle, in glei
 export const optOutChannelList = `Eine Liste vom Namen aller opt-Out Kanälen, ein Eintrag pro Zeile. Nicht die Kanäle selbst velinken! "-" um leer zu lassen`;
 export const optOutRole = `Eine Liste der Rollen für die opt-Out Kanäle, in gleicher Reihenfolge wie die Namen. Verlinke die Rollen direkt, mit einem "@". Schreibe "-" um die Eingabe leer zu lassen`;
 
-export function cantJoin(channel: string): string {
-	return `Du bist bereits in diesem Channel! Nutze "${command_prefix}leave ${channel}" um ihn zu verlassen`;
-}
-
-export function cantLeave(channel: string): string {
-	return `Du bist nicht in diesem Channel! Nutze "${command_prefix}join ${channel}" um ihn zu betreten`;
-}
-
 export function help(channelList: Array<string>, join: boolean): string {
+	let channelString = "";
+	channelList.forEach(c => {
+		channelString += `\n${c}`;
+	});
 	return `Nenne einen der folgenen Channel direkt hinter dem Befehl, um ihn zu ${(join) ? 'betreten': 'verlassen'}:
-
-${channelList}`;
+${channelString}`;
 }
 
 export function channelNotFound(channelList: Array<string>, join: boolean): string {
