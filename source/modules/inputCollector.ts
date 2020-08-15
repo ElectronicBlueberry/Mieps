@@ -151,7 +151,7 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 
 			case InputType.ChannelList:
 				
-				let cContent = msg.content.replace(/<@|>/gm, '');
+				let cContent = msg.content.replace(/<@|>|\h/gm, '');
 				let channels: Array<string> = cContent.split('\n');
 
 				return [channels, InputReturns.Answered];
@@ -159,7 +159,7 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 
 			case InputType.RoleList:
 				
-				let rContent = msg.content.replace(/<@|>/gm, '');
+				let rContent = msg.content.replace(/<@|>|\h/gm, '');
 				let roles: Array<string> = rContent.split('\n');
 
 				return [roles, InputReturns.Answered];
