@@ -129,7 +129,10 @@ export class Plugin implements iPlugin {
 			
 				if (Array.isArray(s)) {
 					for (let id of s as string[]) {
-						response.push( guild.channels.cache.get(id));
+						let channel = guild.channels.cache.get(id);
+						if (channel) {
+							response.push(channel);
+						}
 					}
 				}
 				break;
@@ -139,7 +142,10 @@ export class Plugin implements iPlugin {
 			
 				if (Array.isArray(s)) {
 					for (let id of s as string[]) {
-						response.push( guild.roles.cache.get(id));
+						let role = guild.roles.cache.get(id);
+						if (role) {
+							response.push(role);
+						}
 					}
 				}
 				break;
