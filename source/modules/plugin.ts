@@ -142,7 +142,7 @@ export class Plugin implements iPlugin {
 			
 				if (Array.isArray(s)) {
 					for (let id of s as string[]) {
-						let role = guild.roles.cache.get(id);
+						let role = await guild.roles.fetch(id);
 						if (role) {
 							response.push(role);
 						}
