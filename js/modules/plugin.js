@@ -56,45 +56,54 @@ export class Plugin {
         let response;
         switch (type) {
             case InputType.Channel:
-                {
-                    response = guild.channels.cache.get(s);
-                }
+                response = guild.channels.cache.get(s);
                 break;
             case InputType.Emoji:
-                {
-                    if (s.match(idRegex)) {
-                        // custom Emoji
-                        response = guild.emojis.cache.get(s);
-                    }
-                    else {
-                        // unicode Emoji
-                        response = new Discord.Emoji(this.client, { id: null, name: s });
-                    }
+                if (s.match(idRegex)) {
+                    // custom Emoji
+                    response = guild.emojis.cache.get(s);
+                }
+                else {
+                    // unicode Emoji
+                    response = new Discord.Emoji(this.client, { id: null, name: s });
                 }
                 break;
             case InputType.Role:
-                {
-                    response = await guild.roles.fetch(s);
-                }
+                response = await guild.roles.fetch(s);
                 break;
             case InputType.User:
-                {
-                    response = await guild.members.fetch(s);
-                }
+                response = await guild.members.fetch(s);
                 break;
             case InputType.Message:
-                {
-                    try {
-                        response = await ((_b = (_a = (await guild.channels.cache.get(s[0]))) === null || _a === void 0 ? void 0 : _a.messages) === null || _b === void 0 ? void 0 : _b.fetch(s[1]));
+                try {
+                    response = await ((_b = (_a = (await guild.channels.cache.get(s[0]))) === null || _a === void 0 ? void 0 : _a.messages) === null || _b === void 0 ? void 0 : _b.fetch(s[1]));
+                }
+                catch { }
+                break;
+            case InputType.ChannelList:
+                response = [];
+                if (Array.isArray(s)) {
+                    for (let id of s) {
+                        let channel = guild.channels.cache.get(id);
+                        if (channel) {
+                            response.push(channel);
+                        }
                     }
-                    catch { }
                 }
                 break;
-            case InputType.Text:
-            case InputType.Number:
-                {
-                    response = s;
+            case InputType.RoleList:
+                response = [];
+                if (Array.isArray(s)) {
+                    for (let id of s) {
+                        let role = await guild.roles.fetch(id);
+                        if (role) {
+                            response.push(role);
+                        }
+                    }
                 }
+                break;
+            default:
+                response = s;
                 break;
         }
         if (!response) {

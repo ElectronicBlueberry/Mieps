@@ -11,6 +11,9 @@ export var InputType;
     InputType[InputType["Message"] = 4] = "Message";
     InputType[InputType["Text"] = 5] = "Text";
     InputType[InputType["Number"] = 6] = "Number";
+    InputType[InputType["TextList"] = 7] = "TextList";
+    InputType[InputType["ChannelList"] = 8] = "ChannelList";
+    InputType[InputType["RoleList"] = 9] = "RoleList";
 })(InputType || (InputType = {}));
 export var InputReturns;
 (function (InputReturns) {
@@ -51,78 +54,77 @@ async function _queryInput(channel, user, query, type, queryID, timeout) {
         let guild = channel.guild;
         switch (type) {
             case InputType.User:
-                {
-                    let usr = (_a = msg.mentions.users) === null || _a === void 0 ? void 0 : _a.first();
-                    if (usr) {
-                        return [(queryID) ? usr.id : usr, InputReturns.Answered];
-                    }
-                    try {
-                        let memb = await guild.members.fetch(msg.content.trim());
-                        return [(queryID) ? memb.id : memb, InputReturns.Answered];
-                    }
-                    catch { }
-                    channel.send(lang.wrongInputUser(msg.content.trim()));
+                let usr = (_a = msg.mentions.users) === null || _a === void 0 ? void 0 : _a.first();
+                if (usr) {
+                    return [(queryID) ? usr.id : usr, InputReturns.Answered];
                 }
+                try {
+                    let memb = await guild.members.fetch(msg.content.trim());
+                    return [(queryID) ? memb.id : memb, InputReturns.Answered];
+                }
+                catch { }
+                channel.send(lang.wrongInputUser(msg.content.trim()));
                 break;
             case InputType.Emoji:
-                {
-                    // Catch custom emojis
-                    let emojis = msg.content.match(/(?<=:)[0-9]+(?=>)/);
-                    if (emojis) {
-                        // Find the custom emoji, and return its id
-                        let emoji = guild.emojis.cache.get(emojis[0]);
-                        if (emoji)
-                            return [emoji.id, InputReturns.Answered];
-                    }
-                    else {
-                        // If no custom emoji was counf, catch unicode emojis
-                        let emojisTxt = msg.content.match(emojiRegex);
-                        if (emojisTxt)
-                            return [emojisTxt, InputReturns.Answered];
-                    }
-                    channel.send(lang.wrongInputEmoji());
+                // Catch custom emojis
+                let emojis = msg.content.match(/(?<=:)[0-9]+(?=>)/);
+                if (emojis) {
+                    // Find the custom emoji, and return its id
+                    let emoji = guild.emojis.cache.get(emojis[0]);
+                    if (emoji)
+                        return [emoji.id, InputReturns.Answered];
                 }
+                else {
+                    // If no custom emoji was counf, catch unicode emojis
+                    let emojisTxt = msg.content.match(emojiRegex);
+                    if (emojisTxt)
+                        return [emojisTxt, InputReturns.Answered];
+                }
+                channel.send(lang.wrongInputEmoji());
                 break;
             case InputType.Role:
-                {
-                    let role = (_b = msg.mentions.roles) === null || _b === void 0 ? void 0 : _b.first();
-                    if (role) {
-                        return [(queryID) ? role.id : role, InputReturns.Answered];
-                    }
-                    role = await guild.roles.fetch(msg.content.trim());
-                    if (role) {
-                        return [(queryID) ? role.id : role, InputReturns.Answered];
-                    }
-                    channel.send(lang.wrongInputRole(msg.content.trim()));
+                let role = (_b = msg.mentions.roles) === null || _b === void 0 ? void 0 : _b.first();
+                if (role) {
+                    return [(queryID) ? role.id : role, InputReturns.Answered];
                 }
+                role = await guild.roles.fetch(msg.content.trim());
+                if (role) {
+                    return [(queryID) ? role.id : role, InputReturns.Answered];
+                }
+                channel.send(lang.wrongInputRole(msg.content.trim()));
                 break;
             case InputType.Channel:
-                {
-                    let chnl = (_c = msg.mentions.channels) === null || _c === void 0 ? void 0 : _c.first();
-                    if (chnl) {
-                        return [(queryID) ? chnl.id : chnl, InputReturns.Answered];
-                    }
-                    chnl = guild.channels.cache.get(msg.content.trim());
-                    if (chnl) {
-                        return [(queryID) ? chnl.id : chnl, InputReturns.Answered];
-                    }
-                    channel.send(lang.wrongInputChannel(msg.content.trim()));
+                let chnl = (_c = msg.mentions.channels) === null || _c === void 0 ? void 0 : _c.first();
+                if (chnl) {
+                    return [(queryID) ? chnl.id : chnl, InputReturns.Answered];
                 }
+                chnl = guild.channels.cache.get(msg.content.trim());
+                if (chnl) {
+                    return [(queryID) ? chnl.id : chnl, InputReturns.Answered];
+                }
+                channel.send(lang.wrongInputChannel(msg.content.trim()));
                 break;
             case InputType.Message:
-                {
-                    return [(queryID) ? msg.id : msg, InputReturns.Answered];
-                }
+                return [(queryID) ? msg.id : msg, InputReturns.Answered];
                 break;
             case InputType.Text:
-                {
-                    return [msg.content, InputReturns.Answered];
-                }
+                return [msg.content, InputReturns.Answered];
                 break;
             case InputType.Number:
-                {
-                    return [parseInt(msg.content, 10), InputReturns.Answered];
-                }
+                return [parseInt(msg.content, 10), InputReturns.Answered];
+                break;
+            case InputType.TextList:
+                return [msg.content.split('\n'), InputReturns.Answered];
+                break;
+            case InputType.ChannelList:
+                let cContent = msg.content.replace(/<@#|>|[^\S\r\n]/gm, '');
+                let channels = cContent.split('\n');
+                return [channels, InputReturns.Answered];
+                break;
+            case InputType.RoleList:
+                let rContent = msg.content.replace(/<@&|>|[^\S\r\n]/gm, '');
+                let roles = rContent.split('\n');
+                return [roles, InputReturns.Answered];
                 break;
         }
     }

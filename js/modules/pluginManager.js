@@ -275,6 +275,16 @@ export class PluginManager {
             return Permission.User;
         return Permission.Any;
     }
+    getPermissionRole(permission, guild) {
+        var _a;
+        let role = (_a = this.permissionPlugin.state) === null || _a === void 0 ? void 0 : _a.read("config", Permission[permission]);
+        if (role) {
+            return guild.roles.cache.get(role);
+        }
+        else {
+            return;
+        }
+    }
     // ========== Private Functions ==========
     async _initiatePlugin(p) {
         var _a;

@@ -1,5 +1,6 @@
 import * as Plugin from "../modules/plugin.js";
 import Settings from "./selfAssignRoles/settings.json";
+// ========== Plugin ==========
 export default class selfAssignRoles extends Plugin.Plugin {
     constructor() {
         super(...arguments);
@@ -12,9 +13,11 @@ export default class selfAssignRoles extends Plugin.Plugin {
         });
     }
 }
+// ========== Commands ==========
 class SetRole extends Plugin.ChatCommand {
     constructor(topic) {
         super(topic.command);
+        this.permission = Plugin.Permission.User;
         this.topic = topic;
     }
     getHelpText() {
@@ -58,6 +61,7 @@ class SetRole extends Plugin.ChatCommand {
         }
     }
 }
+// ========== Functions ==========
 /**
  * Constructs a string of avalible roles, excluding aliases
  * @param array Array of roles to construct string from
