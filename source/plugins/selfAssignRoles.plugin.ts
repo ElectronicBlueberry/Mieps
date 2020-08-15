@@ -38,6 +38,8 @@ interface Topic {
 class SetRole extends Plugin.ChatCommand {
 	topic: Topic;
 	
+	permission = Plugin.Permission.User;
+
 	constructor(topic: Topic) {
 		super(topic.command);
 		this.topic = topic;
