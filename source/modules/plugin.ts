@@ -96,11 +96,11 @@ export class Plugin implements iPlugin {
 		let response: any;
 
 		switch (type) {
-			case InputType.Channel: {
+			case InputType.Channel:
 				response = guild.channels.cache.get(s);
-			} break;
+				break;
 
-			case InputType.Emoji: {
+			case InputType.Emoji:
 				if (s.match(idRegex)) {
 					// custom Emoji
 					response = guild.emojis.cache.get(s);
@@ -108,25 +108,25 @@ export class Plugin implements iPlugin {
 					// unicode Emoji
 					response = new Discord.Emoji(this.client, {id: null, name: s})
 				}
-			} break;
+				break;
 
-			case InputType.Role: {
+			case InputType.Role:
 				response = await guild.roles.fetch(s);
-			} break;
+				break;
 
-			case InputType.User: {
+			case InputType.User:
 				response = await guild.members.fetch(s);
-			} break;
+				break;
 
-			case InputType.Message: {
+			case InputType.Message:
 				try {
 					response = await (await guild.channels.cache.get(s[0]) as Discord.TextChannel | undefined)?.messages?.fetch(s[1]);
 				} catch {}
-			} break;
+				break;
 			
-			default: {
+			default:
 				response = s;
-			} break;
+				break;
 		}
 
 		if (!response) {
