@@ -71,7 +71,9 @@ export interface iPlugin {
 	/** A template for settings to be set on the discord server */
 	setupTemplate?: SetupTemplate,
 	/** The Plugins State */
-	state?: State
+	state?: State,
+	joinStream?: MemberStream,
+	leaveStream?: MemberStream
 }
 
 export class Plugin implements iPlugin {
@@ -172,7 +174,12 @@ export interface MessageStream {
 	channels?: Array<Discord.TextChannel>,
 	name: string,
 	/** Return boolean indicates if message should be passed on to the command processing stage */
-	run: (message: Discord.Message) => boolean;
+	run: (message: Discord.Message) => Promise<boolean>;
+}
+
+export interface MemberStream {
+	name: string,
+	run: (member: Discord.GuildMember | Discord.PartialGuildMember) => Promise<void>;
 }
 
 export interface Setting {

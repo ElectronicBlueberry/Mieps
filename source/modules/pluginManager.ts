@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as Path from 'path';
 
-import {iPlugin, Plugin, ChatCommand, EmojiCommand, MessageStream, CommandType, Permission} from "./plugin.js";
+import {iPlugin, Plugin, ChatCommand, EmojiCommand, MessageStream, CommandType, Permission, MemberStream} from "./plugin.js";
 import {criticalError, uncaughtError} from "./errorHandling.js";
 import {State, ReadOnlyState} from "./state.js";
 import * as lang from "../lang/pluginManager.js"
@@ -16,6 +16,8 @@ export class PluginManager {
 	private chatCommands: Collection<string, ChatCommand> = new Discord.Collection();
 	private emojiCommands: Collection<string, EmojiCommand> = new Discord.Collection();
 	private messageStreams: Collection<string, MessageStream> = new Discord.Collection();
+	private joinStreams: Collection<string, MemberStream> = new Discord.Collection();
+	private leaveStreams: Collection<string, MemberStream> = new Discord.Collection();
 
 	private pluginState = new State("plugin_manager");
 
@@ -191,6 +193,26 @@ export class PluginManager {
 		return proceed;
 	}
 
+	public async runJoinStreams(member: Discord.GuildMember | Discord.PartialGuildMember): Promise<void> {
+		this.joinStreams.forEach(stream => {
+			try {
+				stream.run(member);
+			} catch(e) {
+				uncaughtError(this.controlChannel, stream.name, e);
+			}
+		});
+	}
+
+	public async runLeaveStreams(member: Discord.GuildMember | Discord.PartialGuildMember): Promise<void> {
+		this.leaveStreams.forEach(stream => {
+			try {
+				stream.run(member);
+			} catch(e) {
+				uncaughtError(this.controlChannel, stream.name, e);
+			}
+		});
+	}
+
 	/**
 	 * Sets the client for Plugins to use,
 	 * calls all Plugins init function,
@@ -333,6 +355,8 @@ export class PluginManager {
 		});
 
 		if (plugin.messageStream) this.messageStreams.set(plugin.name, plugin.messageStream);
+		if (plugin.joinStream) this.joinStreams.set(plugin.name, plugin.joinStream);
+		if (plugin.leaveStream) this.leaveStreams.set(plugin.name, plugin.leaveStream);
 	}
 
 	// Remove a Plugins Commands from the Command Collections, so they wont be called again
@@ -346,5 +370,7 @@ export class PluginManager {
 		});
 
 		if (plugin.messageStream) this.messageStreams.delete(plugin.name);
+		if (plugin.joinStream) this.joinStreams.delete(plugin.name);
+		if (plugin.leaveStream) this.leaveStreams.delete(plugin.name);
 	}
 }
