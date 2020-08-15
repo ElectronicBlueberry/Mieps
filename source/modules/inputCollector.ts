@@ -13,7 +13,10 @@ export enum InputType {
 	Channel,
 	Message,
 	Text,
-	Number
+	Number,
+	TextList,
+	ChannelList,
+	RoleList
 }
 
 export enum InputReturns {
@@ -68,7 +71,7 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 		let guild = channel.guild;
 
 		switch (type) {
-			case InputType.User: {
+			case InputType.User:
 
 				let usr = msg.mentions.users?.first();
 				if (usr) {
@@ -81,9 +84,9 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 				} catch {}
 				
 				channel.send(lang.wrongInputUser(msg.content.trim()));
-			} break;
+				break;
 
-			case InputType.Emoji: {
+			case InputType.Emoji:
 
 				// Catch custom emojis
 				let emojis = msg.content.match( /(?<=:)[0-9]+(?=>)/ );
@@ -98,9 +101,9 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 				}
 
 				channel.send(lang.wrongInputEmoji());
-			} break;
+				break;
 
-			case InputType.Role: {
+			case InputType.Role:
 
 				let role: Discord.Role | undefined | null = msg.mentions.roles?.first();
 				if (role) {
@@ -113,9 +116,9 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 				}
 
 				channel.send(lang.wrongInputRole(msg.content.trim()));
-			} break;
+				break;
 
-			case InputType.Channel: {
+			case InputType.Channel:
 
 				let chnl: Discord.TextChannel | Discord.GuildChannel | undefined = msg.mentions.channels?.first();
 				if (chnl) {
@@ -128,19 +131,19 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 				}
 
 				channel.send(lang.wrongInputChannel(msg.content.trim()));
-			} break;
+				break;
 		
-			case InputType.Message: {
+			case InputType.Message:
 				return [(queryID) ? msg.id : msg, InputReturns.Answered];
-			} break;
+				break;
 
-			case InputType.Text: {
+			case InputType.Text:
 				return [msg.content, InputReturns.Answered];
-			} break;
+				break;
 
-			case InputType.Number: {
+			case InputType.Number:
 				return [parseInt(msg.content, 10), InputReturns.Answered];
-			} break;
+				break;
 		}
 	}
 	
