@@ -1,6 +1,3 @@
-import {command_prefix} from "../../config/server.json";
-import * as Discord from "discord.js";
-
 export const optInDescription = `Erlbaut es Optionale Channel einzurichten, welche User selbst joinen können`;
 
 export const optInChannelList = `Eine Liste vom Namen aller opt-In Kanälen, ein Eintrag pro Zeile. Nicht die Kanäle selbst velinken! "-" um leer zu lassen`;
