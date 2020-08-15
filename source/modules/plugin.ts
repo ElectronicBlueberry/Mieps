@@ -124,6 +124,26 @@ export class Plugin implements iPlugin {
 				} catch {}
 				break;
 			
+			case InputType.ChannelList:
+				response = [];
+			
+				if (Array.isArray(s)) {
+					for (let id of s as string[]) {
+						response.push( guild.channels.cache.get(id));
+					}
+				}
+				break;
+
+			case InputType.RoleList:
+				response = [];
+			
+				if (Array.isArray(s)) {
+					for (let id of s as string[]) {
+						response.push( guild.roles.cache.get(id));
+					}
+				}
+				break;
+
 			default:
 				response = s;
 				break;
