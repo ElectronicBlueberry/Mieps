@@ -36,6 +36,8 @@ export default class OptionalChannels extends Plugin.Plugin {
 
 		if (optInCount > 0 || optOutCount > 0) {
 			this.channels = [];
+		} else {
+			this.channels = undefined;
 		}
 
 		for (let i = 0; i < optInCount; i++) {
