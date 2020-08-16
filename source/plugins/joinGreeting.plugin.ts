@@ -1,10 +1,7 @@
 import * as lang from "../lang/plugins/joinGreeting.js";
 import * as Plugin from "../modules/plugin.js";
 import {State} from "../modules/state.js"
-import { description } from "../lang/plugins/freeze.js";
 import * as Discord from "discord.js";
-import { time } from "console";
-import { InputReturns } from "../modules/inputCollector.js";
 
 export default class Greetings extends Plugin.Plugin {
 	name = "greetings";
