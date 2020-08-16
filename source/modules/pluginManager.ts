@@ -267,7 +267,7 @@ export class PluginManager {
 	}
 
 	/** Gets whether a plugin is active */
-	public async getActive(name: string): Promise<boolean> {
+	public getActive(name: string): boolean {
 		if(this.pluginState.read(name, "active")) {
 			return true;
 		} else {
