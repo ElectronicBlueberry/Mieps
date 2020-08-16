@@ -151,7 +151,7 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 
 			case InputType.ChannelList:
 				
-				let cContent = msg.content.replace(/<@#|>|[^\S\r\n]/gm, '');
+				let cContent = msg.content.replace(/<#|>|[^\S\r\n]/gm, '');
 				let channels: Array<string> = cContent.split('\n');
 
 				return [channels, InputReturns.Answered];
