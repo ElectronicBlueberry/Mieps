@@ -266,6 +266,15 @@ export class PluginManager {
 		this.pluginState.write(name, "configured", configured);
 	}
 
+	/** Gets whether a plugin is active */
+	public async getActive(name: string): Promise<boolean> {
+		if(this.pluginState.read(name, "active")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/** Load a Plugin as a Built-In, which is required for other plugins/the bots operation, and cannot be deactivated, or configured */
 	public async addBuiltin(plugin: iPlugin): Promise<void> {
 		await plugin.init?.();
