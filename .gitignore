@@ -5,6 +5,9 @@ instance.json
 # maps
 *.map
 
+# development js directiry
+js/
+
 # Logs
 logs
 *.log
