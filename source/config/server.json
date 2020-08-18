@@ -1,5 +1,5 @@
 {
-	"plugin_folder": "./js/plugins/",
+	"plugin_folder": "./output/plugins/",
 	"plugin_suffix": ".plugin.js",
 	"state_folder": "./state/",
 	"state_suffix": ".db.json",
