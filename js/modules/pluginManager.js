@@ -14,6 +14,8 @@ export class PluginManager {
         this.chatCommands = new Discord.Collection();
         this.emojiCommands = new Discord.Collection();
         this.messageStreams = new Discord.Collection();
+        this.joinStreams = new Discord.Collection();
+        this.leaveStreams = new Discord.Collection();
         this.pluginState = new State("plugin_manager");
         // used to setup permissions in the configurator
         this.permissionPlugin = {
@@ -172,6 +174,26 @@ export class PluginManager {
         }
         return proceed;
     }
+    async runJoinStreams(member) {
+        this.joinStreams.forEach(stream => {
+            try {
+                stream.run(member);
+            }
+            catch (e) {
+                uncaughtError(this.controlChannel, stream.name, e);
+            }
+        });
+    }
+    async runLeaveStreams(member) {
+        this.leaveStreams.forEach(stream => {
+            try {
+                stream.run(member);
+            }
+            catch (e) {
+                uncaughtError(this.controlChannel, stream.name, e);
+            }
+        });
+    }
     /**
      * Sets the client for Plugins to use,
      * calls all Plugins init function,
@@ -218,6 +240,15 @@ export class PluginManager {
     /** Sets whether or not a plugin is configured */
     setConfigured(name, configured) {
         this.pluginState.write(name, "configured", configured);
+    }
+    /** Gets whether a plugin is active */
+    getActive(name) {
+        if (this.pluginState.read(name, "active")) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     /** Load a Plugin as a Built-In, which is required for other plugins/the bots operation, and cannot be deactivated, or configured */
     async addBuiltin(plugin) {
@@ -308,6 +339,10 @@ export class PluginManager {
         });
         if (plugin.messageStream)
             this.messageStreams.set(plugin.name, plugin.messageStream);
+        if (plugin.joinStream)
+            this.joinStreams.set(plugin.name, plugin.joinStream);
+        if (plugin.leaveStream)
+            this.leaveStreams.set(plugin.name, plugin.leaveStream);
     }
     // Remove a Plugins Commands from the Command Collections, so they wont be called again
     _unloadCommands(plugin) {
@@ -323,6 +358,10 @@ export class PluginManager {
         });
         if (plugin.messageStream)
             this.messageStreams.delete(plugin.name);
+        if (plugin.joinStream)
+            this.joinStreams.delete(plugin.name);
+        if (plugin.leaveStream)
+            this.leaveStreams.delete(plugin.name);
     }
 }
 //# sourceMappingURL=pluginManager.js.map

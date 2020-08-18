@@ -29,6 +29,9 @@ export default class OptionalChannels extends Plugin.Plugin {
         if (optInCount > 0 || optOutCount > 0) {
             this.channels = [];
         }
+        else {
+            this.channels = undefined;
+        }
         for (let i = 0; i < optInCount; i++) {
             (_a = this.channels) === null || _a === void 0 ? void 0 : _a.push({
                 name: optInChannelNames[i].trim(),

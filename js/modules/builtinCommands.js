@@ -198,6 +198,11 @@ class ConfigCommand extends ChatCommand {
             }
         }
         this.pM.setConfigured(plugin.name, true);
+        // If plugin is allready active, reload it
+        if (this.pM.getActive(plugin.name)) {
+            this.pM.deactivatePlugin(plugin.name);
+            this.pM.activatePlugin(plugin.name);
+        }
     }
 }
 //# sourceMappingURL=builtinCommands.js.map

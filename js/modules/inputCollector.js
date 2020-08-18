@@ -117,7 +117,7 @@ async function _queryInput(channel, user, query, type, queryID, timeout) {
                 return [msg.content.split('\n'), InputReturns.Answered];
                 break;
             case InputType.ChannelList:
-                let cContent = msg.content.replace(/<@#|>|[^\S\r\n]/gm, '');
+                let cContent = msg.content.replace(/<#|>|[^\S\r\n]/gm, '');
                 let channels = cContent.split('\n');
                 return [channels, InputReturns.Answered];
                 break;

@@ -55,6 +55,12 @@ client.on("messageReactionAdd", async (reaction, user) => {
         return;
     pluginManager.runEmojiCommand(reaction, user);
 });
+client.on("guildMemberAdd", async (member) => {
+    pluginManager.runJoinStreams(member);
+});
+client.on("guildMemberRemove", async (member) => {
+    pluginManager.runLeaveStreams(member);
+});
 // Trigger Reactions for uncached messages
 // @ts-ignore: Argument type error
 client.on("raw", async (packet) => {

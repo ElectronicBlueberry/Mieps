@@ -8,6 +8,7 @@ export default class selfAssignRoles extends Plugin.Plugin {
         this.commands = [];
     }
     async init() {
+        this.commands = [];
         Settings.topics.forEach(topic => {
             this.commands.push(new SetRole(topic));
         });
