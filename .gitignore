@@ -6,7 +6,7 @@ instance.json
 *.map
 
 # development js directiry
-js/
+output/
 
 # Logs
 logs

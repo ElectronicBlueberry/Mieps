@@ -1,7 +1,0 @@
-{
-    "plugin_folder": "./js/plugins/",
-    "plugin_suffix": ".plugin.js",
-    "state_folder": "./state/",
-    "state_suffix": ".db.json",
-    "command_prefix": "!"
-}
