@@ -8,6 +8,9 @@ instance.json
 # development js directiry
 output/
 
+# vs code
+.vscode/
+
 # Logs
 logs
 *.log
