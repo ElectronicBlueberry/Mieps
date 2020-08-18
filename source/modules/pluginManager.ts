@@ -132,8 +132,8 @@ export class PluginManager {
 		let memberPerm = this.getHighestMemberPermission(member);
 		let perm = memberPerm >= commannd.permission;
 
-		// If Member is a User, and Command is for Users, check they are posting in the right channel
-		if (memberPerm === Permission.User && commannd.permission === Permission.User) {
+		// If Member is a User, check they are posting in the right channel
+		if (memberPerm <= Permission.User) {
 			if (message.channel.id !== this.permissionPlugin.state?.read("config", "UserCommandChannel")) {
 				perm = false;
 			}
