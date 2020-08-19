@@ -2,11 +2,11 @@ import * as Discord from "discord.js";
 
 import {command_prefix} from "../../config/server.json";
 
-export const pluginDescription = `Erlaubt das verschieben und löschen von Nachrichten`;
+export const pluginDescription = `Erlaubt das Verschieben und Löschen von Nachrichten`;
 
 export const auditLogChannel = `Der Kanal wo der Audit-Log gespeichert werden soll`;
-export const startCutEmoji = `Das Emoji um den Anfang einer Nachrichten Selektion zu makieren`;
-export const endCutEmoji = `Das Emoji um das Ende einer Nachrichten Selektion zu makieren`;
+export const startCutEmoji = `Das Emoji um den Anfang einer Nachrichten Selektion zu markieren`;
+export const endCutEmoji = `Das Emoji um das Ende einer Nachrichten Selektion zu markieren`;
 export const deleteEmoji = `Das Emoji um eine Nachricht zu löschen`;
 export const copyEmoji = `Das Emoji um eine Nachricht zu kopieren`;
 

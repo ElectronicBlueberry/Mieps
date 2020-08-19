@@ -1,6 +1,7 @@
 import * as Plugin from "../modules/plugin.js";
 import Settings from "./selfAssignRoles/settings.json"
 import * as Discord from "discord.js";
+import * as lang from "../lang/plugins/selfAssignRoles.js";
 
 // ========== Plugin ==========
 
@@ -8,6 +9,7 @@ export default class selfAssignRoles extends Plugin.Plugin {
 	name = "self_assign_roles";
 
 	commands: Array<SetRole> = [];
+	description = lang.description;
 
 	async init(): Promise<void> {
 		this.commands = [];

@@ -10,7 +10,7 @@ export function userRoleDesc(): string {
 }
 
 export function userChannelDesc(): string {
-	return `Channel in welchem Nutzer Befehle senden können`;
+	return `Channel, in welchem Nutzer Befehle senden können`;
 }
 
 export function modRoleDesc(): string {

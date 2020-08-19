@@ -3,7 +3,7 @@ export function greeting(userId: string, ruleChannelId: string, introChannelId: 
 }
 
 export const description = `Begrüßt neue User`;
-export const joinChannelInfo = `Der Channel, in welchem die Begrüßungs-Nachricht versendet werden soll.`;
-export const ruleChannelInfo = `Der Regelchannel, welcher neuen Mitgliedern verlinkt werden soll.`;
-export const introChannelInfo = `Der Vorstellungschannel, welcher neuen Mitgliedern verlinkt werden soll.`;
-export const timeoutInfo = `In Sekunden, wie lange Mieps warten soll, bevor neue Mitglieder begrüßt werden.`;
+export const joinChannelInfo = `Der Channel, in welchem die Begrüßungs-Nachricht versendet werden soll`;
+export const ruleChannelInfo = `Der Regelchannel, welcher neuen Mitgliedern verlinkt werden soll`;
+export const introChannelInfo = `Der Vorstellungschannel, welcher neuen Mitgliedern verlinkt werden soll`;
+export const timeoutInfo = `Wie viele Sekunden Mieps warten soll, bevor sie neue Mitglieder begrüßt`;

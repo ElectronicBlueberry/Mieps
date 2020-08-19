@@ -1,6 +1,6 @@
 export const description = `Löscht Links von nicht-Mitgliedern`;
-export const logDescription = `Kanal, in welchem gelöschte Nachrichten landen sollen.`;
-export const lingerDescription = `Wie lange die Nachricht, dass ein Link gelöscht wurde, bleiben soll bis sie sich selbst löscht. In Sekunden`;
+export const logDescription = `Kanal, in welchem gelöschte Nachrichten landen sollen`;
+export const lingerDescription = `Wie viele Sekunden die Nachricht, dass ein Link gelöscht wurde, bleiben soll`;
 
 export const feedbackMessage = `Dir fehlen die Berechtigungen um Links zu posten.`;
 

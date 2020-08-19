@@ -8,8 +8,8 @@ const openCommands = `"${command_prefix}mahnung vorschau" um eine Kopie der Mahn
 "${command_prefix}mahnung abbrechen" um sie abzubrechen
 "${command_prefix}mahnung senden" um sie zu senden`;
 
-export const warningsDescription = `Erlaubt es Mahnungen zu verfassen, und zu versenden`;
-export const archiveChannelDescription = `Der Kanal in welchem die Mahnungen archivriert werden`;
+export const warningsDescription = `Erlaubt es Mahnungen zu verfassen und zu versenden`;
+export const archiveChannelDescription = `Der Kanal in welchem die Mahnungen archiviert werden`;
 export const approveCountDescription = `Wie viele Mods die Mahnung genehmigen müssen, bevor sie versendet werden kann`;
 
 export const warningCommand = `mahnung`;

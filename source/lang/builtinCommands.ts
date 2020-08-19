@@ -39,7 +39,7 @@ export function pluginCommandHelp(): string {
 "${command_prefix}plugin activate all" Aktiviere alle Plugins
 "${command_prefix}plugin commands [name]" Zeige alle Befehle die zu diesem Plugin gehören 
 
-Plugins müssen konfiguriert sein, befor sie aktiviert werden können:
+Plugins müssen konfiguriert sein, bevor sie aktiviert werden können:
 "${command_prefix}config [name]" Konfiguriere ein Plugin`;
 }
 
@@ -64,7 +64,7 @@ export function pluginNotFound(name: string): string {
 }
 
 export function commandList(chatCommands: Map<string, ChatCommand>, emojiCommands: Map<string, EmojiCommand>): string {
-	let list = `Folgende Befehle stehen dir zu verfügung:\n`
+	let list = `Folgende Befehle stehen dir zur Verfügung:\n`
 	chatCommands.forEach(c => {
 		list += `\n${command_prefix}${c.name}`;
 	});

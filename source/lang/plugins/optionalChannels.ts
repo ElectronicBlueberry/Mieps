@@ -1,10 +1,10 @@
-export const optInDescription = `Erlbaut es Optionale Channel einzurichten, welche User selbst joinen können`;
+export const optInDescription = `Erlaubt es optionale Channel einzurichten, welche User selbst joinen können`;
 
-export const optInChannelList = `Eine Liste vom Namen aller opt-In Kanälen, ein Eintrag pro Zeile. Nicht die Kanäle selbst velinken! "-" um leer zu lassen`;
-export const optInRole = `Eine Liste der Rollen für die opt-In Kanäle, in gleicher Reihenfolge wie die Namen. Verlinke die Rollen direkt, mit einem "@". Schreibe "-" um die Eingabe leer zu lassen`;
+export const optInChannelList = `Eine Liste aller *Wörter*, die hinter dem join-Befehl für die **opt-in** Kanäle angehangen werden können. Ein Eintrag pro Zeile. Nicht die Kanäle selbst verlinken! "-" um leer zu lassen`;
+export const optInRole = `Eine Liste der *Rollen* für die **opt-in** Kanäle. Nutze die gleiche Reihenfolge, wie im vorherigen Befehl, damit über die join-Commands die richtigen Rollen vergeben werden können. Verlinke die Rollen direkt mit einem "@". Schreibe "-" um die Eingabe leer zu lassen`;
 
-export const optOutChannelList = `Eine Liste vom Namen aller opt-Out Kanälen, ein Eintrag pro Zeile. Nicht die Kanäle selbst velinken! "-" um leer zu lassen`;
-export const optOutRole = `Eine Liste der Rollen für die opt-Out Kanäle, in gleicher Reihenfolge wie die Namen. Verlinke die Rollen direkt, mit einem "@". Schreibe "-" um die Eingabe leer zu lassen`;
+export const optOutChannelList = `Eine Liste aller *Wörter*, die hinter dem join- Befehl für die **opt-out** Kanäle angehangen werden können. Ein Eintrag pro Zeile. Nicht die Kanäle selbst velinken! "-" um leer zu lassen`;
+export const optOutRole = `Eine Liste der *Rollen* für die **opt-out** Kanäle. Nutze die gleiche Reihenfolge, wie im vorherigen Befehl, damit über die join-Commands die richtigen Rollen vergeben werden können. Verlinke die Rollen direkt mit einem "@". Schreibe "-" um die Eingabe leer zu lassen`;
 
 export function help(channelList: Array<string>, join: boolean): string {
 	let channelString = "";
