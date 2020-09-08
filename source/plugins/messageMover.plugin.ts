@@ -105,6 +105,25 @@ async function fetchSelected(member: Discord.GuildMember, state: State): Promise
 	return messages;
 }
 
+async function removeMarks(state: State, member: Discord.GuildMember): Promise<void> {
+	// Fetch both marks
+	let oldStartR = state.read(member.id, "start") as SelectionMark | undefined;
+	let oldEndR = state.read(member.id, "end") as SelectionMark | undefined;
+
+	// Attempt to delte both
+	[oldStartR, oldEndR].forEach(async oldR => {
+		if (oldR) {
+			try {
+				let guild = member.guild;
+				let channel = guild.channels.cache.get(oldR.channel) as Discord.TextChannel;
+				let oldRMessage = await channel?.messages.fetch(oldR.message);
+
+				await (await oldRMessage.reactions.cache.get(oldR.id || oldR.name)?.fetch())?.users.remove(member.id);
+			} catch {}
+		}
+	});
+}
+
 // ========== Emoji Commands ==========
 
 class DeleteSingle extends Plugin.EmojiCommand {
@@ -152,6 +171,7 @@ class CopySingle extends Plugin.EmojiCommand {
 			let embed = embedFromMessage(message);
 
 			await logChannel?.send(lang.copyLog(member), embed);
+			await reaction.remove();
 		} catch {
 			logChannel?.send(lang.copyFailed());
 		}
@@ -277,6 +297,8 @@ class CopyMessages extends Plugin.ChatCommand {
 
 			// Delete Command
 			await message.delete();
+
+			removeMarks(this.plugin.state, member);
 		} catch {
 			message.channel.send(lang.copyFailed());
 		}
