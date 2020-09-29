@@ -87,6 +87,24 @@
 				{"name": "Schweiz", "role": "Schweiz"},
 				{"name": "CH", "role": "Schweiz"}
 			]
+		},
+		{
+			"command": "interessen",
+			"set_message": "Du hast nun folgende Rollen: $ROLES",
+			"cleared_message": "Du hast nun keine Interessen-Rollen mehr!",
+
+			"help": "Nenne eine oder mehrere der folgenden Interessen direkt hinter diesem Befehl, um sie dir als Rollen zuzuweisen: $ROLES\n\nOder führe ihn leer aus, um alle Interessen-Rollen zu entfernen.",
+			"roles":
+			[
+				{"name": "Programmieren", "role": "Programmieren"},
+				{"name": "Malen", "role": "Malen"},
+				{"name": "Musik", "role": "Musik"},
+				{"name": "Schreiben", "role": "Schreiben"},
+				{"name": "Video", "role": "Video"}, 
+				{"name": "Streamen", "role": "Streamen"},
+				{"name": "Modellieren", "role": "Modellieren"},
+				{"name": "Animieren", "role": "Animieren"}
+			]
 		}
 	]
 }
