@@ -117,7 +117,7 @@ Um diese Mahnung senden zu können, müssen diese Mods die Mahnung erst genehmig
 }
 
 export function notEnoughVotes(count: number): string {
-	return `Die Mahnung hat noch nicht genug Genehmigunen um gesendet werden zu können! Benötigte Genehmigungen: ${count}`;
+	return `Die Mahnung hat noch nicht genug Genehmigungen, um gesendet werden zu können! Benötigte Genehmigungen: ${count}`;
 }
 
 export const targetNotFound = `Mitglied nicht gefunden! Ist die Person noch auf dem Server?`;
