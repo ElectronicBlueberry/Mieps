@@ -68,9 +68,9 @@ export function approved(member: Discord.User, count: number, veto: boolean): st
 	if (count <= 0) {
 		return `${msgStart} Die Mahnung hat genug Genehmigungen, um abgesendet zu werden.`
 	} else if (count === 1) {
-		return `${msgStart} Es wird noch eine Genehmigung benötigt, befor die Mahnung gesendet werden kann.`
+		return `${msgStart} Es wird noch eine Genehmigung benötigt, bevor die Mahnung gesendet werden kann.`
 	} else {
-		return `${msgStart} Es werden noch ${count} Genehmigungen benötigt, befor die Mahnung gesendet werden kann.`
+		return `${msgStart} Es werden noch ${count} Genehmigungen benötigt, bevor die Mahnung gesendet werden kann.`
 	}
 }
 
