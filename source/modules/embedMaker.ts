@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
 
-export function embedFromMessage(message: Discord.Message, showUser: boolean = true, showTimestamp: boolean = true): Discord.MessageEmbed {
+export function embedFromMessage(message: Discord.Message, showUserIcon: boolean = true, showUserName: boolean = true, showTimestamp: boolean = true): Discord.MessageEmbed {
 	
 	// If the Message is another Bot Embed, copy it
 	if (message.author.bot && message.embeds.length === 1 && message.content.trim() === "") {
@@ -10,9 +10,13 @@ export function embedFromMessage(message: Discord.Message, showUser: boolean = t
 	let embed = new Discord.MessageEmbed();
 
 	// Set Embeds Author
-	if (showUser) {
-		let av = message.author.avatarURL()
+	let av: string | null = null;
+	
+	if (showUserIcon) { 
+		av = message.author.avatarURL();
+	}
 
+	if (showUserName) {
 		if (message.member !== null) {
 			embed = embed.setAuthor(message.member.displayName, av || undefined);
 		} else {
