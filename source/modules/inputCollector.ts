@@ -95,8 +95,8 @@ async function _queryInput(channel: Discord.TextChannel, user: Discord.User, que
 					let emoji = guild.emojis.cache.get(emojis[0]);
 					if (emoji) return [emoji.id, InputReturns.Answered];
 				} else {
-					// If no custom emoji was counf, catch unicode emojis
-					let emojisTxt = msg.content.match(emojiRegex);
+					// If no custom emoji was found, catch unicode emojis
+					let emojisTxt = msg.content.match(emojiRegex)?.pop();
 					if (emojisTxt) return [emojisTxt, InputReturns.Answered];
 				}
 
