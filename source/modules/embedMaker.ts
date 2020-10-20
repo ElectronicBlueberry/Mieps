@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
 
-export function embedFromMessage(message: Discord.Message): Discord.MessageEmbed {
+export function embedFromMessage(message: Discord.Message, showUser: boolean = true, showTimestamp: boolean = true): Discord.MessageEmbed {
 	
 	// If the Message is another Bot Embed, copy it
 	if (message.author.bot && message.embeds.length === 1 && message.content.trim() === "") {
@@ -8,20 +8,31 @@ export function embedFromMessage(message: Discord.Message): Discord.MessageEmbed
 	}
 
 	let embed = new Discord.MessageEmbed();
-	
-	// Set Embeds Author
-	let av = message.author.avatarURL()
 
+	// Set Embeds Author
+	if (showUser) {
+		let av = message.author.avatarURL()
+
+		if (message.member !== null) {
+			embed = embed.setAuthor(message.member.displayName, av || undefined);
+		} else {
+			embed = embed.setAuthor(message.author.username, av || undefined);
+		}
+	}
+	
+	// Colorize Embed
 	if (message.member !== null) {
-		embed = embed.setAuthor(message.member.displayName, av || undefined)
-					 .setColor(message.member.displayColor);
+		embed = embed.setColor(message.member.displayColor);
 	} else {
-		embed = embed.setAuthor(message.author.username, av || undefined)
-					 .setColor('#ffffff');
+		embed = embed.setColor('#ffffff');
 	}
 
-	embed = embed.setDescription(message.content)
-				 .setTimestamp(message.createdTimestamp);
+	// Add Content
+	embed = embed.setDescription(message.content);
+
+	if (showTimestamp) {
+		embed = embed.setTimestamp(message.createdTimestamp);
+	}
 
 	// Reattach Images, as they wont show up otherwise
 	let attachment = message.attachments.first();
