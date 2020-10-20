@@ -6,7 +6,7 @@ export const pinHelp = `Reagiere mit diesem Emoji auf eine Nachricht, um sie im 
 
 export function pinHeadingMessage(author: Discord.User, channel: Discord.Channel): string {
 	return `Von: ${author}
-In: ${channel}`;
+Aus: ${channel}`;
 }
 
 export const pinChannel = `Der Kanal in welchen die gepinnten Nachrichten kopiert werden sollen`;

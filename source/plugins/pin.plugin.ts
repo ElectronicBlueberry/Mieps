@@ -80,7 +80,12 @@ class Pin extends Plugin.EmojiCommand {
 
 		// Iterate the Array backwards, as the order is reversed
 		for (var i = messages.length - 1; i >= 0; i--) {
-			embeds.push(await embedFromMessage(messages[i], false, false))
+			embeds.push( await embedFromMessage(
+				messages[i],
+				false,
+				(i == messages.length - 1),
+				(i == 0)
+			));
 		}
 
 		await pinChannel.send(lang.pinHeadingMessage(author, message.channel));
