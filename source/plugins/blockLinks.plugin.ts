@@ -44,7 +44,7 @@ class LinkFilter implements Plugin.MessageStream {
 		}
 
 		if (message.content.match(linkRegex)) {
-			let embed = embedFromMessage(message);
+			let embed = await embedFromMessage(message);
 			message.delete();
 			this.plugin.logChannel?.send(lang.logMessage(message.channel.id));
 			this.plugin.logChannel?.send(embed);

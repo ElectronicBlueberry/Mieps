@@ -124,6 +124,17 @@ async function removeMarks(state: State, member: Discord.GuildMember): Promise<v
 	});
 }
 
+async function embedArrayFromMessages(messages: Discord.Collection<string, Discord.Message>): Promise<Discord.MessageEmbed[]> {
+	let embeds: Array<Discord.MessageEmbed> = [];
+
+	for (const [key, m] of messages) {
+		let embed = await embedFromMessage(m);
+		embeds.push(embed)
+	}
+
+	return embeds;
+}
+
 // ========== Emoji Commands ==========
 
 class DeleteSingle extends Plugin.EmojiCommand {
@@ -142,7 +153,7 @@ class DeleteSingle extends Plugin.EmojiCommand {
 
 		try {
 			let message = reaction.message;
-			let embed = embedFromMessage(message);
+			let embed = await embedFromMessage(message);
 
 			await (logChannel as Discord.TextChannel).send(lang.logMessage(member), embed);
 			await message.delete();
@@ -168,7 +179,7 @@ class CopySingle extends Plugin.EmojiCommand {
 
 		try {
 			let message = reaction.message;
-			let embed = embedFromMessage(message);
+			let embed = await embedFromMessage(message);
 
 			await logChannel?.send(lang.copyLog(member), embed);
 			await reaction.remove();
@@ -236,9 +247,7 @@ class MoveMessages extends Plugin.ChatCommand {
 				return;
 			}
 
-			let embeds = messages.map(m => {
-				return embedFromMessage(m);
-			});
+			let embeds = await embedArrayFromMessages(messages);
 
 			// Send Messages to new Channel
 			for (const embed of embeds) {
@@ -286,9 +295,7 @@ class CopyMessages extends Plugin.ChatCommand {
 				return;
 			}
 
-			let embeds = messages.map(m => {
-				return embedFromMessage(m);
-			});
+			let embeds = await embedArrayFromMessages(messages);
 
 			// Send Messages to new Channel
 			for (const embed of embeds) {
@@ -328,9 +335,7 @@ class DeleteMessages extends Plugin.ChatCommand {
 				return;
 			}
 
-			let embeds = messages.map(m => {
-				return embedFromMessage(m);
-			});
+			let embeds = await embedArrayFromMessages(messages);
 
 			// Log Message
 			await (logChannel as Discord.TextChannel).send(lang.logMessage(member));
