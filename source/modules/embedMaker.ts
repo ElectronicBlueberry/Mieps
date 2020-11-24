@@ -61,7 +61,7 @@ export async function embedFromMessage(message: Discord.Message, showUserIcon: b
 			authorName = replyMsg.author.username;
 		}
 
-		embed = embed.addField(`\u2514\u2500\u25b7 ${lang.reply} ${authorName}`, replyTxt);
+		embed = embed.addField(`\u2514\u2500\u25b7 ${lang.reply} ${authorName}:`, replyTxt);
 	}
 
 	// Reattach Image
