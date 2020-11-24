@@ -82,7 +82,7 @@ class Pin extends Plugin.EmojiCommand {
 		for (var i = messages.length - 1; i >= 0; i--) {
 			embeds.push( await embedFromMessage(
 				messages[i],
-				false,
+				true,
 				(i == messages.length - 1),
 				(i == 0)
 			));
