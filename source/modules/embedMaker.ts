@@ -50,7 +50,7 @@ export async function embedFromMessage(message: Discord.Message, showUserIcon: b
 		replyTxt = replyTxt.replace(/(\r\n|\r|\n)/gm, "\n> ");
 
 		if (replyTxt.length > 64) {
-			replyTxt = replyTxt.slice(0, 64 - 6) + " [...]";
+			replyTxt = replyTxt.slice(0, 64 - 3) + "...";
 		}
 
 		let authorName = "";
