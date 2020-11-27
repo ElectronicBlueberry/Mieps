@@ -12,3 +12,8 @@ Aus: ${channel}`;
 export const pinChannel = `Der Kanal in welchen die gepinnten Nachrichten kopiert werden sollen`;
 export const pinCount = `Wie viele Mitglieder insgesamt pinnen müssen, bevor eine Nachricht gepinnt wird`;
 export const pinEmoji = `Das Emoji, mit welchem Mitglieder Nachrichten anpinnen können`;
+
+export function authorMissingFeedback(pinChannel: Discord.Channel, emoji?: Discord.Emoji): string {
+	return `Die Community findet deinen Beitrag toll, und möchte ihn in ${pinChannel} festhalten!
+Wenn du damit einverstanden bist, reagiere auch mit ${emoji} auf deinen Beitrag.`;
+}
