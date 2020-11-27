@@ -15,5 +15,6 @@ export const pinEmoji = `Das Emoji, mit welchem Mitglieder Nachrichten anpinnen 
 
 export function authorMissingFeedback(pinChannel: Discord.Channel, emoji?: Discord.Emoji): string {
 	return `die Community findet deinen Beitrag toll und möchte ihn in ${pinChannel} festhalten!
-Wenn du damit einverstanden bist, reagiere auch mit ${emoji} auf deinen Beitrag.`;
+Wenn du damit einverstanden bist, reagiere auch mit "${emoji}" auf deinen Beitrag.
+Falls du deinen Beitrag vorher anpassen willst, bearbeite deine Nachricht bevor du mit "${emoji}" reagierst.`;
 }
