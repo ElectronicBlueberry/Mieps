@@ -1,41 +1,33 @@
-import * as lang from "../lang/plugins/messageMover.js";
-import * as Plugin from "../modules/plugin.js";
-import { State } from "../modules/state.js";
+import * as Discord from "discord.js"
 
-import * as Discord from "discord.js";
-import { embedFromMessage } from "../modules/embedMaker.js";
+import * as Lang from "../lang/plugins/messageMover.js"
+import * as Plugin from "../modules/plugin.js"
+
+import { State } from "../modules/state.js"
+import { embedFromMessage } from "../modules/embedMaker.js"
+
 
 // ========== Plugin ==========
 
-export default class MessageMover extends Plugin.Plugin implements Plugin.iPlugin {
+export default class MessageMover extends Plugin.Plugin
+{
 	name = "message_mover";
-	description = lang.pluginDescription;
+	description = Lang.pluginDescription;
 
-	state = new State(this.name);
+	state = new State( this.name );
 
 	setupTemplate: Plugin.SetupTemplate = [
-		{name: "audit_log_channel", description: lang.auditLogChannel, type: Plugin.InputType.Channel},
-		{name: "start_cut_emoji", description: lang.startCutEmoji, type: Plugin.InputType.Emoji},
-		{name: "end_cut_emoji", description: lang.endCutEmoji, type: Plugin.InputType.Emoji},
-		{name: "delete_emoji", description: lang.deleteEmoji, type: Plugin.InputType.Emoji},
-		{name: "copy_emoji", description: lang.copyEmoji, type: Plugin.InputType.Emoji}
-	];
+		{ name: "audit_log_channel", description: Lang.auditLogChannel, type: Plugin.InputType.Channel },
+		{ name: "start_cut_emoji", description: Lang.startCutEmoji, type: Plugin.InputType.Emoji },
+		{ name: "end_cut_emoji", description: Lang.endCutEmoji, type: Plugin.InputType.Emoji },
+		{ name: "delete_emoji", description: Lang.deleteEmoji, type: Plugin.InputType.Emoji },
+		{ name: "copy_emoji", description: Lang.copyEmoji, type: Plugin.InputType.Emoji }
+	]
 
 	private deleteSingle = new DeleteSingle(this);
 	private copySingle = new CopySingle(this);
 	private startSelection = new Selection(this, "start");
 	private endSelection = new Selection(this, "end");
-
-	async init(): Promise<void> {
-		this.deleteSingle.emoji = await this.getSetting<Discord.Emoji>("delete_emoji", Plugin.InputType.Emoji);
-		this.copySingle.emoji = await this.getSetting<Discord.Emoji>("copy_emoji", Plugin.InputType.Emoji);
-		this.startSelection.emoji = await this.getSetting<Discord.Emoji>("start_cut_emoji", Plugin.InputType.Emoji);
-		this.endSelection.emoji = await this.getSetting<Discord.Emoji>("end_cut_emoji", Plugin.InputType.Emoji);
-	}
-
-	async getLogChannel(): Promise<Discord.TextChannel | undefined> {
-		return await this.getSetting<Discord.TextChannel>("audit_log_channel", Plugin.InputType.Channel);
-	}
 
 	commands = [
 		this.deleteSingle,
@@ -46,11 +38,26 @@ export default class MessageMover extends Plugin.Plugin implements Plugin.iPlugi
 		new DeleteMessages(this),
 		new CopyMessages(this)
 	]
+
+	async init(): Promise<void>
+	{
+		this.deleteSingle.emoji = await this.getSetting<Discord.Emoji>( "delete_emoji", Plugin.InputType.Emoji );
+		this.copySingle.emoji = await this.getSetting<Discord.Emoji>( "copy_emoji", Plugin.InputType.Emoji );
+		this.startSelection.emoji = await this.getSetting<Discord.Emoji>( "start_cut_emoji", Plugin.InputType.Emoji );
+		this.endSelection.emoji = await this.getSetting<Discord.Emoji>( "end_cut_emoji", Plugin.InputType.Emoji );
+	}
+
+	async getLogChannel(): Promise<Discord.TextChannel | undefined>
+	{
+		return await this.getSetting<Discord.TextChannel>( "audit_log_channel", Plugin.InputType.Channel );
+	}
+
 }
 
 // ========== Interfaces ==========
 
-interface SelectionMark {
+interface SelectionMark
+{
 	channel: string,
 	message: string,
 	id: string | null,
@@ -59,15 +66,19 @@ interface SelectionMark {
 
 // ========== Functions ==========
 
-async function fetchSelected(member: Discord.GuildMember, state: State): Promise<Discord.Collection<string, Discord.Message> | undefined> {
-	let startIds: SelectionMark | undefined = state.read(member.id, "start");
-	let endIds: SelectionMark | undefined = state.read(member.id, "end");
+async function fetchSelected(
+	member: Discord.GuildMember,
+	state: State
+): Promise<Discord.Collection<string, Discord.Message> | undefined>
+{
+	let startIds: SelectionMark | undefined = state.read( member.id, "start" );
+	let endIds: SelectionMark | undefined = state.read( member.id, "end" );
 
 	// If no Ids were set, return now
 	if (!startIds || !endIds || startIds.channel !== endIds.channel) return;
 
 	let guild = member.guild;
-	let channel = guild.channels.cache.get(startIds.channel) as Discord.TextChannel;
+	let channel = guild.channels.cache.get( startIds.channel ) as Discord.TextChannel;
 
 	// If channel no longer exists, return now
 	if (!channel) return;
@@ -75,20 +86,28 @@ async function fetchSelected(member: Discord.GuildMember, state: State): Promise
 	let messages = new Discord.Collection<string, Discord.Message>();
 
 	// This is wrapped in a try catch block, as the messages may be deleted
-	try {
+	try
+	{
 		// Get the first and the last message
-		let start = await channel.messages.fetch(startIds.message);
-		let end = await channel.messages.fetch(endIds.message);
+		let start = await channel.messages.fetch( startIds.message );
+		let end = await channel.messages.fetch( endIds.message );
 		
 		// Start populating the Message Collection
-		messages.set(start.id, start);
+		messages.set( start.id, start );
 
 		// Keep fetching messages, until we have arrived at the last message
 		let current = start;
 
-		while(current.createdTimestamp < end.createdTimestamp) {
+		while (current.createdTimestamp < end.createdTimestamp)
+		{
 			let newMessages = await channel.messages.fetch({ after: current.id });
-			newMessages = newMessages.sort((a, b) => {return a.createdTimestamp - b.createdTimestamp});
+
+			newMessages = newMessages.sort( (a, b) => {
+
+				return a.createdTimestamp - b.createdTimestamp;
+
+			});
+
 			messages = messages.concat(newMessages);
 			current = newMessages.last() as Discord.Message;
 
@@ -97,7 +116,7 @@ async function fetchSelected(member: Discord.GuildMember, state: State): Promise
 		}
 
 		// Filter all messages, which were psoted after the last message
-		messages = messages.filter(m => m.createdTimestamp <= end.createdTimestamp);
+		messages = messages.filter( m => m.createdTimestamp <= end.createdTimestamp );
 	} catch {
 		return;
 	}
@@ -105,29 +124,38 @@ async function fetchSelected(member: Discord.GuildMember, state: State): Promise
 	return messages;
 }
 
-async function removeMarks(state: State, member: Discord.GuildMember): Promise<void> {
+async function removeMarks(state: State, member: Discord.GuildMember): Promise<void>
+{
 	// Fetch both marks
-	let oldStartR = state.read(member.id, "start") as SelectionMark | undefined;
-	let oldEndR = state.read(member.id, "end") as SelectionMark | undefined;
+	let oldStartR = state.read( member.id, "start" ) as SelectionMark | undefined;
+	let oldEndR = state.read( member.id, "end" ) as SelectionMark | undefined;
 
 	// Attempt to delte both
-	[oldStartR, oldEndR].forEach(async oldR => {
-		if (oldR) {
-			try {
-				let guild = member.guild;
-				let channel = guild.channels.cache.get(oldR.channel) as Discord.TextChannel;
-				let oldRMessage = await channel?.messages.fetch(oldR.message);
+	[ oldStartR, oldEndR ].forEach(async oldR => {
 
-				await (await oldRMessage.reactions.cache.get(oldR.id || oldR.name)?.fetch())?.users.remove(member.id);
-			} catch {}
+		if (oldR)
+		{
+			try
+			{
+				let guild = member.guild;
+				let channel = guild.channels.cache.get( oldR.channel ) as Discord.TextChannel;
+				let oldRMessage = await channel?.messages.fetch( oldR.message );
+
+				await (await oldRMessage.reactions.cache.get( oldR.id ?? oldR.name )?.fetch())?.users.remove( member.id );
+			}
+			catch {}
 		}
+
 	});
+
 }
 
-async function embedArrayFromMessages(messages: Discord.Collection<string, Discord.Message>): Promise<Discord.MessageEmbed[]> {
+async function embedArrayFromMessages(messages: Discord.Collection<string, Discord.Message>): Promise<Discord.MessageEmbed[]>
+{
 	let embeds: Array<Discord.MessageEmbed> = [];
 
-	for (const [key, m] of messages) {
+	for (const [key, m] of messages)
+	{
 		let embed = await embedFromMessage(m);
 		embeds.push(embed)
 	}
@@ -137,81 +165,111 @@ async function embedArrayFromMessages(messages: Discord.Collection<string, Disco
 
 // ========== Emoji Commands ==========
 
-class DeleteSingle extends Plugin.EmojiCommand {
-	constructor(private plugin: MessageMover) {
+class DeleteSingle extends Plugin.EmojiCommand
+{
+	constructor(private plugin: MessageMover)
+	{
 		super("deleteSingle");
 	}
 
 	permission = Plugin.Permission.Mod;
 	
-	getHelpText() {
-		return lang.deleteSingleHelp;
+	getHelpText()
+	{
+		return Lang.deleteSingleHelp;
 	}
 
-	async run(reaction: Discord.MessageReaction, member: Discord.GuildMember): Promise<void> {
+	async run(reaction: Discord.MessageReaction, member: Discord.GuildMember): Promise<void>
+	{
 		let logChannel = await this.plugin.getLogChannel();
 
-		try {
+		try
+		{
 			let message = reaction.message;
 			let embed = await embedFromMessage(message);
 
-			await (logChannel as Discord.TextChannel).send(lang.logMessage(member), embed);
+			await (logChannel as Discord.TextChannel).send( Lang.logMessage(member), embed );
 			await message.delete();
-		} catch {
-			logChannel?.send(lang.deleteFailed());
 		}
+		catch
+		{
+			logChannel?.send( Lang.deleteFailed() );
+		}
+
 	}
+
 }
 
-class CopySingle extends Plugin.EmojiCommand {
-	constructor(private plugin: MessageMover) {
+class CopySingle extends Plugin.EmojiCommand
+{
+	constructor(private plugin: MessageMover)
+	{
 		super("copySingle");
 	}
 
 	permission = Plugin.Permission.Mod;
 
-	getHelpText() {
-		return lang.copySingleHelp;
+	getHelpText()
+	{
+		return Lang.copySingleHelp;
 	}
 
-	async run(reaction: Discord.MessageReaction, member: Discord.GuildMember): Promise<void> {
+	async run(reaction: Discord.MessageReaction, member: Discord.GuildMember): Promise<void>
+	{
 		let logChannel = await this.plugin.getLogChannel();
 
-		try {
+		try
+		{
 			let message = reaction.message;
 			let embed = await embedFromMessage(message);
 
-			await logChannel?.send(lang.copyLog(member), embed);
+			await logChannel?.send( Lang.copyLog(member), embed );
 			await reaction.remove();
-		} catch {
-			logChannel?.send(lang.copyFailed());
 		}
+		catch
+		{
+			logChannel?.send(Lang.copyFailed());
+		}
+
 	}
+
 }
 
-class Selection extends Plugin.EmojiCommand {
-	constructor(private plugin: MessageMover, private position: string) {
+class Selection extends Plugin.EmojiCommand
+{
+	constructor(private plugin: MessageMover, private position: string)
+	{
 		super("startSelection");
 	}
 
 	permission = Plugin.Permission.Mod;
 
-	getHelpText() {
-		return lang.startCutHelp;
+	getHelpText()
+	{
+		return Lang.startCutHelp;
 	}
 
-	async run(reaction: Discord.MessageReaction, member: Discord.GuildMember): Promise<void> {
+	async run(reaction: Discord.MessageReaction, member: Discord.GuildMember): Promise<void>
+	{
 		// Delete the old mark, if one is present
-		let oldR = this.plugin.state.read(member.id, this.position) as SelectionMark | undefined;
-		if (oldR) {
-			try {
+		let oldR = this.plugin.state.read( member.id, this.position ) as SelectionMark | undefined;
+
+		if (oldR)
+		{
+
+			try
+			{
 				let guild = member.guild;
-				let channel = guild.channels.cache.get(oldR.channel) as Discord.TextChannel;
-				let oldRMessage = await channel?.messages.fetch(oldR.message);
+				let channel = guild.channels.cache.get( oldR.channel ) as Discord.TextChannel;
+				let oldRMessage = await channel?.messages.fetch( oldR.message );
 
 				if (!(oldRMessage.id === reaction.message.id && oldRMessage.channel.id === reaction.message.channel.id))
-					await (await oldRMessage.reactions.cache.get(oldR.id || oldR.name)?.fetch())?.users.remove(member.id);
-			} catch {}
+				{
+					await (await oldRMessage.reactions.cache.get( oldR.id ?? oldR.name )?.fetch())?.users.remove(member.id);
+				}
+			}
+			catch {}
+
 		}
 
 		this.plugin.state.write(member.id, this.position, {
@@ -220,140 +278,183 @@ class Selection extends Plugin.EmojiCommand {
 			id: reaction.emoji.id,
 			name: reaction.emoji.name
 		} as SelectionMark);
+
 	}
+
 }
 
 // ========== Chat Commands ==========
 
-class MoveMessages extends Plugin.ChatCommand {
-	constructor(private plugin: MessageMover) {
+class MoveMessages extends Plugin.ChatCommand
+{
+	constructor(private plugin: MessageMover)
+	{
 		super("move");
 	}
 
 	permission = Plugin.Permission.Mod;
 
-	getHelpText() {
-		return lang.moveHelp;
+	getHelpText()
+	{
+		return Lang.moveHelp;
 	}
 
-	async run(message: Discord.Message, args: Array<string>): Promise<void> {
+	async run(message: Discord.Message, args: Array<string>): Promise<void>
+	{
 		let member = message.member as Discord.GuildMember;
 
-		try {
-			let messages = await fetchSelected(member, this.plugin.state);
+		try
+		{
+			let messages = await fetchSelected( member, this.plugin.state );
 
-			if (!messages) {
-				message.channel.send(lang.failMessage());
+			if (!messages)
+			{
+				message.channel.send( Lang.failMessage() );
+
 				return;
 			}
 
 			let embeds = await embedArrayFromMessages(messages);
 
 			// Send Messages to new Channel
-			for (const embed of embeds) {
+			for (const embed of embeds)
+			{
 				await message.channel.send("", embed);
 			}
 
 			// Delete old Messages
-			messages.forEach(m => {
+			messages.forEach( m => {
+
 				m.delete();
+
 			});
 
 			// Post Response
 			let attachment = new Discord.MessageAttachment("./img/banner.gif");
-			let sourceChannelId = (this.plugin.state.read(member.id, "start") as SelectionMark).channel;
+			let sourceChannelId = (this.plugin.state.read( member.id, "start" ) as SelectionMark).channel;
 			let sourceChannel = member.guild.channels.cache.get(sourceChannelId) as Discord.TextChannel;
-			sourceChannel.send(lang.moved(embeds.length, message.channel as Discord.TextChannel), attachment);
+
+			sourceChannel.send( Lang.moved( embeds.length, message.channel as Discord.TextChannel ), attachment );
 
 			// Delete Command
 			message.delete();
-		} catch {
-			message.channel.send(lang.failMessage());
 		}
+		catch
+		{
+			message.channel.send( Lang.failMessage() );
+		}
+
 	}
+
 }
 
-class CopyMessages extends Plugin.ChatCommand {
-	constructor(private plugin: MessageMover) {
+class CopyMessages extends Plugin.ChatCommand
+{
+	constructor(private plugin: MessageMover)
+	{
 		super("copy");
 	}
 
 	permission = Plugin.Permission.Mod;
 
-	getHelpText() {
-		return lang.copyHelp;
+	getHelpText()
+	{
+		return Lang.copyHelp;
 	}
 
-	async run(message: Discord.Message, args: Array<string>): Promise<void> {
+	async run(message: Discord.Message, args: Array<string>): Promise<void>
+	{
 		let member = message.member as Discord.GuildMember;
 
-		try {
-			let messages = await fetchSelected(member, this.plugin.state);
+		try
+		{
+			let messages = await fetchSelected( member, this.plugin.state );
 
-			if (!messages) {
-				message.channel.send(lang.copyFailed());
+			if (!messages)
+			{
+				message.channel.send( Lang.copyFailed() );
+
 				return;
 			}
 
 			let embeds = await embedArrayFromMessages(messages);
 
 			// Send Messages to new Channel
-			for (const embed of embeds) {
+			for (const embed of embeds)
+			{
 				await message.channel.send("", embed);
 			}
 
 			// Delete Command
 			await message.delete();
 
-			removeMarks(this.plugin.state, member);
-		} catch {
-			message.channel.send(lang.copyFailed());
+			removeMarks( this.plugin.state, member );
 		}
+		catch
+		{
+			message.channel.send( Lang.copyFailed() );
+		}
+
 	}
+
 }
 
-class DeleteMessages extends Plugin.ChatCommand {
-	constructor(private plugin: MessageMover) {
+class DeleteMessages extends Plugin.ChatCommand
+{
+	constructor(private plugin: MessageMover)
+	{
 		super("delete");
 	}
 
 	permission = Plugin.Permission.Mod;
 
-	getHelpText() {
-		return lang.deleteHelp;
+	getHelpText()
+	{
+		return Lang.deleteHelp;
 	}
 
-	async run(message: Discord.Message, args: Array<string>): Promise<void> {
+	async run(message: Discord.Message, args: Array<string>): Promise<void>
+	{
 		let member = message.member as Discord.GuildMember;
 		let logChannel = await this.plugin.getLogChannel();
 
-		try {
-			let messages = await fetchSelected(member, this.plugin.state);
+		try
+		{
+			let messages = await fetchSelected( member, this.plugin.state );
 
-			if (!messages) {
-				message.channel.send(lang.deleteFailed());
+			if (!messages)
+			{
+				message.channel.send( Lang.deleteFailed() );
+
 				return;
 			}
 
 			let embeds = await embedArrayFromMessages(messages);
 
 			// Log Message
-			await (logChannel as Discord.TextChannel).send(lang.logMessage(member));
+			await (logChannel as Discord.TextChannel).send( Lang.logMessage(member) );
 
 			// Send Messages to log-Channel
-			for (const embed of embeds) {
+			for (const embed of embeds)
+			{
 				await (logChannel as Discord.TextChannel).send("", embed);
 			}
 
 			// Delete old Messages
-			messages.forEach(m => {
+			messages.forEach( m => {
+
 				m.delete();
+
 			});
 
 			// Delete Command
 			await message.delete();
-		} catch {
-			message.channel.send(lang.deleteFailed());
 		}
+		catch
+		{
+			message.channel.send( Lang.deleteFailed() );
+		}
+
 	}
+
 }

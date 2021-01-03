@@ -580,7 +580,7 @@ export class PluginManager
 	 */
 	private _loadCommands(plugin: iPlugin): void
 	{
-		plugin.commands?.forEach(command => {
+		plugin.commands?.forEach( command => {
 
 			if (command.type === CommandType.Chat) this.chatCommands.set( command.name, command as ChatCommand);
 
@@ -608,7 +608,7 @@ export class PluginManager
 	private _unloadCommands(plugin: iPlugin): void
 	{
 
-		plugin.commands?.forEach(command => {
+		plugin.commands?.forEach( command => {
 
 			if (command.type === CommandType.Chat) this.chatCommands.delete( command.name );
 

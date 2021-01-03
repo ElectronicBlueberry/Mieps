@@ -46,7 +46,7 @@ ${openCommands}`;
 }
 
 export function queryUserReturn(member: Discord.User): string {
-	return `Die folgende Mahnung wird an ${member.toString()} versendet`;
+	return `Die folgende Mahnung wird an ${ member.toString() } versendet`;
 }
 
 export function creationComplete(count: number): string {
@@ -57,11 +57,11 @@ ${openCommands}`
 }
 
 export function veto(member: Discord.User): string {
-	return `${member.toString()} hat ein Veto eingelegt! Die Mahnung kann nicht versendet werden, bis ${member.toString()} sie genehmigt.`;
+	return `${ member.toString() } hat ein Veto eingelegt! Die Mahnung kann nicht versendet werden, bis ${ member.toString() } sie genehmigt.`;
 }
 
 export function approved(member: Discord.User, count: number, veto: boolean): string {
-	let msgStart = `${member.toString()} hat die Mahnung genehmigt.`;
+	let msgStart = `${ member.toString() } hat die Mahnung genehmigt.`;
 
 	if (veto) {
 		return `${msgStart} Aber sie kann nicht gesendet werden, weil ein Veto vorliegt!`;
@@ -89,13 +89,15 @@ export function archiveWarning(authorId: string, targetId: string, approveIds: A
 	let now = new Date();
 	
 	let approvesString = "";
-	approveIds.forEach(id => {
+	approveIds.forEach( id => {
+
 		approvesString += `<@${id}>\n`;
+
 	});
 
 	return `Mahnung an <@${targetId}>
 
-Am: ${now.getDate()}.${now.getMonth() + 1}.${now.getFullYear()}
+Am: ${ now.getDate() }.${ now.getMonth() + 1 }.${ now.getFullYear() }
 Verfasst von: <@${authorId}>
 Genehmigt von:
 ${approvesString}
@@ -113,8 +115,10 @@ Möglicherweise sind DMs von Servermitgliedern deaktiviert, oder ich wurde block
 
 export function blockedByVeto(vetoIds: Array<string>): string {
 	let vetosString = "";
-	vetoIds.forEach(id => {
+	vetoIds.forEach( id => {
+
 		vetosString += `<@${id}>\n`;
+
 	});
 
 	return `Folgende Mods haben gegen diese Mahnung ein Veto eingelegt, weshalb sie nicht gesendet werden kann:
