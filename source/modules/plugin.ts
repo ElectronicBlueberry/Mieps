@@ -314,9 +314,11 @@ export class Plugin implements iPlugin
 					{
 						let role;
 
-						try {
+						try
+						{
 							role = await guild.roles.fetch(id);
-						} catch {}
+						}
+						catch {}
 
 						if (role)
 						{
