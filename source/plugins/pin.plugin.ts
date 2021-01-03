@@ -51,29 +51,49 @@ class Pin extends Plugin.EmojiCommand {
 	async run(reaction: Discord.MessageReaction, member: Discord.GuildMember): Promise<void> {
 		let count = await this.plugin.getSetting("pin_count", Plugin.InputType.Number) as number;
 
+		let message = reaction.message;
+		let author = message.author;
+		let pinChannel = await this.plugin.getSetting("pin_channel", Plugin.InputType.Channel) as Discord.TextChannel;
+
+		// Check if author has reacted
+		if (!await checkForAuthor(reaction, author)) {
+			// Check if author should be notified
+			if (reaction.count && reaction.count >= count - 1) {
+				// Check if author was notified bevore
+				let notificationMessages = this.plugin.state.read("notes", message.channel.id) as Array<string> | undefined;
+				if (notificationMessages && notificationMessages.includes(message.id)) {
+					return; // Exit if Author was notified before
+				}
+
+				if (!notificationMessages) notificationMessages = [];
+				notificationMessages.push(message.id);
+				this.plugin.state.write("notes", message.channel.id, notificationMessages);
+
+				message.reply(lang.authorMissingFeedback(
+					pinChannel,
+					this.emoji
+				));
+			}
+
+			return;
+		}
+
 		// Check if there are enough Reactions
 		if (!reaction.count || reaction.count < count) {
 			return;
 		}
 
-		let message = reaction.message;
-		let author = message.author;
-
-		// Check if author has reacted
-		if (!await checkForAuthor(reaction, author)) {
-			return;
-		}
-
 		// Check if message was pinned before
-		let channelMessages = this.plugin.state.read("pins", message.channel.id)
+		let channelMessages = this.plugin.state.read("pins", message.channel.id) as Array<String> | undefined;
 		if (channelMessages && channelMessages.includes(message.id)) {
-			return;
+			return; // Exit if message was pinned before
 		}
 
 		// Note it down as a pinned message
-		this.plugin.state.write("pins", message.channel.id, message.id);
+		if (!channelMessages) channelMessages = [];
+		channelMessages.push(message.id)
+		this.plugin.state.write("pins", message.channel.id, channelMessages);
 
-		let pinChannel = await this.plugin.getSetting("pin_channel", Plugin.InputType.Channel) as Discord.TextChannel;
 		let messages = await fetchMessages(message, author);
 
 		let embeds: Array<Discord.MessageEmbed> = [];
@@ -82,7 +102,7 @@ class Pin extends Plugin.EmojiCommand {
 		for (var i = messages.length - 1; i >= 0; i--) {
 			embeds.push( await embedFromMessage(
 				messages[i],
-				false,
+				true,
 				(i == messages.length - 1),
 				(i == 0)
 			));

@@ -1,6 +1,7 @@
 import * as Discord from "discord.js";
+import * as lang from "../lang/embedMaker.js";
 
-export function embedFromMessage(message: Discord.Message, showUserIcon: boolean = true, showUserName: boolean = true, showTimestamp: boolean = true): Discord.MessageEmbed {
+export async function embedFromMessage(message: Discord.Message, showUserIcon: boolean = true, showUserName: boolean = true, showTimestamp: boolean = true): Promise<Discord.MessageEmbed> {
 	
 	// If the Message is another Bot Embed, copy it
 	if (message.author.bot && message.embeds.length === 1 && message.content.trim() === "") {
@@ -38,7 +39,33 @@ export function embedFromMessage(message: Discord.Message, showUserIcon: boolean
 		embed = embed.setTimestamp(message.createdTimestamp);
 	}
 
-	// Reattach Images, as they wont show up otherwise
+	// Fetch and add Reply
+	let replyMsg: Discord.Message | null = null;
+
+	if (message.reference?.channelID === message.channel.id && message.reference.messageID) {
+		replyMsg = await message.channel.messages.fetch(message.reference.messageID);
+		
+		let replyTxt = "> " + replyMsg.cleanContent;
+
+		replyTxt = replyTxt.replace(/(\r\n|\r|\n)/gm, "\n> ");
+
+		if (replyTxt.length > 64) {
+			replyTxt = replyTxt.slice(0, 64 - 3) + "...";
+		}
+
+		let authorName = "";
+
+		if (replyMsg.member !== null) {
+			authorName = replyMsg.member.displayName;
+		} else {
+			authorName = replyMsg.author.username;
+		}
+
+		embed = embed.addField(`\u2514\u2500\u25b7 ${lang.reply} ${authorName}:`, replyTxt);
+	}
+
+	// Reattach Image
+	// TODO multiple Images
 	let attachment = message.attachments.first();
 
 	if (attachment && (attachment.width || attachment.height)) {
