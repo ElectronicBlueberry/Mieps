@@ -1,7 +1,7 @@
 import * as Discord from "discord.js"
 import EmojiRegex from "emoji-regex"
 
-import * as lang from "../lang/inputCollector.js"
+import * as Lang from "../lang/inputCollector.js"
 import { command_prefix } from "../config/server.json"
 
 
@@ -102,7 +102,7 @@ async function _queryInput(
 		// no message was posted before timeout
 		if (msgArr.size === 0)
 		{
-			channel.send( lang.timeOut() );
+			channel.send( Lang.timeOut() );
 
 			return [ "", InputReturns.TimedOut ];
 		}
@@ -113,7 +113,7 @@ async function _queryInput(
 		// user canceled input
 		if (msg.content.toLowerCase().trimEnd() === `${command_prefix}cancel`)
 		{
-			channel.send( lang.canceled() );
+			channel.send( Lang.canceled() );
 
 			return [ "", InputReturns.Canceled ];
 		}
@@ -145,7 +145,7 @@ async function _queryInput(
 				catch {}
 				
 				// no user found
-				channel.send( lang.wrongInputUser( msg.content.trim() ) );
+				channel.send( Lang.wrongInputUser( msg.content.trim() ) );
 			}
 			break;
 
@@ -171,7 +171,7 @@ async function _queryInput(
 				}
 
 				// no emoji found
-				channel.send( lang.wrongInputEmoji() );
+				channel.send( Lang.wrongInputEmoji() );
 			}
 			break;
 
@@ -199,7 +199,7 @@ async function _queryInput(
 				}
 
 				// no role found
-				channel.send( lang.wrongInputRole( msg.content.trim() ) );
+				channel.send( Lang.wrongInputRole( msg.content.trim() ) );
 			}
 			break;
 
@@ -223,7 +223,7 @@ async function _queryInput(
 				}
 
 				// no channel found
-				channel.send( lang.wrongInputChannel( msg.content.trim() ) );
+				channel.send( Lang.wrongInputChannel( msg.content.trim() ) );
 			}
 			break;
 		
