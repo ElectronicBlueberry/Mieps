@@ -18,6 +18,8 @@ var instanceConfig = {
 	control_channel: ""
 };
 
+console.log("loading settings...");
+
 let instancePath = Path.resolve("./instance.json");
 
 try
@@ -52,6 +54,8 @@ const client = new Discord.Client();
 
 client.login( instanceConfig.api_key );
 
+console.log("connecting to Discord...");
+
 const pluginManager = new PluginManager(client, instanceConfig);
 
 // scan the plugin folder for plugin files
@@ -67,6 +71,8 @@ pluginManager.addBuiltin(builtin);
 client.on("ready", () => {
 
 	pluginManager.initiateAll();
+
+	console.log("Mieps ready!");
 
 });
 
