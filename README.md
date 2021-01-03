@@ -28,6 +28,26 @@ Do not invite Mieps to more than one server! (For now), Mieps only works on one 
 * __[emoji-regex](https://www.npmjs.com/package/emoji-regex)__ - regularly updated regex matching all unicode emoji
 * __[esm](https://www.npmjs.com/package/esm)__ - fixes some node module shortcomings
 
+## Installing and running
+
+To use Mieps, clone the respetroy to a local folder and use:
+
+```shell
+npm i
+tsc
+npm start
+```
+
+Then fill out the newly created "instance.json" file.
+
+`"api_key"` refers to your bots api key. Get one in discords developer portal.
+`"control_channel"` is the id of the channel you intend to use to control the bot.
+Acitvate discords developer options, under "Appeatance" in settings. Then right click the channel you intend to use, and copy the id.
+
+Next invite your bot to the server, and make sure it has read/write permissions in the control channel. Then start Mieps with `npm start` again.
+
+Now you need to configure Mieps. Type `!plugins` in the command channel, to get started.
+
 ## Images
 
 Please note that while the bot itself is licensed under MIT, the images it uses are not. While I do not generally mind the use of these images, do not claim ownership over them, or modify them. You are always free to replace the Images with your own.
