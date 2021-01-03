@@ -1,14 +1,17 @@
-import * as fs from 'fs';
-import {criticalError} from "./errorHandling.js";
+import * as fs from 'fs'
+import * as Path from 'path'
 
-import * as Path from 'path';
-import {state_folder, state_suffix} from "../config/server.json";
+import { criticalError } from "./errorHandling.js"
+import { state_folder, state_suffix } from "../config/server.json"
 
-interface IDictionary<TValue> {
-    [id: string]: TValue;
+// object template, with string key and generic value
+interface IDictionary<TValue>
+{
+    [ id: string ]: TValue
 }
 
-export interface ReadOnlyState {
+export interface ReadOnlyState
+{
 	/** Read a Value from this state */
 	read: (primaryKey: string, key: string) => any
 }
@@ -16,12 +19,17 @@ export interface ReadOnlyState {
 /**
  * Manages a State which is presistent between restarts
  */
-export class State {
-	private data: IDictionary<IDictionary<any>> = {};
+export class State
+{
+	private data: IDictionary<IDictionary<any>> = { };
 	private path: fs.PathLike;
 
-	constructor(unique_identifier: string) {
-		this.path = Path.resolve(`${state_folder}/${unique_identifier}${state_suffix}`);
+	/**
+	 * creates a new state, and loads itself from disk into memory, if the unique_identifier exists
+	 */
+	constructor(unique_identifier: string)
+	{
+		this.path = Path.resolve( `${state_folder}/${unique_identifier}${state_suffix}` );
 	
 		// attempt to open state path
 		let files: Array<string>;
@@ -29,14 +37,19 @@ export class State {
 
 		let folderPath = Path.resolve(state_folder);
 
-		if (!fs.existsSync(folderPath)) {
+		if (!fs.existsSync(folderPath))
+		{
 			fs.mkdirSync(folderPath);
 		}
 
-		try {
+		try
+		{
 			files = fs.readdirSync(folderPath);
-		} catch(e) {
+		}
+		catch (e)
+		{
 			criticalError("Could not read State Directory", e);
+
 			return;
 		}
 
@@ -44,55 +57,85 @@ export class State {
 		file = files.find(f => f === `${unique_identifier}${state_suffix}`);
 
 		// if it does, import its contents
-		if (file !== undefined) {
-			try {
-				let content = fs.readFileSync(this.path, 'utf8');
+		if (file !== undefined)
+		{
+
+			try
+			{
+				let content = fs.readFileSync( this.path, 'utf8');
 				this.data = JSON.parse(content);
-			} catch(e) {
+			}
+			catch (e)
+			{
 				console.log("Failed to read State");
 				criticalError(e);
+
 				return;
 			}
+
 		}
-		// otherwise create it
-		else {
-			try {
-				fs.writeFileSync(this.path, JSON.stringify(this.data), 'utf8');
-			} catch(e) {
+		else // otherwise create it
+		{
+
+			try
+			{
+				fs.writeFileSync( this.path, JSON.stringify( this.data ), 'utf8');
+			}
+			catch (e)
+			{
 				console.log("Failed to create State File");
 				criticalError(e);
+
 				return;
 			}
 		}
 	}
 
-	private saveQueued = false;
-
-	private queueSave(): void {
-		this.saveQueued = true;
-		
-		setTimeout(() => {
-			if (this.saveQueued) {
-				this.saveQueued = false;
-				fs.writeFile(this.path, JSON.stringify(this.data), () => {});
-			}
-		}, 0)
-	}
-
+	/**
+	 * reads a value from the state
+	 */
 	public read(primaryKey: string, key: string): any {
-		if (!this.data[primaryKey]) {
-			this.data[primaryKey] = {};
+		if (!this.data[primaryKey])
+		{
+			this.data[primaryKey] = { };
 		}
 
 		return this.data[primaryKey][key];
 	}
 
-	public write(primaryKey: string, key: string, value: any): void {
-		if (!this.data[primaryKey]) {
-			this.data[primaryKey] = {};
+	/**
+	 * writes a value to the state
+	 */
+	public write(primaryKey: string, key: string, value: any): void
+	{
+		if (!this.data[primaryKey])
+		{
+			this.data[primaryKey] = { };
 		}
 
 		this.data[primaryKey][key] = value;
-		this.queueSave();
+		this._queueSave();
 	}
+
+	private saveQueued = false;
+
+	/** queues a disk write action to the back of the event loop, so multiple writes don't overlap */
+	private _queueSave(): void
+	{
+		this.saveQueued = true;
+		
+		// send to back of event loop, in case any other saves are queued
+		setTimeout(() => {
+
+			// only the last queued save need to run
+			if (this.saveQueued)
+			{
+				this.saveQueued = false;
+				fs.writeFile( this.path, JSON.stringify( this.data ), () => {} );
+			}
+
+		}, 0);
+
+	}
+
 }
