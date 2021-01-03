@@ -30,7 +30,7 @@ Do not invite Mieps to more than one server! (For now), Mieps only works on one 
 
 ## Installing and running
 
-To use Mieps, clone the respetroy to a local folder and use:
+To use Mieps, clone the repository to a local folder and use:
 
 ```shell
 npm i
