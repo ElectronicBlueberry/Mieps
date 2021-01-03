@@ -23,6 +23,7 @@ let instancePath = Path.resolve("./instance.json");
 try
 {
 	let cfgFile = Fs.readFileSync(instancePath, 'utf8');
+	
 	instanceConfig = JSON.parse(cfgFile);
 }
 catch
@@ -48,6 +49,7 @@ if (instanceConfig.api_key === "" || instanceConfig.control_channel === "")
 
 // create client and connect
 const client = new Discord.Client();
+
 client.login( instanceConfig.api_key );
 
 const pluginManager = new PluginManager(client, instanceConfig);
@@ -57,6 +59,7 @@ pluginManager.scanForPlugins( Path.resolve( config.plugin_folder ), config.plugi
 
 // add built-in plugin
 var builtin = new BuiltIn(client, pluginManager);
+
 pluginManager.addBuiltin(builtin);
 
 // ------ Client Events ------
