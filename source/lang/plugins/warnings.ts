@@ -1,5 +1,7 @@
-import {command_prefix} from "../../config/server.json";
-import * as Discord from "discord.js";
+import * as Discord from "discord.js"
+
+import { command_prefix } from "../../config/server.json"
+
 
 const openCommands = `"${command_prefix}mahnung vorschau" um eine Kopie der Mahnung zugesendet zu bekommen
 "${command_prefix}mahnung genehmigen" um sie zu genehmigen
@@ -20,6 +22,14 @@ export const cancelCommand = `abbrechen`;
 export const sendCommand = `senden`;
 export const newCommand = `neu`;
 
+export const creationTimeout = `Zeitüberschreitung. Mahnung wurde abgebrochen.`;
+export const creationCancel = `Vorgang abgebrochen. Mahnung ist zurückgesetzt.`;
+
+export const canceled = `Mahnung abgebrochen!`;
+
+export const queryUser = `An wen soll die Mahnung gesendet werden?`;
+export const queryMessage = `Schreibe nun deine Mahnung. Du kannst diese Nachricht später bearbeiten.`;
+
 export function warningHelp(activeWaning: boolean): string {
 	if (activeWaning) {
 		return `Es ist zurzeit eine Mahnung offen.
@@ -30,22 +40,14 @@ ${openCommands}`;
 	}
 }
 
-export const creationTimeout = `Zeitüberschreitung. Mahnung wurde abgebrochen.`;
-export const creationCancel = `Vorgang abgebrochen. Mahnung ist zurückgesetzt.`;
-
-export const canceled = `Mahnung abgebrochen!`;
-
 export function warningOpen(): string {
 	return `Es ist bereits eine Mahnung offen!
 ${openCommands}`;
 }
 
-export const queryUser = `An wen soll die Mahnung gesendet werden?`;
 export function queryUserReturn(member: Discord.User): string {
 	return `Die folgende Mahnung wird an ${member.toString()} versendet`;
 }
-
-export const queryMessage = `Schreibe nun deine Mahnung. Du kannst diese Nachricht später bearbeiten.`;
 
 export function creationComplete(count: number): string {
 	return `Mahnung erstellt! Die Mahnung benötigt ${count} Genehmigungen, bevor sie abgesendet werden kann.
@@ -74,6 +76,8 @@ export function approved(member: Discord.User, count: number, veto: boolean): st
 	}
 }
 
+// ------ Archive ------
+
 export const warningPretext = `Du wurdest vom Modteam gemahnt!
 Inhalt der Mahnung:
 -------------------------------`;
@@ -98,6 +102,8 @@ ${approvesString}
 
 ------ Inhalt ------`;
 }
+
+// ------ Sending ------
 
 export const errorWarningNotFound = `Kein Inhalt für diese Mahnung gefunden.
 Stelle sicher dass die Mahnung im selben Channel wie diesen verfasst wurde, und es sie noch gibt.`;

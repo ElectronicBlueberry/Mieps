@@ -19,6 +19,7 @@ export class BuiltIn implements iPlugin
 {
 	name = "builtin-commands";
 	commands: Array<iCommand>;
+
 	constructor(public client: Discord.Client, public pluginManager: PluginManager) {
 
 		this.commands = [
@@ -28,8 +29,13 @@ export class BuiltIn implements iPlugin
 		];
 
 	}
+
 }
 
+/**
+ * A text interface to the plugin manager.
+ * Can list plugins, activate, and deactive them, or show their commands.
+*/
 class PluginCommand extends ChatCommand
 {
 	permission = Permission.Admin;
@@ -68,6 +74,7 @@ class PluginCommand extends ChatCommand
 					return;
 				}
 
+				// activate all plugins
 				if (args[1] === "all") {
 					channel.send( Lang.activateAll() );
 					this.pM.activateAll();
@@ -75,6 +82,7 @@ class PluginCommand extends ChatCommand
 					return;
 				}
 
+				// search for plugin, and activate it
 				let found = this.pM.activatePlugin( args[1] );
 
 				if (typeof(found) === undefined)
@@ -103,6 +111,7 @@ class PluginCommand extends ChatCommand
 					return;
 				}
 
+				// search for plugin, and deactivate it
 				let found = this.pM.deactivatePlugin( args[1] );
 
 				if (!found)
@@ -119,12 +128,14 @@ class PluginCommand extends ChatCommand
 
 			case "list":
 			{
+				// list all plugins
 				channel.send( Lang.pluginList( this.pM.plugins, this.pM.getState() ) );
 			}
 			break;
 
 			case "commands":
 			{
+				// search for plugin, and list its commands
 				let plugin = this.pM.plugins.get( args[1] );
 
 				if (!plugin)
@@ -153,6 +164,10 @@ class PluginCommand extends ChatCommand
 
 }
 
+/**
+ * list all avalible commands,
+ * or show the help text for one command
+ */
 class HelpCommand extends ChatCommand
 {
 	permission = Permission.Any;
@@ -167,6 +182,7 @@ class HelpCommand extends ChatCommand
 
 	getHelpText()
 	{
+		// easteregg
 		return "I heard you like help, so I got you some help for your help";
 	}
 
@@ -224,6 +240,9 @@ class HelpCommand extends ChatCommand
 
 }
 
+/**
+ * changes a plugins configuration
+ */
 class ConfigCommand extends ChatCommand
 {
 	permission = Permission.Admin;
@@ -257,12 +276,12 @@ class ConfigCommand extends ChatCommand
 			let pluginState = this.pM.getState();
 			let count = 0;
 
-			for (const [name, plugin] of this.pM.plugins)
+			for (const [ name, plugin ] of this.pM.plugins)
 			{
 				// Only configure configurable Plugins, which are not yet configured
 				if (!plugin.setupTemplate || pluginState.read(name, "configured")) continue;
 
-				channel.send(Lang.nowConfiguring(name));
+				channel.send( Lang.nowConfiguring(name) );
 
 				await this.configurePlugin(message, plugin);
 
@@ -317,7 +336,7 @@ class ConfigCommand extends ChatCommand
 			[ input, ans ] = await Query.queryInput(
 				channel as Discord.TextChannel,
 				message.author,
-				setting.description || setting.name,
+				setting.description ?? setting.name,
 				setting.type
 			);
 

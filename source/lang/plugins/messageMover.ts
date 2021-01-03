@@ -1,6 +1,7 @@
-import * as Discord from "discord.js";
+import * as Discord from "discord.js"
 
-import {command_prefix} from "../../config/server.json";
+import { command_prefix } from "../../config/server.json"
+
 
 export const pluginDescription = `Erlaubt das Verschieben und Löschen von Nachrichten`;
 
@@ -12,6 +13,7 @@ export const copyEmoji = `Das Emoji um eine Nachricht zu kopieren`;
 
 export const deleteSingleHelp = `Reagiere mit diesem Emoji auf eine Nachricht um sie zu löschen`;
 export const copySingleHelp = `Reagiere mit diesem Emoji auf eine Nachricht um sie zu dokumentieren`;
+
 export const startCutHelp = `Reagiere mit diesem Emoji auf eine Nachricht um sie als den Start einer Selektion auszuwählen.
 Dann kannst du folgende Befehle nutzen um etwas mit dieser Selektion zu machen:
 "${command_prefix}move" schneidet die Selektion aus um sie zu verschieben
@@ -28,37 +30,48 @@ export const moveHelp = `Nutze diesen Befehl in einem Kanal, um die selektierten
 export const copyHelp = `Nutze diesen Befehl in einem Kanal, um die selektierten Nachrichten dort hin zu kopieren`;
 export const deleteHelp = `Nutze diesen Befehl, um die selektierten Nachrichten zu löschen`;
 
-export function moved(count: number, channel: Discord.TextChannel): string {
-	if (count === 1) return `Eine Nachricht wurde nach ${channel} verschoben`;
+export function moved(count: number, channel: Discord.TextChannel): string
+{
+	if (count === 1) {
+		return `Eine Nachricht wurde nach ${channel} verschoben`;
+	}
+
 	return `${count} Nachrichten wurden nach ${channel} verschoben`;
 }
 
-export function noneSelected(): string {
+export function noneSelected(): string
+{
 	return `Keine selektierten Nachrichten gefunden!`;
 }
 
-export function failMessage(): string {
+export function failMessage(): string
+{
 	return `Ich konnte leider keine Nachrichten verschieben`;
 }
 
-export function moveMessage(count: number, target: string): string {
+export function moveMessage(count: number, target: string): string
+{
 	return `${count} Nachrichten wurden nach ${target} verschoben`;
 }
 
-export function moveSingle(target: string): string {
-	return `Eine Nachricht wurde nach Target verschoben`;
+export function moveSingle(target: string): string
+{
+	return `Eine Nachricht wurde nach ${target} verschoben`;
 }
 
-export function logMessage(user: Discord.GuildMember): string {
-	return `Gelöscht von: ${user.toString()}`;
+export function logMessage(user: Discord.GuildMember): string
+{
+	return `Gelöscht von: ${ user.toString() }`;
 }
 
-export function deleteFailed(): string {
+export function deleteFailed(): string
+{
 	return `Löschung Fehlgeschlagen!`;
 }
 
-export function copyLog(user: Discord.GuildMember): string {
-	return `Kopiert von ${user.toString()}`;
+export function copyLog(user: Discord.GuildMember): string
+{
+	return `Kopiert von ${ user.toString() }`;
 }
 
 export function copyFailed(): string {

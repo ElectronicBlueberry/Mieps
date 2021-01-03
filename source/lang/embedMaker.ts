@@ -1,1 +1,1 @@
-export const reply = "Antwort auf"
+export const reply = "Antwort auf";

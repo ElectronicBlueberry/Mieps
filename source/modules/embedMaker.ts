@@ -39,11 +39,11 @@ export async function embedFromMessage(
 
 		if (message.member !== null)
 		{
-			embed = embed.setAuthor( message.member.displayName, av || undefined );
+			embed = embed.setAuthor( message.member.displayName, av ?? undefined );
 		}
 		else
 		{
-			embed = embed.setAuthor( message.author.username, av || undefined );
+			embed = embed.setAuthor( message.author.username, av ?? undefined );
 		}
 
 	}
