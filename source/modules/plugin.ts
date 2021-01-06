@@ -15,7 +15,8 @@ export enum Permission
 {
 	Any = 0,
 	User = 2,
-	Mod = 5,
+	ChatMod = 4,
+	SuperMod = 5,
 	Admin = 10
 }
 

@@ -36,7 +36,8 @@ export class PluginManager
 		[
 			{ name:"User", type: Query.InputType.Role, description: Lang.userRoleDesc() },
 			{ name:"UserCommandChannel", type: Query.InputType.Channel, description: Lang.userChannelDesc() },
-			{ name:"Mod", type: Query.InputType.Role, description: Lang.modRoleDesc() }
+			{ name:"SuperMod", type: Query.InputType.Role, description: Lang.modRoleDesc() },
+			{ name: "ChatMod", type: Query.InputType.Role, description: Lang.chatModRoleDesc() }
 		]
 	}
 
@@ -210,7 +211,7 @@ export class PluginManager
 		// Run the command
 		try
 		{
-			if (perm) commannd.run(message, args);
+			if (perm) await commannd.run(message, args);
 		}
 		catch (e)
 		{
@@ -244,7 +245,7 @@ export class PluginManager
 
 			try
 			{
-				command.run(reaction, member);
+				await command.run(reaction, member);
 			}
 			catch (e)
 			{
@@ -254,7 +255,11 @@ export class PluginManager
 		}
 		else if (command.removeInvalid)
 		{
-			reaction.users.remove(member);
+			try
+			{
+				reaction.users.remove(member);
+			}
+			catch {}
 		}
 	}
 
@@ -294,19 +299,23 @@ export class PluginManager
 	 */
 	public async runJoinStreams(member: Discord.GuildMember | Discord.PartialGuildMember): Promise<void>
 	{
+		let currStream: MemberStream | undefined;
 
-		this.joinStreams.forEach( stream => {
+		try
+		{
 
-			try
-			{
+			this.joinStreams.forEach( stream => {
+
+				currStream = stream;
 				stream.run(member);
-			}
-			catch (e)
-			{
-				uncaughtError( this.controlChannel, stream.name, e);
-			}
 
-		});
+			});
+
+		}
+		catch (e)
+		{
+			uncaughtError( this.controlChannel, (currStream) ? currStream.name : "unknown", e);
+		}
 
 	}
 
@@ -317,18 +326,23 @@ export class PluginManager
 	public async runLeaveStreams(member: Discord.GuildMember | Discord.PartialGuildMember): Promise<void>
 	{
 
-		this.leaveStreams.forEach( stream => {
+		let currStream: MemberStream | undefined;
 
-			try
-			{
+		try
+		{
+
+			this.leaveStreams.forEach( stream => {
+
+				currStream = stream;
 				stream.run(member);
-			}
-			catch (e)
-			{
-				uncaughtError( this.controlChannel, stream.name, e);
-			}
 
-		});
+			});
+
+		}
+		catch (e)
+		{
+			uncaughtError( this.controlChannel, (currStream) ? currStream.name : "unknown", e);
+		}
 
 	}
 
@@ -461,7 +475,7 @@ export class PluginManager
 	 */
 	public checkPermission(member: Discord.GuildMember, permission: Permission): boolean
 	{
-		let channel = member.guild.channels.resolve( this.instanceConfig.control_channel ) as Discord.TextChannel | null;
+		let channel = this.guild.channels.resolve( this.instanceConfig.control_channel ) as Discord.TextChannel | null;
 		
 		if (!channel)
 		{
@@ -478,40 +492,25 @@ export class PluginManager
 				return true;
 			}
 			break;
-				
-			case Permission.User:
-			{
-				let role = this.permissionPlugin.state?.read("config", "User") as string | undefined;
-
-				if (!role)
-				{
-					channel.send( Lang.roleNotSet() );
-
-					return false;
-				}
-
-				return (member.roles.cache.get(role)) ? true : false;
-			}
-			break;
-
-			case Permission.Mod:
-			{
-				let role = this.permissionPlugin.state?.read("config", "Mod") as string | undefined;
-
-				if (!role)
-				{
-					channel.send( Lang.roleNotSet() );
-
-					return false;
-				}
-
-				return (member.roles.cache.get(role)) ? true : false;
-			}
-			break;
 
 			case Permission.Admin:
 			{
 				return member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR);
+			}
+			break;
+
+			default:
+			{
+				let role = this.getPermissionRole(permission, this.guild);
+
+				if (!role)
+				{
+					channel.send( Lang.roleNotSet() );
+
+					return false;
+				}
+
+				return (member.roles.cache.get(role.id)) ? true : false;
 			}
 			break;
 
@@ -527,7 +526,8 @@ export class PluginManager
 	public getHighestMemberPermission(member: Discord.GuildMember): Permission
 	{
 		if ( this.checkPermission(member, Permission.Admin ) ) return Permission.Admin;
-		if ( this.checkPermission(member, Permission.Mod ) ) return Permission.Mod;
+		if ( this.checkPermission(member, Permission.SuperMod ) ) return Permission.SuperMod;
+		if ( this.checkPermission(member, Permission.ChatMod ) ) return Permission.ChatMod;
 		if ( this.checkPermission(member, Permission.User ) ) return Permission.User;
 		
 		return Permission.Any;
@@ -568,8 +568,14 @@ export class PluginManager
 
 		if (this.pluginState.read( p.name, "active"))
 		{
-			await p.init?.();
-			this._loadCommands(p);
+			try {
+				await p.init?.();
+				this._loadCommands(p);
+			}
+			catch (e)
+			{
+				uncaughtError( this.controlChannel, p.name, e, "initialize");
+			}
 		}
 
 	}

@@ -20,13 +20,13 @@ export default class FreezePlugin extends Plugin.Plugin
 
 	getModRole(guild: Discord.Guild): Discord.Role | undefined
 	{
-		return this.pluginManager.getPermissionRole( Plugin.Permission.Mod, guild );
+		return this.pluginManager.getPermissionRole( Plugin.Permission.SuperMod, guild );
 	}
 }
 
 class FreezeTaw extends Plugin.ChatCommand
 {
-	permission = Plugin.Permission.Mod;
+	permission = Plugin.Permission.ChatMod;
 	plugin: FreezePlugin;
 	freeze: boolean;
 

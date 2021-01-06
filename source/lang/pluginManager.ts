@@ -19,5 +19,10 @@ export function userChannelDesc(): string
 
 export function modRoleDesc(): string
 {
-	return `Rolle für Moderatoren`;
+	return `Rolle für Super Moderatoren (können alle Mod-Befehle nutzen)`;
+}
+
+export function chatModRoleDesc(): string
+{
+	return `Rolle für Chat Moderatoren (können chat-spezifische Befehle nutzen)`;
 }

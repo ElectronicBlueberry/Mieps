@@ -172,7 +172,7 @@ class DeleteSingle extends Plugin.EmojiCommand
 		super("deleteSingle");
 	}
 
-	permission = Plugin.Permission.Mod;
+	permission = Plugin.Permission.ChatMod;
 	
 	getHelpText()
 	{
@@ -207,7 +207,7 @@ class CopySingle extends Plugin.EmojiCommand
 		super("copySingle");
 	}
 
-	permission = Plugin.Permission.Mod;
+	permission = Plugin.Permission.ChatMod;
 
 	getHelpText()
 	{
@@ -242,7 +242,7 @@ class Selection extends Plugin.EmojiCommand
 		super("startSelection");
 	}
 
-	permission = Plugin.Permission.Mod;
+	permission = Plugin.Permission.ChatMod;
 
 	getHelpText()
 	{
@@ -292,7 +292,7 @@ class MoveMessages extends Plugin.ChatCommand
 		super("move");
 	}
 
-	permission = Plugin.Permission.Mod;
+	permission = Plugin.Permission.ChatMod;
 
 	getHelpText()
 	{
@@ -323,9 +323,12 @@ class MoveMessages extends Plugin.ChatCommand
 			}
 
 			// Delete old Messages
-			messages.forEach( m => {
+			messages.forEach( async m => {
 
-				m.delete();
+				try {
+					await m.delete();
+				}
+				catch {}
 
 			});
 
@@ -334,15 +337,15 @@ class MoveMessages extends Plugin.ChatCommand
 			let sourceChannelId = (this.plugin.state.read( member.id, "start" ) as SelectionMark).channel;
 			let sourceChannel = member.guild.channels.cache.get(sourceChannelId) as Discord.TextChannel;
 
-			sourceChannel.send( Lang.moved( embeds.length, message.channel as Discord.TextChannel ), attachment );
-
-			// Delete Command
-			message.delete();
+			await sourceChannel.send( Lang.moved( embeds.length, message.channel as Discord.TextChannel ), attachment );
 		}
 		catch
 		{
 			message.channel.send( Lang.failMessage() );
 		}
+
+		// Delete Command
+		await message.delete();
 
 	}
 
@@ -355,7 +358,7 @@ class CopyMessages extends Plugin.ChatCommand
 		super("copy");
 	}
 
-	permission = Plugin.Permission.Mod;
+	permission = Plugin.Permission.ChatMod;
 
 	getHelpText()
 	{
@@ -387,13 +390,13 @@ class CopyMessages extends Plugin.ChatCommand
 
 			// Delete Command
 			await message.delete();
-
-			removeMarks( this.plugin.state, member );
 		}
 		catch
 		{
 			message.channel.send( Lang.copyFailed() );
 		}
+
+		await removeMarks( this.plugin.state, member );
 
 	}
 
@@ -406,7 +409,7 @@ class DeleteMessages extends Plugin.ChatCommand
 		super("delete");
 	}
 
-	permission = Plugin.Permission.Mod;
+	permission = Plugin.Permission.ChatMod;
 
 	getHelpText()
 	{

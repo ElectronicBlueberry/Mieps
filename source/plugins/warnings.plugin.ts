@@ -125,7 +125,7 @@ class Warning extends Plugin.ChatCommand
 		super( Lang.warningCommand );
 	}
 
-	permission = Plugin.Permission.Mod;
+	permission = Plugin.Permission.SuperMod;
 
 	getHelpText()
 	{
