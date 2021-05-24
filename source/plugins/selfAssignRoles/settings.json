@@ -19,16 +19,13 @@
 				{"name": "em", "role": "em / ems"},
 				{"name": "en", "role": "en / ens"},
 				{"name": "ey", "role": "ey / em"},
-				{"name": "it", "role": "its"},
+				{"name": "it", "role": "it / its"},
 				{"name": "hen", "role": "hen / hens"},
 				{"name": "per", "role": "per / pers"},
 				{"name": "x", "role": "x / x"},
 				{"name": "xer", "role": "xer / xiem"},
 				{"name": "xe", "role": "xe / xem"},
 				{"name": "xier", "role": "xier / xiem"}
-			
-
-				
 			]
 		},
 		{
