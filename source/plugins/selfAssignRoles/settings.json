@@ -11,10 +11,24 @@
 			"roles":
 			[
 				{"name": "keine", "role": "keine Pronomen"},
+				{"name": "sie", "role": "sie / ihr"},
+				{"name": "er", "role": "er / ihm"},
 				{"name": "es", "role": "es"},
 				{"name": "they", "role": "they / them"},
-				{"name": "sie", "role": "sie / ihr"},
-				{"name": "er", "role": "er / ihm"}
+				{"name": "dey", "role": "dey"},
+				{"name": "em", "role": "em / ems"},
+				{"name": "en", "role": "en / ens"},
+				{"name": "ey", "role": "ey / em"},
+				{"name": "it", "role": "its"},
+				{"name": "hen", "role": "hen / hens"},
+				{"name": "per", "role": "per / pers"},
+				{"name": "x", "role": "x / x"},
+				{"name": "xer", "role": "xer / xiem"},
+				{"name": "xe", "role": "xe / xem"},
+				{"name": "xier", "role": "xier / xiem"}
+			
+
+				
 			]
 		},
 		{
