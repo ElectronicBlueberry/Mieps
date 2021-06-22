@@ -166,6 +166,18 @@ class SetRole extends Plugin.ChatCommand
 	{
 		let channel = message.channel;
 		
+		// reset command
+		if (args[0] === Lang.resetCommand) {
+			// Clear all other roles
+			for (const roleObj of this.topic.roles)
+			{
+				removeRole( message, roleObj.role );
+			}
+
+			message.channel.send( fillTemplate( this.topic.cleared_message, this.topic.roles ) );
+			return;
+		}
+
 		// Roles that were set with this command
 		let setRoles = [];
 
@@ -181,37 +193,13 @@ class SetRole extends Plugin.ChatCommand
 		}
 
 		// If no roles were sucessfully set, respond with help text
-		if (args.length !== 0 && setRoles.length === 0)
+		if (setRoles.length === 0)
 		{
 			channel.send( this.getHelpText() );
 
 			return;
-		}
-
-		// How many roles were sucessfully removed
-		let removeCount = 0;
-
-		// Clear all other roles
-		for (const roleObj of this.topic.roles)
-		{
-			if (!setRoles.find( v => v.role === roleObj.role ))
-			{
-				removeCount += removeRole( message, roleObj.role ) ? 1 : 0;
-			}
-		}
-
-		// No Roles were removed, or added
-		if (removeCount === 0 && args.length === 0)
-		{
-			message.channel.send( this.getHelpText() );
-		}
-		else if (setRoles.length !== 0) // Roles were sucessfully set
-		{
+		} else {
 			message.channel.send( fillTemplate( this.topic.set_message, setRoles ) );
-		}
-		else // Roles were sucessfully cleared
-		{
-			message.channel.send( fillTemplate( this.topic.cleared_message, this.topic.roles ) );
 		}
 
 	}

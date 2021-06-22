@@ -3,10 +3,10 @@
 		{
 			"command": "pronomen",
 
-			"set_message": "Du hast nun folgende Pronomen: $ROLES",
-			"cleared_message": "Du hast nun keine Pronomen Rollen mehr!",
+			"set_message": "Du hast folgende Pronomen hinzugefügt: $ROLES",
+			"cleared_message": "Du hast nun keine Pronomen mehr angegeben!",
 
-			"help": "Nenne eins, oder mehrere, der folgenden Pronomen direkt hinter diesem Befehl, um sie dir als Rollen zuzuweisen: $ROLES\n\nOder führe ihn leer aus, um alle Pronomen Rollen zu entfernen.",
+			"help": "Nenne eins, oder mehrere, der folgenden Pronomen direkt hinter diesem Befehl, um sie dir als Rollen zuzuweisen:\n$ROLES\n\nOder nutze `!pronomen reset` um alle Pronomen zu entfernen.",
 
 			"roles":
 			[
@@ -31,10 +31,10 @@
 		{
 			"command": "gegend",
 
-			"set_message": "Du hast folgende Gegend angegeben: $ROLES",
+			"set_message": "Du hast folgende Gegenden hinzugefügt: $ROLES",
 			"cleared_message": "Du hast nun keine Gegend mehr angegeben!",
 
-			"help": "Nenne ein Bundesland (ausgeschrieben oder abgekürzt) hinter diesem Befehl, um es dir als Rolle zuzuweisen.\nRichtige Schreibweisen und Abkürzungen der Bundesländer findest du hier:\n(DE) https://bit.ly/2Hy0uNc\n(AUT) https://bit.ly/2r1UcNB\nFalls du deine Gegend weiter spezifizieren möchtest, füge hinter dem Befehl zusätzlich \"Nord\", \"Süd\", \"West\", \"Ost\" oder \"Mitte\" hinzu.\nEs ist möglich, mehrere Himmelsrichtugnen zu nennen, um genauer zu sein. zB \"Nord West\"\nFühre den Befehl leer aus, um alle Bundeland-Rollen wieder zu entfernen.",
+			"help": "Nenne ein Bundesland (ausgeschrieben oder abgekürzt) hinter diesem Befehl, um es dir als Rolle zuzuweisen.\nRichtige Schreibweisen und Abkürzungen der Bundesländer findest du hier:\n\n(DE) https://bit.ly/2Hy0uNc\n(AUT) https://bit.ly/2r1UcNB\n\nFalls du deine Gegend weiter spezifizieren möchtest, füge hinter dem Befehl zusätzlich \"Nord\", \"Süd\", \"West\", \"Ost\" oder \"Mitte\" hinzu.\nEs ist möglich, mehrere Himmelsrichtugnen zu nennen, um genauer zu sein. zB \"Nord West\".\n\nNutze `!gegend reset`, um alle Bundeland-Rollen wieder zu entfernen.",
 
 			"roles":
 			[
@@ -101,10 +101,10 @@
 		},
 		{
 			"command": "interessen",
-			"set_message": "Du hast nun folgende Rollen: $ROLES",
-			"cleared_message": "Du hast nun keine Interessen-Rollen mehr!",
+			"set_message": "Du hast folgende Interessen hinzugefügt: $ROLES",
+			"cleared_message": "Du hast nun keine Interessen mehr angegeben!",
 
-			"help": "Nenne eine oder mehrere der folgenden Interessen direkt hinter diesem Befehl, um sie dir als Rollen zuzuweisen: $ROLES\n\nOder führe ihn leer aus, um alle Interessen-Rollen zu entfernen.",
+			"help": "Nenne eine oder mehrere der folgenden Interessen direkt hinter diesem Befehl, um sie dir als Rollen zuzuweisen:\n$ROLES\n\nOder nutze `!interessen reset`, um alle Interessen-Rollen zu entfernen.",
 			"roles":
 			[
 				{"name": "Programmieren", "role": "Programmieren"},
