@@ -13,14 +13,15 @@ export default class FreezePlugin extends Plugin.Plugin
 		new FreezeTaw(this, false)
 	]
 
+	/*
 	getMemberRole(guild: Discord.Guild): Discord.Role | undefined
 	{
 		return this.pluginManager.getPermissionRole( Plugin.Permission.User, guild );
-	}
+	}*/
 
 	getModRole(guild: Discord.Guild): Discord.Role | undefined
 	{
-		return this.pluginManager.getPermissionRole( Plugin.Permission.SuperMod, guild );
+		return this.pluginManager.getPermissionRole( Plugin.Permission.ChatMod, guild );
 	}
 }
 
@@ -51,10 +52,10 @@ class FreezeTaw extends Plugin.ChatCommand
 			return;
 		}
 
-		let memberRole = this.plugin.getMemberRole( message.guild );
+		//let memberRole = this.plugin.getMemberRole( message.guild );
 		let modRole = this.plugin.getModRole( message.guild );
 
-		if (!channel.manageable || !memberRole || !modRole)
+		if (!channel.manageable /*|| !memberRole*/ || !modRole)
 		{
 			if (this.freeze) channel.send( Lang.error );
 
@@ -66,7 +67,9 @@ class FreezeTaw extends Plugin.ChatCommand
 			if (this.freeze)
 			{
 				// Block members from writing, and allow mods to write
-				await channel.updateOverwrite( memberRole, { 'SEND_MESSAGES': false }, "channel freeze" );
+				await channel.updateOverwrite(message.guild.roles.everyone, {'SEND_MESSAGES': false}, "channel freeze");
+
+				//await channel.updateOverwrite( memberRole, { 'SEND_MESSAGES': false }, "channel freeze" );
 				await channel.updateOverwrite( modRole, { 'SEND_MESSAGES': true } );
 
 				channel.send( Lang.freeze );
@@ -74,7 +77,8 @@ class FreezeTaw extends Plugin.ChatCommand
 			else
 			{
 				// Reset member perm to neutral on unfreeze
-				await channel.updateOverwrite( memberRole, { 'SEND_MESSAGES': null } );
+				//await channel.updateOverwrite( memberRole, { 'SEND_MESSAGES': null } );
+				await channel.updateOverwrite(message.guild.roles.everyone, {'SEND_MESSAGES': null});
 
 				channel.send( Lang.unfreeze );
 			}
