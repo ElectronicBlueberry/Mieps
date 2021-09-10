@@ -92,11 +92,12 @@ class FreezeTaw extends Plugin.ChatCommand
 		}
 		catch(e)
 		{
+			let tempError = <Error> e; //Type assertion to get the compiler to understand e is an error
 
 			uncaughtError(
 				this.plugin.pluginManager.controlChannel,
 				(this.freeze) ? "freeze" : "unfreeze",
-				e,
+				tempError,
 				message.content
 			);
 
