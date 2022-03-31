@@ -111,10 +111,40 @@
 				{"name": "Malen", "role": "Malen"},
 				{"name": "Musik", "role": "Musik"},
 				{"name": "Schreiben", "role": "Schreiben"},
-				{"name": "Video", "role": "Video"}, 
+				{"name": "Video", "role": "Video"},
 				{"name": "Streamen", "role": "Streamen"},
 				{"name": "Modellieren", "role": "Modellieren"},
-				{"name": "Animieren", "role": "Animieren"}
+				{"name": "Animieren", "role": "Animieren"},
+				{"name": "lesen", "role": "Lesen"},
+				{"name": "penandpaper", "role": "Pen&Paper"}
+			]
+		},
+		{
+			"command": "gender",
+			"set_message": "Du hast folgende Gender-Rollen hinzugefügt: $ROLES",
+			"cleared_message": "Du hast nun keine Gender mehr angegeben!",
+			"help": "Nenne ein, oder mehrere der folgendern Gender / Gender-Zusätze direkt hinter diesem Befehl, um sie dir als Rollen zuzuweisen:\n$ROLES\n\nOder nutze `!gender reset`, um alle Gender-Rollen zu entfernen.",
+			"roles": [
+				{"name": "nonbinary", "role": "nonbinary"},
+				{"name": "weiblich", "role": "♀"},
+				{"name": "männlich", "role": "♂"},
+				{"name": "agender", "role": "agender"},
+				{"name": "androgyn", "role": "androgyn"},
+				{"name": "bigender", "role": "bigender"},
+				{"name": "demigender", "role": "demigender"},
+				{"name": "demimale", "role": "demimale"},
+				{"name": "demigirl", "role": "demigirl"},
+				{"name": "genderqueer", "role": "genderqueer"},
+				{"name": "genderfluid", "role": "genderfluid"},
+				{"name": "genderflux", "role": "genderflux"},
+				
+				{"name": "alpha", "role": "Alpha"},
+				{"name": "beta", "role": "Beta"},
+				{"name": "gamma", "role": "Gamma"},
+				{"name": "delta", "role": "Delta"},
+				{"name": "epsilon", "role": "Epsilon"},
+				{"name": "sigma", "role": "Sigma"},
+				{"name": "omega", "role": "Omega"}
 			]
 		}
 	]
