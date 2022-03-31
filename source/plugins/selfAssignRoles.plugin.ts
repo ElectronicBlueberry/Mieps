@@ -10,22 +10,22 @@ import * as Lang from "../lang/plugins/selfAssignRoles.js"
 export default class selfAssignRoles extends Plugin.Plugin
 {
 	name = "self_assign_roles";
-
+	
 	commands: Array<SetRole> = [];
 	description = Lang.description;
-
+	
 	async init(): Promise<void>
 	{
 		this.commands = [];
-
+		
 		Settings.topics.forEach( topic => {
-
+			
 			this.commands.push(
 				new SetRole(topic)
 			);
-
+			
 		});
-
+		
 	}
 
 }
@@ -57,17 +57,17 @@ function buildRoleString(array: Array<Role>): string
 {
 	let message = "";
 	let set: Array<string> = [];
-
+	
 	for (let i = 0; i < array.length; i++)
 	{
 		if (set.includes( array[i].role )) continue;
-
+		
 		set.push( array[i].role );
-
+		
 		message += "\n";
-		message += array[i].role;
+		message += array[i].name;
 	}
-
+	
 	return message;
 }
 
@@ -79,11 +79,11 @@ function buildRoleString(array: Array<Role>): string
 function findRoleInTopic(name: string, topic: Topic): Role | undefined
 {
 	let roleObj = topic.roles.find( role => {
-
+		
 		return role.name.toLowerCase() === name.replace(/[.,]/g, '');
-
+		
 	});
-
+	
 	return roleObj;
 }
 
@@ -96,21 +96,21 @@ function findRoleInTopic(name: string, topic: Topic): Role | undefined
 function addRole(message: Discord.Message, roleName: string, topic: Topic): Role | null
 {
 	let roleObj = findRoleInTopic(roleName, topic) as Role;
-
+	
 	if (!roleObj)
 	{
 		return null;
 	}
-
+	
 	let role = message.guild?.roles.cache.find( r => r.name === roleObj.role );
-
+	
 	if (!role)
 	{
 		return null;
 	}
-
+	
 	message.member?.roles.add(role);
-
+	
 	return roleObj;
 }
 
@@ -122,14 +122,14 @@ function addRole(message: Discord.Message, roleName: string, topic: Topic): Role
 function removeRole(message: Discord.Message, roleName: string): boolean
 {
 	let role = message.member?.roles.cache.find( r => r.name === roleName );
-
+	
 	if (role == undefined)
 	{
 		return false;
 	}
-
+	
 	message.member?.roles.remove(role);
-
+	
 	return true;
 }
 
@@ -150,18 +150,18 @@ class SetRole extends Plugin.ChatCommand
 	topic: Topic;
 	
 	permission = Plugin.Permission.User;
-
+	
 	constructor(topic: Topic)
 	{
 		super( topic.command );
 		this.topic = topic;
 	}
-
+	
 	getHelpText()
 	{
 		return fillTemplate( this.topic.help, this.topic.roles );
 	}
-
+	
 	async run(message: Discord.Message, args: Array<string>): Promise<void>
 	{
 		let channel = message.channel;
@@ -173,35 +173,35 @@ class SetRole extends Plugin.ChatCommand
 			{
 				removeRole( message, roleObj.role );
 			}
-
+			
 			message.channel.send( fillTemplate( this.topic.cleared_message, this.topic.roles ) );
 			return;
 		}
-
+		
 		// Roles that were set with this command
 		let setRoles = [];
-
+		
 		// Attempts to set all provided roles
 		for (const roleName of args)
 		{
 			let roleObj = addRole( message, roleName, this.topic );
-	
+			
 			if (roleObj !== null)
 			{
 				setRoles.push(roleObj);
 			}
 		}
-
+		
 		// If no roles were sucessfully set, respond with help text
 		if (setRoles.length === 0)
 		{
 			channel.send( this.getHelpText() );
-
+			
 			return;
 		} else {
 			message.channel.send( fillTemplate( this.topic.set_message, setRoles ) );
 		}
-
+		
 	}
 	
 }
