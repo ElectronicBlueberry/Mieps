@@ -136,15 +136,7 @@
 				{"name": "demigirl", "role": "demigirl"},
 				{"name": "genderqueer", "role": "genderqueer"},
 				{"name": "genderfluid", "role": "genderfluid"},
-				{"name": "genderflux", "role": "genderflux"},
-				
-				{"name": "alpha", "role": "Alpha"},
-				{"name": "beta", "role": "Beta"},
-				{"name": "gamma", "role": "Gamma"},
-				{"name": "delta", "role": "Delta"},
-				{"name": "epsilon", "role": "Epsilon"},
-				{"name": "sigma", "role": "Sigma"},
-				{"name": "omega", "role": "Omega"}
+				{"name": "genderflux", "role": "genderflux"}
 			]
 		}
 	]
