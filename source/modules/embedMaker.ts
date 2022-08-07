@@ -2,7 +2,7 @@ import * as Discord from "discord.js"
 
 import * as Lang from "../lang/embedMaker.js"
 
-
+//TODO Embed witg Attachment
 /**
  * creates a embed from a message
  * @param message message to create mebed from
@@ -15,13 +15,13 @@ export async function embedFromMessage(
 	showUserIcon: boolean = true,
 	showUserName: boolean = true,
 	showTimestamp: boolean = true
-): Promise<Discord.MessageEmbed>
+): Promise<EmbedWithAttachments>
 {
 	
 	// if the message is another bot embed, copy it
 	if (message.author.bot && message.embeds.length === 1 && message.content.trim() === "")
 	{
-		return message.embeds[0];
+		return {embed: message.embeds[0], attachments: getMessageAttachments(message)};
 	}
 
 	let embed = new Discord.MessageEmbed();
@@ -69,10 +69,10 @@ export async function embedFromMessage(
 	// fetch reply and add preview text
 	let replyMsg: Discord.Message | null = null;
 
-	if (message.reference?.channelID === message.channel.id && message.reference.messageID)
+	if (message.reference?.channelId === message.channel.id && message.reference.messageId)
 	{
 		try {
-			replyMsg = await message.channel.messages.fetch( message.reference.messageID );
+			replyMsg = await message.channel.messages.fetch( message.reference.messageId );
 		}
 		catch {}
 		
@@ -107,9 +107,30 @@ export async function embedFromMessage(
 
 	if (attachment && (attachment.width || attachment.height))
 	{
-		embed = embed.attachFiles( [ attachment.url ] )
-					 .setImage( `attachment://${attachment.name}` );
+		embed = embed.setImage( `attachment://${attachment.name}` );
 	}
 	
-	return embed;
+	return {embed: embed, attachments: getMessageAttachments(message)};
+}
+
+/**
+ * Interface to Control all 
+ */
+export interface EmbedWithAttachments{
+	embed: Discord.MessageEmbed;
+	attachments: Discord.MessageAttachment[];
+}
+
+/**
+ * Get all Attachments attachet to message
+ * 
+ * @param message Message
+ * @returns List of all found Attachments
+ */
+function getMessageAttachments(message: Discord.Message): Discord.MessageAttachment[] {
+	let attachments = [];
+	for (let att of message.attachments.values()) {
+		attachments.push(att);
+	}
+	return attachments;
 }

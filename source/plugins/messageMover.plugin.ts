@@ -4,7 +4,7 @@ import * as Lang from "../lang/plugins/messageMover.js"
 import * as Plugin from "../modules/plugin.js"
 
 import { State } from "../modules/state.js"
-import { embedFromMessage } from "../modules/embedMaker.js"
+import { embedFromMessage, EmbedWithAttachments } from "../modules/embedMaker.js"
 
 
 // ========== Plugin ==========
@@ -150,9 +150,9 @@ async function removeMarks(state: State, member: Discord.GuildMember): Promise<v
 
 }
 
-async function embedArrayFromMessages(messages: Discord.Collection<string, Discord.Message>): Promise<Discord.MessageEmbed[]>
+async function embedArrayFromMessages(messages: Discord.Collection<string, Discord.Message>): Promise<EmbedWithAttachments[]>
 {
-	let embeds: Array<Discord.MessageEmbed> = [];
+	let embeds: Array<EmbedWithAttachments> = [];
 
 	for (const [key, m] of messages)
 	{
@@ -186,10 +186,14 @@ class DeleteSingle extends Plugin.EmojiCommand
 		try
 		{
 			let message = reaction.message;
-			let embed = await embedFromMessage(message);
-
-			await (logChannel as Discord.TextChannel).send( Lang.logMessage(member), embed );
-			await message.delete();
+			let messagePromise: Promise<EmbedWithAttachments>;
+			if(message.partial){
+				messagePromise = message.fetch().then(fullMessage => embedFromMessage(fullMessage));
+			}else{
+				messagePromise = embedFromMessage(message);
+			}
+			messagePromise.then(embed => (logChannel as Discord.TextChannel).send({content:  Lang.logMessage(member), embeds: [embed.embed], files: embed.attachments}))
+						.then(_ => message.delete()).catch(_ => logChannel?.send( Lang.deleteFailed() ));
 		}
 		catch
 		{
@@ -221,10 +225,14 @@ class CopySingle extends Plugin.EmojiCommand
 		try
 		{
 			let message = reaction.message;
-			let embed = await embedFromMessage(message);
-
-			await logChannel?.send( Lang.copyLog(member), embed );
-			await reaction.remove();
+			let messagePromise: Promise<EmbedWithAttachments>;
+			if(message.partial){
+				messagePromise = message.fetch().then(fullMessage => embedFromMessage(fullMessage));
+			}else{
+				messagePromise = embedFromMessage(message);
+			}
+			messagePromise.then(embed => logChannel?.send({content:  Lang.copyLog(member), embeds: [embed.embed], files: embed.attachments}))
+				.then(_ => message.delete()).catch(_ => logChannel?.send( Lang.copyFailed() ));
 		}
 		catch
 		{
@@ -319,7 +327,7 @@ class MoveMessages extends Plugin.ChatCommand
 			// Send Messages to new Channel
 			for (const embed of embeds)
 			{
-				await message.channel.send("", embed);
+				await message.channel.send({content: "", embeds: [embed.embed], files: embed.attachments});
 			}
 
 			// Delete old Messages
@@ -337,7 +345,7 @@ class MoveMessages extends Plugin.ChatCommand
 			let sourceChannelId = (this.plugin.state.read( member.id, "start" ) as SelectionMark).channel;
 			let sourceChannel = member.guild.channels.cache.get(sourceChannelId) as Discord.TextChannel;
 
-			await sourceChannel.send( Lang.moved( embeds.length, message.channel as Discord.TextChannel ), attachment );
+			await sourceChannel.send( {content: Lang.moved( embeds.length, message.channel as Discord.TextChannel ), files: [attachment]} );
 		}
 		catch
 		{
@@ -385,7 +393,7 @@ class CopyMessages extends Plugin.ChatCommand
 			// Send Messages to new Channel
 			for (const embed of embeds)
 			{
-				await message.channel.send("", embed);
+				await message.channel.send({content: "", embeds: [embed.embed], files: embed.attachments});
 			}
 
 			// Delete Command
@@ -440,7 +448,7 @@ class DeleteMessages extends Plugin.ChatCommand
 			// Send Messages to log-Channel
 			for (const embed of embeds)
 			{
-				await (logChannel as Discord.TextChannel).send("", embed);
+				await (logChannel as Discord.TextChannel).send({content: "", embeds: [embed.embed], files: embed.attachments});
 			}
 
 			// Delete old Messages

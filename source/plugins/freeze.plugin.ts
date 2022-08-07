@@ -66,15 +66,15 @@ class FreezeTaw extends Plugin.ChatCommand
 			if (this.freeze)
 			{
 				// Block members from writing, and allow mods to write
-				await channel.updateOverwrite( memberRole, { 'SEND_MESSAGES': false }, "channel freeze" );
-				await channel.updateOverwrite( modRole, { 'SEND_MESSAGES': true } );
-
+				await channel.permissionOverwrites.edit(memberRole, {'SEND_MESSAGES': false}, {reason: "channel freeze"})
+				await channel.permissionOverwrites.edit( modRole, { 'SEND_MESSAGES': true } );
+				
 				channel.send( Lang.freeze );
 			}
 			else
 			{
 				// Reset member perm to neutral on unfreeze
-				await channel.updateOverwrite( memberRole, { 'SEND_MESSAGES': null } );
+				await channel.permissionOverwrites.edit( memberRole, { 'SEND_MESSAGES': null } );
 
 				channel.send( Lang.unfreeze );
 			}

@@ -94,10 +94,7 @@ async function _queryInput(
 	// this infinite loop is non blocking, becasue it is interrupted by await
 	while (true)
 	{
-		let msgArr = await channel.awaitMessages(
-			(m: Discord.Message) => m.author == user,
-			{ max: 1, time: timeout }
-		);
+		let msgArr = await channel.awaitMessages({filter: (m: Discord.Message) => m.author == user, max: 1, time: timeout});
 
 		// no message was posted before timeout
 		if (msgArr.size === 0)
@@ -207,7 +204,7 @@ async function _queryInput(
 			case InputType.Channel:
 			{
 				// search for channel mentions
-				let chnl: Discord.TextChannel | Discord.GuildChannel | undefined = msg.mentions.channels?.first();
+				let chnl: Discord.Channel| undefined = msg.mentions.channels?.first();
 
 				if (chnl)
 				{

@@ -57,7 +57,7 @@ export class PluginManager
 	{
 		let c = this.guild.channels.cache.get( this.instanceConfig.control_channel );
 
-		if (!c || c.type !== "text")
+		if (!c || !(c.type === "GUILD_TEXT" || c.type === "GUILD_PUBLIC_THREAD" || c.type === "GUILD_PRIVATE_THREAD"))
 		{
 			criticalError("Control Channel not found!");
 

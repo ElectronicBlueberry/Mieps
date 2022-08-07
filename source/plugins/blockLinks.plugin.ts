@@ -59,11 +59,10 @@ class LinkFilter implements Plugin.MessageStream
 			message.delete();
 
 			this.plugin.logChannel?.send( lang.logMessage( message.channel.id ) );
-			this.plugin.logChannel?.send( embed );
+			this.plugin.logChannel?.send( {embeds: [embed.embed], files: embed.attachments} );
 
 			let feedbackMsg = await message.channel.send( lang.feedbackMessage );
-			feedbackMsg.delete({ timeout: this.plugin.linger });
-
+			setTimeout(() => feedbackMsg.delete(), this.plugin.linger);
 			return false;
 		}
 		else

@@ -9,7 +9,7 @@ export const pinChannel = `Der Kanal in welchen die gepinnten Nachrichten kopier
 export const pinCount = `Wie viele Mitglieder insgesamt pinnen müssen, bevor eine Nachricht gepinnt wird`;
 export const pinEmoji = `Das Emoji, mit welchem Mitglieder Nachrichten anpinnen können`;
 
-export function pinHeadingMessage(author: Discord.User, channel: Discord.Channel): string
+export function pinHeadingMessage(author: Discord.User | null, channel: Discord.Channel): string
 {
 	return `Von: ${author}
 Aus: ${channel}`;
