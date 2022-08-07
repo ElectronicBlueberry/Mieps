@@ -21,14 +21,14 @@ export async function embedFromMessage(
 	// if the message is another bot embed, copy it
 	if (message.author.bot && message.embeds.length === 1 && message.content.trim() === "")
 	{
-		return {embed: message.embeds[0], attachments: getMessageAttachments(message)};
+		return {embed: Discord.EmbedBuilder.from(message.embeds[0]), attachments: getMessageAttachments(message)};
 	}
 
-	let embed = new Discord.MessageEmbed();
+	let embed = new Discord.EmbedBuilder();
 
 	// set embeds author
 	let av: string | null = null;
-	
+
 	if (showUserIcon)
 	{ 
 		av = message.author.avatarURL();
@@ -39,15 +39,15 @@ export async function embedFromMessage(
 
 		if (message.member !== null)
 		{
-			embed = embed.setAuthor( message.member.displayName, av ?? undefined );
+			embed = embed.setAuthor( {name: message.member.displayName, iconURL: av ?? undefined });
 		}
 		else
 		{
-			embed = embed.setAuthor( message.author.username, av ?? undefined );
+			embed = embed.setAuthor({name: message.author.username, iconURL: av ?? undefined });
 		}
 
 	}
-	
+
 	// colorize embed
 	if (message.member !== null)
 	{
@@ -58,8 +58,10 @@ export async function embedFromMessage(
 		embed = embed.setColor('#ffffff');
 	}
 
-	// add content
-	embed = embed.setDescription( message.content );
+	if(message.content){
+		// add content
+		embed = embed.setDescription( message.content );
+	}
 
 	if (showTimestamp)
 	{
@@ -98,10 +100,9 @@ export async function embedFromMessage(
 				authorName = replyMsg.author.username;
 			}
 
-			embed = embed.addField(`\u2514\u2500\u25b7 ${ Lang.reply } ${authorName}:`, replyTxt);
+			embed = embed.addFields([{name: `\u2514\u2500\u25b7 ${ Lang.reply } ${authorName}:`, value: replyTxt}]);
 		}
 	}
-
 	// reattach image
 	let attachment = message.attachments.first();
 
@@ -109,7 +110,7 @@ export async function embedFromMessage(
 	{
 		embed = embed.setImage( `attachment://${attachment.name}` );
 	}
-	
+	//TODO Make list of Embeds foreach Attachment
 	return {embed: embed, attachments: getMessageAttachments(message)};
 }
 
@@ -117,8 +118,8 @@ export async function embedFromMessage(
  * Interface to Control all 
  */
 export interface EmbedWithAttachments{
-	embed: Discord.MessageEmbed;
-	attachments: Discord.MessageAttachment[];
+	embed: Discord.EmbedBuilder;
+	attachments: Discord.Attachment[];
 }
 
 /**
@@ -127,7 +128,7 @@ export interface EmbedWithAttachments{
  * @param message Message
  * @returns List of all found Attachments
  */
-function getMessageAttachments(message: Discord.Message): Discord.MessageAttachment[] {
+function getMessageAttachments(message: Discord.Message): Discord.Attachment[] {
 	let attachments = [];
 	for (let att of message.attachments.values()) {
 		attachments.push(att);

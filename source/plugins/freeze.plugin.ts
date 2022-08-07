@@ -66,15 +66,15 @@ class FreezeTaw extends Plugin.ChatCommand
 			if (this.freeze)
 			{
 				// Block members from writing, and allow mods to write
-				await channel.permissionOverwrites.edit(memberRole, {'SEND_MESSAGES': false}, {reason: "channel freeze"})
-				await channel.permissionOverwrites.edit( modRole, { 'SEND_MESSAGES': true } );
+				await channel.permissionOverwrites.edit(memberRole, {'SendMessages': false}, {reason: "channel freeze"})
+				await channel.permissionOverwrites.edit( modRole, { 'SendMessages': true } );
 				
 				channel.send( Lang.freeze );
 			}
 			else
 			{
 				// Reset member perm to neutral on unfreeze
-				await channel.permissionOverwrites.edit( memberRole, { 'SEND_MESSAGES': null } );
+				await channel.permissionOverwrites.edit( memberRole, { 'SendMessages': null } );
 
 				channel.send( Lang.unfreeze );
 			}
@@ -82,7 +82,7 @@ class FreezeTaw extends Plugin.ChatCommand
 		}
 		catch(e)
 		{
-
+			
 			uncaughtError(
 				this.plugin.pluginManager.controlChannel,
 				(this.freeze) ? "freeze" : "unfreeze",

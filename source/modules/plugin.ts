@@ -4,6 +4,7 @@ import { State } from "./state.js"
 import { InputType } from "./inputCollector.js"
 import { PluginManager } from "./pluginManager"
 import { criticalPluginError } from "./errorHandling.js"
+import { UnicodeEmoji } from "../model/model"
 
 
 export { InputType } from "./inputCollector.js"
@@ -240,7 +241,7 @@ export class Plugin implements iPlugin
 				else
 				{
 					// unicode Emoji
-					response = new Discord.Emoji( this.client, {id: null, name: s} );
+					response = new UnicodeEmoji( this.client, {id: null, name: s} );
 				}
 
 			}

@@ -329,7 +329,6 @@ class MoveMessages extends Plugin.ChatCommand
 			{
 				await message.channel.send({content: "", embeds: [embed.embed], files: embed.attachments});
 			}
-
 			// Delete old Messages
 			messages.forEach( async m => {
 
@@ -341,7 +340,7 @@ class MoveMessages extends Plugin.ChatCommand
 			});
 
 			// Post Response
-			let attachment = new Discord.MessageAttachment("./img/banner.gif");
+			let attachment = new Discord.AttachmentBuilder("./img/banner.gif");
 			let sourceChannelId = (this.plugin.state.read( member.id, "start" ) as SelectionMark).channel;
 			let sourceChannel = member.guild.channels.cache.get(sourceChannelId) as Discord.TextChannel;
 

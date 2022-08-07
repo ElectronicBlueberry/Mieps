@@ -8,6 +8,7 @@ import * as config from "./config/server.json"
 import { BuiltIn } from "./modules/builtinCommands.js"
 import { PluginManager } from "./modules/pluginManager.js"
 import { criticalError } from "./modules/errorHandling.js"
+import { ChannelType, GatewayIntentBits } from 'discord.js'
 
 
 // ------ Initialize Bot ------
@@ -50,9 +51,9 @@ if (instanceConfig.api_key === "" || instanceConfig.control_channel === "")
 }
 
 // create client and connect
-const client = new Discord.Client({intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_BANS', 'GUILD_EMOJIS_AND_STICKERS', 'GUILD_INTEGRATIONS', 'GUILD_WEBHOOKS', 'GUILD_INVITES', 'GUILD_VOICE_STATES', 'GUILD_PRESENCES', 'GUILD_MESSAGES', 'DIRECT_MESSAGES', 'DIRECT_MESSAGE_REACTIONS']});
+const client = new Discord.Client({intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildBans, GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.GuildIntegrations, GatewayIntentBits.GuildInvites, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.DirectMessages, GatewayIntentBits.DirectMessageReactions, GatewayIntentBits.MessageContent]});
 
-client.login( instanceConfig.api_key );
+client.login(instanceConfig.api_key);
 
 console.log("connecting to Discord...");
 
@@ -80,7 +81,7 @@ client.on("messageCreate", async (message) => {
 
 	// don't react to non-text messages, or bot messages
 	//TODO pruefen ersatz zu message.channel.type !== "text" 
-	if (!(message.channel.type === "GUILD_TEXT" || message.channel.type === "GUILD_PUBLIC_THREAD" ||  message.channel.type === "GUILD_PRIVATE_THREAD") || message.author.bot) return;
+	if (!(message.channel.type === ChannelType.GuildText || message.channel.type === ChannelType.GuildPublicThread ||  message.channel.type === ChannelType.GuildPrivateThread || message.channel.type === ChannelType.DM) || message.author.bot) return;
 
 	// run the message streams
 	let runCommands = await pluginManager.runChatStreams(message);
@@ -98,7 +99,7 @@ client.on("messageCreate", async (message) => {
 
 client.on("messageReactionAdd", async (reaction, user) => {
 
-	if (!((reaction.message.channel.type === "GUILD_TEXT" || reaction.message.channel.type === "GUILD_PUBLIC_THREAD" ||  reaction.message.channel.type === "GUILD_PRIVATE_THREAD")) || user.bot) return;
+	if (!(reaction.message.channel.type === ChannelType.GuildText || reaction.message.channel.type === ChannelType.GuildPublicThread ||  reaction.message.channel.type === ChannelType.GuildPrivateThread || reaction.message.channel.type === ChannelType.DM) || user.bot) return;
 	if(reaction.partial){
 		reaction.fetch()
 		.then(fullReaction => {
@@ -136,13 +137,13 @@ client.on("raw", async (packet) => {
 
 	// if for whatever reason, the channel does not exists, or is not a text channel, abort
 	if (!channel) return;
-	if (channel.type !== "GUILD_TEXT") return;
+	if (channel.type !== ChannelType.GuildText) return;
 
     // there's no need to emit if the message is cached, because the event will fire anyway for that
 	if (channel.messages.cache.has( packet.d.message_id )) return;
 	
 	// fetch and cache message
-	let message = await channel.messages.fetch( packet.d.message_id, {cache: true, force: false});
+	let message = await channel.messages.fetch( {message: packet.d.message_id, cache: true, force: false});
 
 	// set the emoji to either a custom one, or a default one
 	const emoji = packet.d.emoji.id ?? packet.d.emoji.name;
