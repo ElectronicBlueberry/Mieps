@@ -2,7 +2,7 @@ import * as Discord from "discord.js"
 
 import * as Lang from "../lang/embedMaker.js"
 
-//TODO Embed witg Attachment
+//TODO Embed with Attachment
 /**
  * creates a embed from a message
  * @param message message to create mebed from
@@ -21,7 +21,7 @@ export async function embedFromMessage(
 	// if the message is another bot embed, copy it
 	if (message.author.bot && message.embeds.length === 1 && message.content.trim() === "")
 	{
-		return {embed: Discord.EmbedBuilder.from(message.embeds[0]), attachments: getMessageAttachments(message)};
+		return {embed: Discord.EmbedBuilder.from(message.embeds[0]), attachments: [...message.attachments.values()]};
 	}
 
 	let embed = new Discord.EmbedBuilder();
@@ -110,8 +110,8 @@ export async function embedFromMessage(
 	{
 		embed = embed.setImage( `attachment://${attachment.name}` );
 	}
-	//TODO Make list of Embeds foreach Attachment
-	return {embed: embed, attachments: getMessageAttachments(message)};
+	//TODO Embed je Attachment
+	return {embed: embed, attachments: [...message.attachments.values()]};
 }
 
 /**
@@ -120,18 +120,4 @@ export async function embedFromMessage(
 export interface EmbedWithAttachments{
 	embed: Discord.EmbedBuilder;
 	attachments: Discord.Attachment[];
-}
-
-/**
- * Get all Attachments attachet to message
- * 
- * @param message Message
- * @returns List of all found Attachments
- */
-function getMessageAttachments(message: Discord.Message): Discord.Attachment[] {
-	let attachments = [];
-	for (let att of message.attachments.values()) {
-		attachments.push(att);
-	}
-	return attachments;
 }

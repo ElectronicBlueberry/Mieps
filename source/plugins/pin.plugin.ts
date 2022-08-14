@@ -5,6 +5,7 @@ import * as Plugin from "../modules/plugin.js"
 
 import { State } from "../modules/state.js"
 import { embedFromMessage, EmbedWithAttachments } from "../modules/embedMaker.js"
+import { uncaughtError } from "../modules/errorHandling.js"
 
 
 // ========== Constants ==========
