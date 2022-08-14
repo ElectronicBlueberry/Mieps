@@ -193,7 +193,7 @@ class DeleteSingle extends Plugin.EmojiCommand
 				messagePromise = embedFromMessage(message);
 			}
 			messagePromise.then(embed => (logChannel as Discord.TextChannel).send({content:  Lang.logMessage(member), embeds: [embed.embed], files: embed.attachments}))
-						.then(_ => message.delete()).catch(_ => logChannel?.send( Lang.deleteFailed() ));
+						.then(() => message.delete()).catch(() => logChannel?.send( Lang.deleteFailed() ));
 		}
 		catch
 		{
@@ -232,7 +232,7 @@ class CopySingle extends Plugin.EmojiCommand
 				messagePromise = embedFromMessage(message);
 			}
 			messagePromise.then(embed => logChannel?.send({content:  Lang.copyLog(member), embeds: [embed.embed], files: embed.attachments}))
-				.then(_ => message.delete()).catch(_ => logChannel?.send( Lang.copyFailed() ));
+				.then(() => message.delete()).catch(() => logChannel?.send( Lang.copyFailed() ));
 		}
 		catch
 		{
