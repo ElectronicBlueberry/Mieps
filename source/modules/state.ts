@@ -4,9 +4,7 @@ import * as Path from 'path'
 import { criticalError } from "./errorHandling.js"
 import config from "../config/server.json" assert { type: 'json' };
 
-
 const state_folder = config.state_folder;
-
 const state_suffix = config.state_suffix;
 
 // object template, with string key and generic value

@@ -4,9 +4,7 @@ import EmojiRegex from "emoji-regex"
 import * as Lang from "../lang/inputCollector.js"
 import config from "../config/server.json" assert { type: 'json' };
 
-
 const command_prefix = config.command_prefix;
-
 
 export enum InputType
 {

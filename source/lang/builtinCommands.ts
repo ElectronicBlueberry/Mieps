@@ -3,7 +3,6 @@ import { iPlugin } from "../modules/plugin.js"
 import { ChatCommand, EmojiCommand } from "../modules/plugin.js"
 import config from "../config/server.json" assert { type: 'json' };
 
-
 const command_prefix = config.command_prefix;
 
 export function pluginActivated(pluginName: string): string
