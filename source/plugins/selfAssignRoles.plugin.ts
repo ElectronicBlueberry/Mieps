@@ -1,7 +1,7 @@
 import * as Discord from "discord.js"
 
 import * as Plugin from "../modules/plugin.js"
-import Settings from "./selfAssignRoles/settings.json"
+import Settings from "./selfAssignRoles/settings.json" assert { type: 'json' };
 import * as Lang from "../lang/plugins/selfAssignRoles.js"
 
 

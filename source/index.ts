@@ -3,7 +3,7 @@ import * as Fs from 'fs'
 
 import * as Discord from "discord.js"
 
-import * as config from "./config/server.json"
+import config from "./config/server.json" assert { type: 'json' };
 
 import { BuiltIn } from "./modules/builtinCommands.js"
 import { PluginManager } from "./modules/pluginManager.js"

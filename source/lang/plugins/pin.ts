@@ -1,5 +1,5 @@
 import * as Discord from "discord.js"
-import { uncaughtError } from "../../modules/errorHandling";
+import { uncaughtError } from "../../modules/errorHandling.js";
 
 
 export const pluginDescription = `Nutzer können mit diesem Eomji Nachrichten in einen Pin Kanal kopieren.`;

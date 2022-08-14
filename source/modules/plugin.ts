@@ -2,9 +2,9 @@ import * as Discord from "discord.js"
 
 import { State } from "./state.js"
 import { InputType } from "./inputCollector.js"
-import { PluginManager } from "./pluginManager"
+import { PluginManager } from "./pluginManager.js"
 import { criticalPluginError } from "./errorHandling.js"
-import { UnicodeEmoji } from "../model/model"
+import { UnicodeEmoji } from "../model/model.js"
 
 
 export { InputType } from "./inputCollector.js"
