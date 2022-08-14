@@ -2,9 +2,7 @@ import * as Discord from "discord.js"
 
 import config from "../../config/server.json" assert { type: 'json' };
 
-
 const command_prefix = config.command_prefix;
-
 
 export const pluginDescription = `Erlaubt das Verschieben und Löschen von Nachrichten`;
 

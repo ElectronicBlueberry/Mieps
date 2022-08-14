@@ -1,6 +1,6 @@
 import config from "../config/server.json" assert { type: 'json' };
-const command_prefix = config.command_prefix;
 
+const command_prefix = config.command_prefix;
 
 export function wrongInputRole(input: string): string
 {
