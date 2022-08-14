@@ -2,8 +2,9 @@ import * as Discord from "discord.js"
 import EmojiRegex from "emoji-regex"
 
 import * as Lang from "../lang/inputCollector.js"
-import { command_prefix } from "../config/server.json"
+import config from "../config/server.json" assert { type: 'json' };
 
+const command_prefix = config.command_prefix;
 
 export enum InputType
 {
@@ -94,10 +95,7 @@ async function _queryInput(
 	// this infinite loop is non blocking, becasue it is interrupted by await
 	while (true)
 	{
-		let msgArr = await channel.awaitMessages(
-			(m: Discord.Message) => m.author == user,
-			{ max: 1, time: timeout }
-		);
+		let msgArr = await channel.awaitMessages({filter: (m: Discord.Message) => m.author == user, max: 1, time: timeout});
 
 		// no message was posted before timeout
 		if (msgArr.size === 0)
@@ -207,7 +205,7 @@ async function _queryInput(
 			case InputType.Channel:
 			{
 				// search for channel mentions
-				let chnl: Discord.TextChannel | Discord.GuildChannel | undefined = msg.mentions.channels?.first();
+				let chnl: Discord.Channel| undefined = msg.mentions.channels?.first();
 
 				if (chnl)
 				{

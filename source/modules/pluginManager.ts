@@ -9,6 +9,7 @@ import * as Query from "./inputCollector.js"
 import { iPlugin, Plugin, ChatCommand, EmojiCommand, MessageStream, CommandType, Permission, MemberStream } from "./plugin.js"
 import { criticalError, uncaughtError } from "./errorHandling.js"
 import { State, ReadOnlyState } from "./state.js"
+import { ChannelType, PermissionFlagsBits } from 'discord.js'
 
 
 type Collection<K, V> = Discord.Collection<K, V>;
@@ -26,25 +27,26 @@ export class PluginManager
 
 	private pluginState = new State("plugin_manager");
 
-	// used to setup permissions in the configurator
-	private permissionPlugin: iPlugin =
-	{
-		name: "permissions",
-		pluginManager: this,
-		client: this.client,
-		setupTemplate:
-		[
-			{ name:"User", type: Query.InputType.Role, description: Lang.userRoleDesc() },
-			{ name:"UserCommandChannel", type: Query.InputType.Channel, description: Lang.userChannelDesc() },
-			{ name:"SuperMod", type: Query.InputType.Role, description: Lang.modRoleDesc() },
-			{ name: "ChatMod", type: Query.InputType.Role, description: Lang.chatModRoleDesc() }
-		]
-	}
-
 	constructor (private client: Discord.Client, private instanceConfig: { control_channel: string })
 	{
+		this.permissionPlugin =
+			{
+				name: "permissions",
+				pluginManager: this,
+				client: client,
+				setupTemplate:
+				[
+					{ name:"User", type: Query.InputType.Role, description: Lang.userRoleDesc() },
+					{ name:"UserCommandChannel", type: Query.InputType.Channel, description: Lang.userChannelDesc() },
+					{ name:"SuperMod", type: Query.InputType.Role, description: Lang.modRoleDesc() },
+					{ name: "ChatMod", type: Query.InputType.Role, description: Lang.chatModRoleDesc() }
+				]
+			}
 		this.loadPlugin( this.permissionPlugin );
 	}
+
+	// used to setup permissions in the configurator
+	private permissionPlugin: iPlugin;
 
 	/** read-only - the guild this Plugin Manager is operating on */
 	get guild(): Discord.Guild
@@ -57,7 +59,7 @@ export class PluginManager
 	{
 		let c = this.guild.channels.cache.get( this.instanceConfig.control_channel );
 
-		if (!c || c.type !== "text")
+		if (!c || !(c.type === ChannelType.GuildText || c.type === ChannelType.GuildPublicThread ||  c.type === ChannelType.GuildPrivateThread))
 		{
 			criticalError("Control Channel not found!");
 
@@ -495,7 +497,7 @@ export class PluginManager
 
 			case Permission.Admin:
 			{
-				return member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR);
+				return member.permissions.has(PermissionFlagsBits.Administrator);
 			}
 			break;
 

@@ -1,5 +1,6 @@
-import { command_prefix } from "../config/server.json"
+import config from "../config/server.json" assert { type: 'json' };
 
+const command_prefix = config.command_prefix;
 
 export function roleNotSet(): string
 {

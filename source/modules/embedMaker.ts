@@ -2,7 +2,7 @@ import * as Discord from "discord.js"
 
 import * as Lang from "../lang/embedMaker.js"
 
-
+//TODO Embed with Attachment
 /**
  * creates a embed from a message
  * @param message message to create mebed from
@@ -15,20 +15,20 @@ export async function embedFromMessage(
 	showUserIcon: boolean = true,
 	showUserName: boolean = true,
 	showTimestamp: boolean = true
-): Promise<Discord.MessageEmbed>
+): Promise<EmbedWithAttachments>
 {
 	
 	// if the message is another bot embed, copy it
 	if (message.author.bot && message.embeds.length === 1 && message.content.trim() === "")
 	{
-		return message.embeds[0];
+		return {embed: Discord.EmbedBuilder.from(message.embeds[0]), attachments: [...message.attachments.values()]};
 	}
 
-	let embed = new Discord.MessageEmbed();
+	let embed = new Discord.EmbedBuilder();
 
 	// set embeds author
 	let av: string | null = null;
-	
+
 	if (showUserIcon)
 	{ 
 		av = message.author.avatarURL();
@@ -39,15 +39,15 @@ export async function embedFromMessage(
 
 		if (message.member !== null)
 		{
-			embed = embed.setAuthor( message.member.displayName, av ?? undefined );
+			embed = embed.setAuthor( {name: message.member.displayName, iconURL: av ?? undefined });
 		}
 		else
 		{
-			embed = embed.setAuthor( message.author.username, av ?? undefined );
+			embed = embed.setAuthor({name: message.author.username, iconURL: av ?? undefined });
 		}
 
 	}
-	
+
 	// colorize embed
 	if (message.member !== null)
 	{
@@ -58,8 +58,10 @@ export async function embedFromMessage(
 		embed = embed.setColor('#ffffff');
 	}
 
-	// add content
-	embed = embed.setDescription( message.content );
+	if(message.content){
+		// add content
+		embed = embed.setDescription( message.content );
+	}
 
 	if (showTimestamp)
 	{
@@ -69,10 +71,10 @@ export async function embedFromMessage(
 	// fetch reply and add preview text
 	let replyMsg: Discord.Message | null = null;
 
-	if (message.reference?.channelID === message.channel.id && message.reference.messageID)
+	if (message.reference?.channelId === message.channel.id && message.reference.messageId)
 	{
 		try {
-			replyMsg = await message.channel.messages.fetch( message.reference.messageID );
+			replyMsg = await message.channel.messages.fetch( message.reference.messageId );
 		}
 		catch {}
 		
@@ -98,18 +100,24 @@ export async function embedFromMessage(
 				authorName = replyMsg.author.username;
 			}
 
-			embed = embed.addField(`\u2514\u2500\u25b7 ${ Lang.reply } ${authorName}:`, replyTxt);
+			embed = embed.addFields([{name: `\u2514\u2500\u25b7 ${ Lang.reply } ${authorName}:`, value: replyTxt}]);
 		}
 	}
-
 	// reattach image
 	let attachment = message.attachments.first();
 
 	if (attachment && (attachment.width || attachment.height))
 	{
-		embed = embed.attachFiles( [ attachment.url ] )
-					 .setImage( `attachment://${attachment.name}` );
+		embed = embed.setImage( `attachment://${attachment.name}` );
 	}
-	
-	return embed;
+	//TODO Embed je Attachment
+	return {embed: embed, attachments: [...message.attachments.values()]};
+}
+
+/**
+ * Interface to Control all 
+ */
+export interface EmbedWithAttachments{
+	embed: Discord.EmbedBuilder;
+	attachments: Discord.Attachment[];
 }

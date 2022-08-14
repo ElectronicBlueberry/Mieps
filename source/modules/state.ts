@@ -2,7 +2,10 @@ import * as fs from 'fs'
 import * as Path from 'path'
 
 import { criticalError } from "./errorHandling.js"
-import { state_folder, state_suffix } from "../config/server.json"
+import config from "../config/server.json" assert { type: 'json' };
+
+const state_folder = config.state_folder;
+const state_suffix = config.state_suffix;
 
 // object template, with string key and generic value
 interface IDictionary<TValue>

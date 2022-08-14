@@ -1,7 +1,8 @@
 import * as Discord from "discord.js"
 
-import { command_prefix } from "../../config/server.json"
+import config from "../../config/server.json" assert { type: 'json' };
 
+const command_prefix = config.command_prefix;
 
 const openCommands = `"${command_prefix}mahnung vorschau" um eine Kopie der Mahnung zugesendet zu bekommen
 "${command_prefix}mahnung genehmigen" um sie zu genehmigen

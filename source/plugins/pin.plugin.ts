@@ -4,7 +4,8 @@ import * as Lang from "../lang/plugins/pin.js"
 import * as Plugin from "../modules/plugin.js"
 
 import { State } from "../modules/state.js"
-import { embedFromMessage } from "../modules/embedMaker.js"
+import { embedFromMessage, EmbedWithAttachments } from "../modules/embedMaker.js"
+import { uncaughtError } from "../modules/errorHandling.js"
 
 
 // ========== Constants ==========
@@ -39,15 +40,22 @@ export default class MessagePinner extends Plugin.Plugin implements Plugin.iPlug
 
 // ========== Functions ==========
 
-async function checkForAuthor(reaction: Discord.MessageReaction, author: Discord.User): Promise<boolean>
+async function checkForAuthor(reaction: Discord.MessageReaction, author: Discord.User | null): Promise<boolean>
 {
+	if(author == null){
+		return false;
+	}
+
 	await reaction.users.fetch();
 
 	return reaction.users.cache.has( author.id );
 }
 
-async function fetchMessages(message: Discord.Message, author: Discord.User): Promise<Array<Discord.Message>>
+async function fetchMessages(message: Discord.Message, author: Discord.User|null): Promise<Array<Discord.Message>>
 {
+	if(author == null){
+		return [];
+	}
 	let messages: Array<Discord.Message> = [ message ];
 	let channel = message.channel;
 
@@ -165,9 +173,13 @@ class Pin extends Plugin.EmojiCommand
 
 		this.plugin.state.write("pins", message.channel.id, channelMessages);
 
-		let messages = await fetchMessages(message, author);
-
-		let embeds: Array<Discord.MessageEmbed> = [];
+		let messages: Discord.Message[] = [];
+		if(message.partial){
+			message.fetch().then(msg =>  fetchMessages(msg, author)).then(msgs => messages = msgs)
+		} else{
+			messages = await fetchMessages(message, author);
+		}
+		let embeds: Array<EmbedWithAttachments> = [];
 
 		// Iterate the Array backwards, as the order is reversed
 		for (var i = messages.length - 1; i >= 0; i--)
@@ -182,11 +194,11 @@ class Pin extends Plugin.EmojiCommand
 
 		}
 
-		await pinChannel.send( Lang.pinHeadingMessage( author, message.channel ) );
+		await pinChannel.send( Lang.pinHeadingMessage( author, message.channel as Discord.Channel) );
 
 		for (const embed of embeds)
 		{
-			await pinChannel.send("", embed);
+			await pinChannel.send({content: "", embeds: [embed.embed], files: embed.attachments});
 		}
 	}
 

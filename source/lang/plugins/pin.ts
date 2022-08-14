@@ -1,4 +1,5 @@
 import * as Discord from "discord.js"
+import { uncaughtError } from "../../modules/errorHandling.js";
 
 
 export const pluginDescription = `Nutzer können mit diesem Eomji Nachrichten in einen Pin Kanal kopieren.`;
@@ -9,8 +10,16 @@ export const pinChannel = `Der Kanal in welchen die gepinnten Nachrichten kopier
 export const pinCount = `Wie viele Mitglieder insgesamt pinnen müssen, bevor eine Nachricht gepinnt wird`;
 export const pinEmoji = `Das Emoji, mit welchem Mitglieder Nachrichten anpinnen können`;
 
-export function pinHeadingMessage(author: Discord.User, channel: Discord.Channel): string
+export function pinHeadingMessage(author: Discord.User | null, channel: Discord.Channel): string
 {
+	if(author === null) {
+		uncaughtError(
+			channel as Discord.TextChannel,
+			"pin",
+			new Error("pin command, author not fetched or unavailable"),
+			"pin"
+		);
+	}
 	return `Von: ${author}
 Aus: ${channel}`;
 }
